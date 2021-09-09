@@ -1,0 +1,23 @@
+<table>
+	<thead>
+		<tr>
+			<th>test id</th>
+			<th>hello</th>
+			<th>world</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr *ngFor="let t of tests">
+			<td>{{t.testId}}</td>
+			<td>{{t.hello}}</td>
+			<td>{{t.world}}</td>
+			<td>
+				<a [routerLink]="['./modify',t.testId]">Modify</a>
+				<a href="javascript:void(0)"  (click)="remove(t.testId)">Delete</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<p><a [routerLink]="['./add']">New</a></p>

@@ -1,0 +1,28 @@
+<h2 *ngIf="form.options.test==null">Add</h2>
+<h2 *ngIf="form.options.test!=null">Modify</h2>
+
+<form #formTest="ngForm" (ngSubmit)="onSubmit()">
+
+	<p></p>
+		<label for="formHello">Hello</label>
+		<input #formHello="ngModel" [(ngModel)]="form.data.hello" maxlength="32" id="formHello" name="formHello" type="text" placeholder="hello" required>
+		<div *ngIf="formHello.errors && (formHello.dirty || formHello.touched)">
+			<div [hidden]="!formHello.errors.required">Required</div>
+		</div> 
+	
+	
+	<p></p>
+		<label for="formWorld">World</label>
+		<input #formWorld="ngModel" [(ngModel)]="form.data.world" pattern="[0-9]+" maxlength="32" id="formWorld" name="formWorld" type="text" placeholder="world" required>
+		<div *ngIf="formWorld.errors && (formWorld.dirty || formWorld.touched)" class="alert alert-danger">
+			<div [hidden]="!formWorld.errors.required">Required</div>
+		</div> 
+	
+
+	<p></p>
+		<button [disabled]="!formTest.form.valid" name="formSubmit" type="submit">Submit</button>
+		<button (click)="reset()" type="button" name="formReset">Reset</button>
+		<button [routerLink]="['/test/']" name="formBack" >Back</button>
+	
+		
+</form>

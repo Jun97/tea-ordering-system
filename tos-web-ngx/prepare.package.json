@@ -1,0 +1,83 @@
+{
+  "name": "__PROJECT_NAME__",
+  "version": "__PROJECT_VERSION__",
+  "scripts": {
+    "build:prod:aot": "npm run clean:dist && npm run clean:aot && webpack --config config/webpack.prod.js --profile --bail",
+    "build:dev": "npm run clean:dist && npm run clean:aot && webpack --config config/webpack.dev.js --progress --profile",
+    "build": "npm run build:dev",
+    
+    "clean:dll": "npm run rimraf -- dll",
+    "clean:aot": "npm run rimraf -- compiled",
+    "clean:dist": "npm run rimraf -- dist",
+    "clean": "npm run rimraf -- node_modules dist compiled dll",
+    
+    "rimraf": "rimraf",
+    "start:dev:hmr": "npm run start:dev -- --inline --hot",
+    "start:dev": "webpack-dev-server --config config/webpack.dev.js --progress --profile --watch --content-base src/main/frontend",
+    "start": "npm run start:dev",
+    "webpack": "webpack"
+  },
+  
+  "dependencies": {
+    "@angular/animations": "__MAVEN_MANAGED__",
+    "@angular/common": "__MAVEN_MANAGED__",
+    "@angular/compiler": "__MAVEN_MANAGED__",
+    "@angular/core": "__MAVEN_MANAGED__",
+    "@angular/forms": "__MAVEN_MANAGED__",
+    "@angular/http": "__MAVEN_MANAGED__",
+    "@angular/platform-browser": "__MAVEN_MANAGED__",
+    "@angular/platform-browser-dynamic": "__MAVEN_MANAGED__",
+    "@angular/platform-server": "__MAVEN_MANAGED__",
+    "@angular/router": "__MAVEN_MANAGED__",
+    
+    "@angularclass/conventions-loader": "__MAVEN_MANAGED__",
+    "@angularclass/hmr": "__MAVEN_MANAGED__",
+    "@angularclass/hmr-loader": "__MAVEN_MANAGED__",
+    "core-js": "__MAVEN_MANAGED__",
+    "ie-shim": "__MAVEN_MANAGED__",
+    "reflect-metadata": "__MAVEN_MANAGED__",
+    "rxjs": "__MAVEN_MANAGED__",
+    "zone.js": "__MAVEN_MANAGED__"
+  },
+  "devDependencies": {
+    "@angular/compiler-cli": "__MAVEN_MANAGED__",
+    "@types/hammerjs": "__MAVEN_MANAGED__",
+    
+    "add-asset-html-webpack-plugin": "__MAVEN_MANAGED__",
+    "angular2-template-loader": "__MAVEN_MANAGED__",
+    "assets-webpack-plugin": "__MAVEN_MANAGED__",
+    "awesome-typescript-loader": "__MAVEN_MANAGED__",
+    "copy-webpack-plugin": "__MAVEN_MANAGED__",
+    "css-loader": "__MAVEN_MANAGED__",
+    "exports-loader": "__MAVEN_MANAGED__",
+    "expose-loader": "__MAVEN_MANAGED__",
+    "extract-text-webpack-plugin": "__MAVEN_MANAGED__",
+    "file-loader": "__MAVEN_MANAGED__",
+    "html-webpack-plugin": "__MAVEN_MANAGED__",
+    "imports-loader": "__MAVEN_MANAGED__",
+    "json-loader": "__MAVEN_MANAGED__",
+    "ng-router-loader": "__MAVEN_MANAGED__",
+    
+    "ngc-webpack": "__MAVEN_MANAGED__",
+    "node-sass": "__MAVEN_MANAGED__",
+    "optimize-js-plugin": "__MAVEN_MANAGED__",
+    "raw-loader": "__MAVEN_MANAGED__",
+    "rimraf": "__MAVEN_MANAGED__",
+    "sass-loader": "__MAVEN_MANAGED__",
+    "script-ext-html-webpack-plugin": "__MAVEN_MANAGED__",
+    "source-map-loader": "__MAVEN_MANAGED__",
+    "string-replace-loader": "__MAVEN_MANAGED__",
+    "style-loader": "__MAVEN_MANAGED__",
+    "to-string-loader": "__MAVEN_MANAGED__",
+    "url-loader": "__MAVEN_MANAGED__",
+	"pre-build-webpack": "__MAVEN_MANAGED__",
+    "typescript": "__MAVEN_MANAGED__",
+	"tslib": "__MAVEN_MANAGED__",
+
+    "webpack": "__MAVEN_MANAGED__",
+    "webpack-dev-middleware": "__MAVEN_MANAGED__",
+    "webpack-dev-server": "__MAVEN_MANAGED__",
+    "webpack-dll-bundles-plugin": "__MAVEN_MANAGED__",
+    "webpack-merge": "__MAVEN_MANAGED__"
+  }
+}
