@@ -1,14 +1,11 @@
 package com.convoy.dtd.tos.web.api.entity
 
-import javax.persistence.Entity
-import javax.persistence.Table
-import javax.persistence.GeneratedValue
-import javax.persistence.Column
-import javax.persistence.Id
-import javax.persistence.GenerationType
-import javax.persistence.Convert
+import javax.persistence.{Column, Convert, Embeddable, EmbeddedId, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
 import java.util.Date
+
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
+
+import java.util.Set
 
 
 @SerialVersionUID(1L)
@@ -24,7 +21,7 @@ class TeaSessionBean extends Serializable with Equals
   @Column(name="description")
   var description: String = _
 
-  @Column(name="is_public")
+  @Column(name="is_public", columnDefinition="BIT")
   var isPublic: Boolean = _
 
   @Column(name="password")
@@ -36,8 +33,15 @@ class TeaSessionBean extends Serializable with Equals
   @Column(name="cut_off_date")
   var cutOffDate: Date = _
 
-  @Column(name="user_id")
-  var userId: Long = _
+  @OneToMany(mappedBy = "teaSessionMenuItem")
+  var menuItems: Set[MenuItemBean] = _
+
+  @OneToMany(mappedBy = "teaSessionOrder")
+  var orders: Set[OrderBean] = _
+
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  var userTeaSession: UserBean = _
 
   override def canEqual(other:Any) = other.isInstanceOf[TeaSessionBean]
 

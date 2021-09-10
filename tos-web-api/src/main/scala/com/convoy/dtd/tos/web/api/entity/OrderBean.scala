@@ -1,13 +1,9 @@
 package com.convoy.dtd.tos.web.api.entity
 
-import javax.persistence.Entity
-import javax.persistence.Table
-import javax.persistence.GeneratedValue
-import javax.persistence.Column
-import javax.persistence.Id
-import javax.persistence.GenerationType
-import javax.persistence.Convert
+import javax.persistence.{Column, Convert, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
+
+import java.util.Set
 
 
 @SerialVersionUID(1L)
@@ -20,11 +16,16 @@ class OrderBean extends Serializable with Equals
   @Column(name="order_id")
   var orderId: Long = _
 
-  @Column(name="tea_session_id")
-  var teaSessionId: Long = _
+  @ManyToOne
+  @JoinColumn(name = "tea_session_id", nullable = false)
+  var teaSessionOrder: TeaSessionBean = _
 
-  @Column(name="user_id")
-  var userId: Long = _
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  var userOrder: UserBean = _
+
+  @OneToMany(mappedBy = "orderOrderItem")
+  var orderItems: Set[OrderItemBean] = _
 
   override def canEqual(other:Any) = other.isInstanceOf[OrderBean]
 
