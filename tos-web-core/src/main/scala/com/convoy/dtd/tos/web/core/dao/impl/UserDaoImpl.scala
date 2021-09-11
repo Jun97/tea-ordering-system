@@ -5,7 +5,6 @@ import com.convoy.dtd.johnston.domain.jpa.dao.AbstractGenericDao
 import com.convoy.dtd.tos.web.api.entity.{QUserBean, UserBean}
 import org.springframework.stereotype.Repository
 import com.querydsl.jpa.impl.JPAQueryFactory
-import collection.JavaConverters._
 
 @Repository
 private[impl] class UserDaoImpl extends AbstractGenericDao[UserBean, Long] with UserDao

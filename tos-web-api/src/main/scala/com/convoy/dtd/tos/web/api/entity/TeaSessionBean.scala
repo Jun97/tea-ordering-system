@@ -1,10 +1,9 @@
 package com.convoy.dtd.tos.web.api.entity
 
-import javax.persistence.{Column, Convert, Embeddable, EmbeddedId, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
+import javax.persistence.{CascadeType, Column, Convert, Embeddable, EmbeddedId, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
 import java.util.Date
 
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
-
 import java.util.Set
 
 
@@ -24,7 +23,7 @@ class TeaSessionBean extends Serializable with Equals
   @Column(name="is_public", columnDefinition="BIT")
   var isPublic: Boolean = _
 
-  @Column(name="password")
+  @Column(name="password", nullable = true)
   var password: String = _
 
   @Column(name="treat_date")
@@ -33,10 +32,10 @@ class TeaSessionBean extends Serializable with Equals
   @Column(name="cut_off_date")
   var cutOffDate: Date = _
 
-  @OneToMany(mappedBy = "teaSessionMenuItem")
+  @OneToMany(mappedBy = "teaSessionMenuItem", cascade = Array(CascadeType.REMOVE))
   var menuItems: Set[MenuItemBean] = _
 
-  @OneToMany(mappedBy = "teaSessionOrder")
+  @OneToMany(mappedBy = "teaSessionOrder", cascade = Array(CascadeType.REMOVE))
   var orders: Set[OrderBean] = _
 
   @ManyToOne

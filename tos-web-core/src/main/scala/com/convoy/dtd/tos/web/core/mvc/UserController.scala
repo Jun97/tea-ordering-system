@@ -22,17 +22,15 @@ private[mvc] class UserController
   @RequestMapping(value = Array("get-user-all"))
   def getUserAll(): Map[String,Any] = userService.getUserAll()
 
-  @RequestMapping(value = Array("update"))
+  @RequestMapping(value = Array("update-privilege"))
   def updateUser(userId:Long, isEnabled:Boolean, isAdmin:Boolean):Map[String,Any] =
   {
     userService.updateUser(userId, isEnabled, isAdmin)
-    Map()
   }
 
   @RequestMapping(value = Array("register"))
   def createUser(email:String, password:String, isEnabled:Boolean, isAdmin:Boolean):Map[String,Any] =
   {
     userService.createUser(email, password, isEnabled, isAdmin)
-    Map()
   }
 }

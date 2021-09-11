@@ -1,8 +1,7 @@
 package com.convoy.dtd.tos.web.api.entity
 
-import javax.persistence.{Column, Convert, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
+import javax.persistence.{CascadeType, Column, Convert, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
-
 import java.util.Set
 
 
@@ -24,7 +23,7 @@ class OrderBean extends Serializable with Equals
   @JoinColumn(name = "user_id", nullable = false)
   var userOrder: UserBean = _
 
-  @OneToMany(mappedBy = "orderOrderItem")
+  @OneToMany(mappedBy = "orderOrderItem", cascade = Array(CascadeType.REMOVE))
   var orderItems: Set[OrderItemBean] = _
 
   override def canEqual(other:Any) = other.isInstanceOf[OrderBean]
