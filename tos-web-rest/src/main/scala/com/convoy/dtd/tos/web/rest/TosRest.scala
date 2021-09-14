@@ -7,7 +7,7 @@ import com.convoy.dtd.tos.web.core.TosApplication
 object TosRest 
 {
   private val logger = LoggerFactory.getLogger(this.getClass)
-  
+
   def main(args:Array[String]):Unit =
   {
     val ctx = SpringApplication.run(classOf[TosApplication], args:_*)

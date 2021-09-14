@@ -100,7 +100,7 @@ private[impl] class UserServiceImpl extends UserService
 
       Map(
         "error" -> false,
-        "message" -> "Privileges changed"
+        "message" -> "Privilege changed"
       )
     } else {
       Map(
@@ -117,18 +117,21 @@ private[impl] class UserServiceImpl extends UserService
     val to = userDao.getByEmail(email)
     val u = new UserBean()
 
-    if(!to.isDefined){
-    u.email = email
-    u.password = hashedPassword
-    u.isEnabled = is_Enabled
-    u.lastLoginDate = null
-    u.isAdmin = isAdmin
-    userDao.saveOrUpdate(u)
+    if(!to.isDefined)
+    {
+      u.email = email
+      u.password = hashedPassword
+      u.isEnabled = is_Enabled
+      u.lastLoginDate = null
+      u.isAdmin = isAdmin
+      userDao.saveOrUpdate(u)
       Map(
         "error" -> false,
         "message" -> "User details registered"
       )
-    } else {
+    }
+    else
+    {
       Map(
         "error" -> true,
         "message" -> "User already exists"

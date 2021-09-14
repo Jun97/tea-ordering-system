@@ -18,8 +18,8 @@ class MenuItemBean extends Serializable with Equals
   @Column(name="menu_item_name")
   var menuItemName: String = _
 
-  @Column(name="menu_file_path")
-  var menuFilePath: String = _
+  @Column(name="menu_item_image_path")
+  var menuItemImagePath: String = _
 
   @ManyToOne
   @JoinColumn(name = "tea_session_id", nullable = false)
