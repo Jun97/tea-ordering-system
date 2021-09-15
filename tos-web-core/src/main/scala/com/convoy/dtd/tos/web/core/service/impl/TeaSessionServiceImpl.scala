@@ -35,6 +35,8 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
   private val IMAGE_FILE_DIRECTORY = "C:\\Users\\jiajunang\\Documents\\tos\\DATA\\db\\tea_session\\"
 
+  val dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
+
   @Transactional
   override def createTeaSession(name: String,
                                 description: String,
@@ -47,7 +49,6 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
     val userTo = userDao.getById(userId)
     if(userTo.isDefined && checkVisibilityAndPassword(isPublic, password))
     {
-      val dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
 
       val t = new TeaSessionBean()
       t.name = name
@@ -76,19 +77,6 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
   }
 
-
-  def checkVisibilityAndPassword(isPublic: Boolean, password: String): Boolean ={
-    if (!isPublic && ("".equals(password)) ) {
-      false
-    } else if (isPublic && ( (!"".equals(password))) )
-    {
-      false
-    }
-    else
-    {
-      true
-    }
-  }
 
   @Transactional
   override def addTeaSessionImage(teaSessionId: Long, teaSessionImage: MultipartFile): Map[String, Any] = {
@@ -170,27 +158,30 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   }
 
 
-  def generateTeaSessionImageUrl(imageName: String): String = {
-    if(imageName != null) {
-      UriComponentsBuilder.newInstance()
-        .scheme("http").host("localhost").port(50001)
-        .path("tos-rest/api/tea-session/image/{imageName}")
-        .buildAndExpand(imageName).toUriString
-    } else {
-      ""
+  override def getTeaSessionImage(imageName: String): Array[Byte] = {
+
+    try { // Retrieve image from the classpath.
+      val inputStream = Paths.get(IMAGE_FILE_DIRECTORY + imageName)
+      // Create a byte array output stream.
+      val byteArrayOutput = new ByteArrayOutputStream()
+      // Write to output stream
+      Files.copy(inputStream, byteArrayOutput)
+      byteArrayOutput.toByteArray
+    } catch {
+      case e: IOException =>
+        throw new RuntimeException(e)
     }
+
   }
 
 
   @Transactional
-  override def updateTeaSession(teaSessionId: Long,
-                                userId:Long,
-                                name: String,
-                                description: String,
-                                treatDate: String,
-                                cutOffDate: String,
-                                isPublic: Boolean,
-                                password: String): Map[String, Any] = {
+  override def updateTeaSessionDetail(teaSessionId: Long,
+                                      userId:Long,
+                                      name: String,
+                                      description: String,
+                                      treatDate: String,
+                                      cutOffDate: String): Map[String, Any] = {
 
     val to = teaSessionDao.getById(teaSessionId)
     val toUser = userDao.getById(userId)
@@ -199,20 +190,75 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
     {
       val t = to.get
       val tUser = toUser.get
-      if(tUser.isAdmin || t.userTeaSession.userId == tUser.userId)
+      if( (tUser.isAdmin || t.userTeaSession.userId == tUser.userId) )
       {
 
+        if (!isStringEmpty(name)){
+          t.name = name
+        }
+        if (!isStringEmpty(description)){
+          t.description = description
+        }
+        if (!isStringEmpty(treatDate)){
+          t.treatDate = dateFormat.parse(treatDate)
+        }
+        if (!isStringEmpty(cutOffDate)){
+          t.treatDate = dateFormat.parse(cutOffDate)
+        }
 
         Map(
           "error" -> false,
           "message" -> "Update successfully"
         )
-      }
-      else
+      } else
       {
         Map(
           "error" -> true,
-          "message" -> "User do not have privilege to modify other user tea session"
+          "message" -> "Malformed request or wrong user privilege"
+        )
+      }
+    }
+    else
+    {
+      Map(
+        "error" -> true,
+        "message" -> "Tea session not found"
+      )
+    }
+  }
+
+
+  @Transactional
+  override def updateTeaSessionPrivacy( teaSessionId: Long,
+                                        userId:Long,
+                                        isPublic: Boolean,
+                                        password: String): Map[String, Any] = {
+
+    val to = teaSessionDao.getById(teaSessionId)
+    val toUser = userDao.getById(userId)
+
+    if(to.isDefined && toUser.isDefined)
+    {
+      val t = to.get
+      val tUser = toUser.get
+      if( (tUser.isAdmin || t.userTeaSession.userId == tUser.userId) )
+      {
+
+        t.isPublic = isPublic
+        if (!isPublic) {
+          val hashedPassword = passwordEncoder.encode(password)
+          t.password = hashedPassword
+        }
+
+        Map(
+          "error" -> false,
+          "message" -> "Update successfully"
+        )
+      } else
+      {
+        Map(
+          "error" -> true,
+          "message" -> "Malformed request or wrong user privilege"
         )
       }
     }
@@ -262,20 +308,33 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   }
 
 
-  override def getTeaSessionImage(imageName: String): Array[Byte] = {
+  def isStringEmpty(string: String): Boolean = string == null || string.trim.isEmpty
 
-    try { // Retrieve image from the classpath.
-      val inputStream = Paths.get(IMAGE_FILE_DIRECTORY + imageName)
-      // Create a byte array output stream.
-      val byteArrayOutput = new ByteArrayOutputStream()
-      // Write to output stream
-      Files.copy(inputStream, byteArrayOutput)
-      byteArrayOutput.toByteArray
-    } catch {
-      case e: IOException =>
-        throw new RuntimeException(e)
+
+  def generateTeaSessionImageUrl(imageName: String): String = {
+    if(imageName != null) {
+      UriComponentsBuilder.newInstance()
+        .scheme("http").host("localhost").port(50001)
+        .path("tos-rest/api/tea-session/image/{imageName}")
+        .buildAndExpand(imageName).toUriString
+    } else {
+      ""
     }
-
   }
+
+
+  def checkVisibilityAndPassword(isPublic: Boolean, password: String): Boolean ={
+    if (!isPublic && ("".equals(password)) ) {
+      false
+    } else if (isPublic && ( (!"".equals(password))) )
+    {
+      false
+    }
+    else
+    {
+      true
+    }
+  }
+
 
 }

@@ -15,14 +15,16 @@ trait TeaSessionService
   def getTeaSessionById(teaSessionId: Long): Map[String, Any]
   def getTeaSessionImage(imageName: String): Array[Byte]
   def getTeaSessionUpcoming(): Map[String, Any]
-  def updateTeaSession(teaSessionId: Long,
+  def updateTeaSessionDetail(teaSessionId: Long,
                        userId:Long,
                        name: String,
                        description: String,
                        treatDate: String,
-                       cutOffDate: String,
-                       isPublic: Boolean,
-                       password: String): Map[String, Any]
+                       cutOffDate: String): Map[String, Any]
+  def updateTeaSessionPrivacy(teaSessionId: Long,
+                              userId:Long,
+                              isPublic: Boolean,
+                              password: String): Map[String, Any]
   def deleteTeaSessionById(teaSessionId: Long, userId: Long): Map[String, Any]
 
 
