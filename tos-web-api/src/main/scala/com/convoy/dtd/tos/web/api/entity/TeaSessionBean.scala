@@ -1,14 +1,16 @@
 package com.convoy.dtd.tos.web.api.entity
 
-import javax.persistence.Entity
-import javax.persistence.Table
-import javax.persistence.GeneratedValue
-import javax.persistence.Column
-import javax.persistence.Id
-import javax.persistence.GenerationType
-import javax.persistence.Convert
+import javax.persistence.{CascadeType, Column, Convert, Embeddable, EmbeddedId, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
 import java.util.Date
+
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
+import java.util.Set
+
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 
 
 @SerialVersionUID(1L)
@@ -16,18 +18,22 @@ import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
 @Table(name="tea_session")
 class TeaSessionBean extends Serializable with Equals
 {
+
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   @Column(name="tea_session_id")
   var teaSessionId: Long = _
 
+  @Column(name="name")
+  var name: String = _
+
   @Column(name="description")
   var description: String = _
 
-  @Column(name="is_public")
+  @Column(name="is_public", columnDefinition="BIT")
   var isPublic: Boolean = _
 
-  @Column(name="password")
+  @Column(name="password", nullable = true)
   var password: String = _
 
   @Column(name="treat_date")
@@ -36,8 +42,32 @@ class TeaSessionBean extends Serializable with Equals
   @Column(name="cut_off_date")
   var cutOffDate: Date = _
 
-  @Column(name="user_id")
-  var userId: Long = _
+  @Column(name="tea_session_image_path")
+  var teaSessionImagePath: String = _
+
+  @OneToMany(mappedBy = "teaSessionMenuItem", cascade = Array(CascadeType.REMOVE))
+  var menuItems: Set[MenuItemBean] = _
+
+  @OneToMany(mappedBy = "teaSessionOrder", cascade = Array(CascadeType.REMOVE))
+  var orders: Set[OrderBean] = _
+
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  var userTeaSession: UserBean = _
+
+  def deepClone: TeaSessionBean = try {
+    val baos = new ByteArrayOutputStream
+    val oos = new ObjectOutputStream(baos)
+    oos.writeObject(this)
+    val bais = new ByteArrayInputStream(baos.toByteArray)
+    val ois = new ObjectInputStream(bais)
+    ois.readObject.asInstanceOf[TeaSessionBean]
+  } catch {
+    case e: IOException =>
+      throw e.getCause
+    case e: ClassNotFoundException =>
+      throw e.getException
+  }
 
   override def canEqual(other:Any) = other.isInstanceOf[TeaSessionBean]
 

@@ -14,5 +14,10 @@
 			<artifactId>hk-convoy-dtd-johnston-domain-api</artifactId>
 			<version>${johnston.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>4.3.7.RELEASE</version>
+		</dependency>
 	</dependencies>
 </project>
