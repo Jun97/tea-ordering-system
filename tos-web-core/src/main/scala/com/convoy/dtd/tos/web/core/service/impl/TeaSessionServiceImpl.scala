@@ -2,7 +2,6 @@ package com.convoy.dtd.tos.web.core.service.impl
 
 import java.io.ByteArrayOutputStream
 import java.nio.file.{Files, Paths, StandardCopyOption}
-import java.util.Date
 import java.io.IOException
 import java.text.SimpleDateFormat
 
@@ -10,7 +9,6 @@ import com.convoy.dtd.tos.web.api.entity.{TeaSessionBean, UserBean}
 import com.convoy.dtd.tos.web.api.service.TeaSessionService
 import com.convoy.dtd.tos.web.core.dao.{TeaSessionDao, UserDao}
 import javax.inject.Inject
-import org.springframework.beans.BeanUtils
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import org.apache.commons.io.FilenameUtils
@@ -248,6 +246,8 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
         if (!isPublic) {
           val hashedPassword = passwordEncoder.encode(password)
           t.password = hashedPassword
+        } else if (isPublic) {
+          t.password = null
         }
 
         Map(

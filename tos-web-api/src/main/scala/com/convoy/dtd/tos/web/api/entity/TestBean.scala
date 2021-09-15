@@ -1,5 +1,7 @@
 package com.convoy.dtd.tos.web.api.entity
 
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, IOException, ObjectInputStream, ObjectOutputStream}
+
 import javax.persistence.Entity
 import javax.persistence.Table
 import javax.persistence.GeneratedValue
@@ -25,6 +27,21 @@ class TestBean extends Serializable with Equals
 	
 	@Column(name="WORLD")
 	var world: Long = _
+
+
+  def deepClone: TestBean = try {
+    val baos = new ByteArrayOutputStream
+    val oos = new ObjectOutputStream(baos)
+    oos.writeObject(this)
+    val bais = new ByteArrayInputStream(baos.toByteArray)
+    val ois = new ObjectInputStream(bais)
+    ois.readObject.asInstanceOf[TestBean]
+  } catch {
+    case e: IOException =>
+      throw e.getCause
+    case e: ClassNotFoundException =>
+      throw e.getException
+  }
 	
 	override def canEqual(other:Any) = other.isInstanceOf[TestBean]
   

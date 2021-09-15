@@ -1,6 +1,6 @@
 package com.convoy.dtd.tos.web.api.entity
 
-import javax.persistence.{CascadeType, Column, Convert, Embeddable, EmbeddedId, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
+import javax.persistence.{CascadeType, Column, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
 import java.util.Date
 
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter

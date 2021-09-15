@@ -1,5 +1,7 @@
 package com.convoy.dtd.tos.web.api.entity
 
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, IOException, ObjectInputStream, ObjectOutputStream}
+
 import javax.persistence.{Column, Convert, Embeddable, EmbeddedId, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, MapsId, OneToMany, Table}
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
 import java.util.Set
@@ -27,6 +29,21 @@ class MenuItemBean extends Serializable with Equals
 
   @OneToMany(mappedBy = "menuItemOrderItem")
   var orderItems: Set[OrderItemBean] = _
+
+
+  def deepClone: MenuItemBean = try {
+    val baos = new ByteArrayOutputStream
+    val oos = new ObjectOutputStream(baos)
+    oos.writeObject(this)
+    val bais = new ByteArrayInputStream(baos.toByteArray)
+    val ois = new ObjectInputStream(bais)
+    ois.readObject.asInstanceOf[MenuItemBean]
+  } catch {
+    case e: IOException =>
+      throw e.getCause
+    case e: ClassNotFoundException =>
+      throw e.getException
+  }
 
   override def canEqual(other:Any) = other.isInstanceOf[MenuItemBean]
 

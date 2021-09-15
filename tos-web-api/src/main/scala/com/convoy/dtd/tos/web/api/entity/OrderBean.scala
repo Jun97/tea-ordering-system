@@ -1,6 +1,8 @@
 package com.convoy.dtd.tos.web.api.entity
 
-import javax.persistence.{CascadeType, Column, Convert, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, IOException, ObjectInputStream, ObjectOutputStream}
+
+import javax.persistence.{CascadeType, Column, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
 import java.util.Set
 
@@ -25,6 +27,21 @@ class OrderBean extends Serializable with Equals
 
   @OneToMany(mappedBy = "orderOrderItem", cascade = Array(CascadeType.REMOVE))
   var orderItems: Set[OrderItemBean] = _
+
+
+  def deepClone: OrderBean = try {
+    val baos = new ByteArrayOutputStream
+    val oos = new ObjectOutputStream(baos)
+    oos.writeObject(this)
+    val bais = new ByteArrayInputStream(baos.toByteArray)
+    val ois = new ObjectInputStream(bais)
+    ois.readObject.asInstanceOf[OrderBean]
+  } catch {
+    case e: IOException =>
+      throw e.getCause
+    case e: ClassNotFoundException =>
+      throw e.getException
+  }
 
   override def canEqual(other:Any) = other.isInstanceOf[OrderBean]
 
