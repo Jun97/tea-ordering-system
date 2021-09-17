@@ -11,7 +11,7 @@ import javax.persistence.GenerationType
 import javax.persistence.OneToMany
 import javax.persistence.Convert
 import java.util.Date
-import java.util.Set
+import java.util.List
 
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
 
@@ -42,10 +42,10 @@ class UserBean extends Serializable with Equals
   var isAdmin: Boolean = _
 
   @OneToMany(mappedBy = "userTeaSession")
-  var teaSessions: Set[TeaSessionBean] = _
+  var teaSessions: List[TeaSessionBean] = _
 
   @OneToMany(mappedBy = "userOrder")
-  var orders: Set[OrderBean] = _
+  var orders: List[OrderBean] = _
 
 
   def deepClone: UserBean = try {

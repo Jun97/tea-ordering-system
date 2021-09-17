@@ -137,7 +137,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   @Transactional
   override def getTeaSessionUpcoming(): Map[String, Any] = {
 
-    val copiedTeaSessions:List[TeaSessionBean] =
+    val modifiedTeaSessions:List[TeaSessionBean] =
     teaSessionDao.getUpcomingTeaSession()
       .map( (teaSessionBean: TeaSessionBean) => {
       val tempTeaSession: TeaSessionBean = teaSessionBean.deepClone
@@ -147,11 +147,13 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       tempTeaSession.userTeaSession = new UserBean()
       tempTeaSession.userTeaSession.userId = teaSessionBean.userTeaSession.userId
 
+      tempTeaSession.menuItems = null
+
       tempTeaSession
     })
     Map(
       "error" -> false,
-      "teaSession" -> copiedTeaSessions
+      "teaSession" -> modifiedTeaSessions
     )
   }
 
@@ -188,7 +190,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
     {
       val t = to.get
       val tUser = toUser.get
-      if( (tUser.isAdmin || t.userTeaSession.userId == tUser.userId) )
+      if( tUser.isAdmin || t.userTeaSession.userId == tUser.userId )
       {
 
         if (!isStringEmpty(name)){
@@ -239,7 +241,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
     {
       val t = to.get
       val tUser = toUser.get
-      if( (tUser.isAdmin || t.userTeaSession.userId == tUser.userId) )
+      if( tUser.isAdmin || t.userTeaSession.userId == tUser.userId )
       {
 
         t.isPublic = isPublic
@@ -324,9 +326,9 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
 
   def checkVisibilityAndPassword(isPublic: Boolean, password: String): Boolean ={
-    if (!isPublic && ("".equals(password)) ) {
+    if (!isPublic && "".equals(password) ) {
       false
-    } else if (isPublic && ( (!"".equals(password))) )
+    } else if (isPublic && (!"".equals(password)) )
     {
       false
     }

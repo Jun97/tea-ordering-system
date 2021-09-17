@@ -26,6 +26,7 @@ trait TeaSessionService
                               isPublic: Boolean,
                               password: String): Map[String, Any]
   def deleteTeaSessionById(teaSessionId: Long, userId: Long): Map[String, Any]
+  def generateTeaSessionImageUrl(imageName: String): String
 
 
 }

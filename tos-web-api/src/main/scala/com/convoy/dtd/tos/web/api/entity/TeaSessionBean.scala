@@ -2,9 +2,9 @@ package com.convoy.dtd.tos.web.api.entity
 
 import javax.persistence.{CascadeType, Column, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
 import java.util.Date
+import java.util.List
 
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
-import java.util.Set
 
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -46,10 +46,10 @@ class TeaSessionBean extends Serializable with Equals
   var teaSessionImagePath: String = _
 
   @OneToMany(mappedBy = "teaSessionMenuItem", cascade = Array(CascadeType.REMOVE))
-  var menuItems: Set[MenuItemBean] = _
+  var menuItems: List[MenuItemBean] = _
 
   @OneToMany(mappedBy = "teaSessionOrder", cascade = Array(CascadeType.REMOVE))
-  var orders: Set[OrderBean] = _
+  var orders: List[OrderBean] = _
 
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)

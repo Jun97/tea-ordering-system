@@ -6,7 +6,7 @@ import com.convoy.dtd.tos.web.core.dao.MenuItemDao
 import org.springframework.stereotype.Repository
 
 @Repository
-private[impl] class MenuItemDaoImpl extends AbstractGenericDao [MenuItemBean, Long] with MenuItemDao{
+private[impl] class MenuItemDaoImpl extends AbstractGenericDao[MenuItemBean, Long] with MenuItemDao{
 
 
 }

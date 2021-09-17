@@ -2,9 +2,9 @@ package com.convoy.dtd.tos.web.api.entity
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, IOException, ObjectInputStream, ObjectOutputStream}
 
-import javax.persistence.{Column, Convert, Embeddable, EmbeddedId, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, MapsId, OneToMany, Table}
+import javax.persistence.{Column, Embeddable, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
-import java.util.Set
+import java.util.List
 
 @SerialVersionUID(1L)
 @Entity
@@ -28,7 +28,7 @@ class MenuItemBean extends Serializable with Equals
   var teaSessionMenuItem: TeaSessionBean = _
 
   @OneToMany(mappedBy = "menuItemOrderItem")
-  var orderItems: Set[OrderItemBean] = _
+  var orderItems: List[OrderItemBean] = _
 
 
   def deepClone: MenuItemBean = try {
@@ -54,4 +54,10 @@ class MenuItemBean extends Serializable with Equals
     case that: MenuItemBean => this.menuItemId == that.menuItemId
     case _ => false
   }
+
+  @Override
+  override def toString(): String = {
+    return "name" + this.menuItemName + "base64" + this.menuItemImagePath
+  }
+
 }

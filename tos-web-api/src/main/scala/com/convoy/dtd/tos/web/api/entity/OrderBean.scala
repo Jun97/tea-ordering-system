@@ -4,7 +4,7 @@ import java.io.{ByteArrayInputStream, ByteArrayOutputStream, IOException, Object
 
 import javax.persistence.{CascadeType, Column, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
-import java.util.Set
+import java.util.List
 
 
 @SerialVersionUID(1L)
@@ -26,7 +26,7 @@ class OrderBean extends Serializable with Equals
   var userOrder: UserBean = _
 
   @OneToMany(mappedBy = "orderOrderItem", cascade = Array(CascadeType.REMOVE))
-  var orderItems: Set[OrderItemBean] = _
+  var orderItems: List[OrderItemBean] = _
 
 
   def deepClone: OrderBean = try {
