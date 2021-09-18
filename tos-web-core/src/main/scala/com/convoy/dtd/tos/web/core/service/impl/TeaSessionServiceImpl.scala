@@ -63,7 +63,8 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
       Map(
         "error" -> false,
-        "message" -> "Tea session created"
+        "message" -> "Tea session created",
+        "teaSession" -> t
       )
     } else {
       Map(
@@ -140,14 +141,17 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
     val modifiedTeaSessions:List[TeaSessionBean] =
     teaSessionDao.getUpcomingTeaSession()
       .map( (teaSessionBean: TeaSessionBean) => {
-      val tempTeaSession: TeaSessionBean = teaSessionBean.deepClone
+      val tempTeaSession: TeaSessionBean = teaSessionBean.deepClone //Leave Original Bean untouched
 
       tempTeaSession.teaSessionImagePath = generateTeaSessionImageUrl(teaSessionBean.teaSessionImagePath) //Convert to URL Link to get image
 
       tempTeaSession.userTeaSession = new UserBean()
       tempTeaSession.userTeaSession.userId = teaSessionBean.userTeaSession.userId
 
-      tempTeaSession.menuItems = null
+      if(!tempTeaSession.isPublic){
+        tempTeaSession.menuItems = null
+      }
+
 
       tempTeaSession
     })

@@ -21,7 +21,7 @@ private[mvc] class MenuItemController {
 
 
 
-  @RequestMapping(value = Array("add"), method = Array(RequestMethod.POST), consumes = Array(MediaType.APPLICATION_JSON_VALUE))
+  @RequestMapping(value = Array("add-by-batch"), method = Array(RequestMethod.POST), consumes = Array(MediaType.APPLICATION_JSON_VALUE)) //Not Working
   def createMenuItemByBatch(@RequestBody(required = true) payload: Map[String, Any]): Map[String,Any] =
   {
     //key: teaSessionId, menuItem
@@ -53,6 +53,13 @@ private[mvc] class MenuItemController {
   }
 
 
+  @RequestMapping(value = Array("add"), method = Array(RequestMethod.POST))
+  def createMenuItem(@RequestParam(required = true) teaSessionId: Long, @RequestParam(required = true) menuItemName: String, menuItemImagePath: MultipartFile): Map[String,Any] =
+  {
+    menuItemService.createMenuItem(teaSessionId, menuItemName , menuItemImagePath)
+  }
+
+
   @RequestMapping(value = Array("get-by-id"), method = Array(RequestMethod.POST))
   def getMenuItemByTeaSessionId(@RequestParam(required = true) teaSessionId: Long, password: String): Map[String,Any] =
   {
@@ -76,7 +83,7 @@ private[mvc] class MenuItemController {
 
 
   @RequestMapping(value = Array("delete"), method = Array(RequestMethod.POST))
-  def deleteTeaSessionById(menuItemId: Long): Map[String,Any] =
+  def deleteTeaSessionById(@RequestParam(required = true) menuItemId: Long): Map[String,Any] =
   {
     menuItemService.deleteMenuItemById(menuItemId)
   }

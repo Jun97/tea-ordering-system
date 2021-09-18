@@ -1,23 +1,25 @@
 package com.convoy.dtd.tos.web.core.service.impl
 
+
+import com.convoy.dtd.tos.web.api.entity.{MenuItemBean, TeaSessionBean}
+import com.convoy.dtd.tos.web.api.service.{MenuItemService}
+import com.convoy.dtd.tos.web.core.dao.{MenuItemDao, TeaSessionDao}
+
 import java.io.{ByteArrayOutputStream, IOException}
 import java.net.URLConnection
 import java.nio.file.{Files, Paths, StandardCopyOption}
 import java.text.SimpleDateFormat
-import java.util.{Base64}
-
-import com.convoy.dtd.tos.web.api.entity.{MenuItemBean, TeaSessionBean}
-import com.convoy.dtd.tos.web.api.service.{MenuItemService, TeaSessionService}
-import com.convoy.dtd.tos.web.core.dao.{MenuItemDao, TeaSessionDao}
-import javax.inject.Inject
-
+import java.util.Base64
 import java.io.ByteArrayInputStream
 import java.io.InputStream
+import javax.inject.Inject
 
 
+import org.apache.commons.io.FilenameUtils
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.util.UriComponentsBuilder
 
 import scala.collection.JavaConverters._
@@ -42,7 +44,37 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def createMenuItemByBatch(teaSessionId: Long, menuList: List[MenuItemBean]): Map[String, Any] =
+  override def createMenuItem(teaSessionId: Long, menuItemName: String, menuItemImagePath: MultipartFile): Map[String, Any] =
+  {
+    val toTeaSession = teaSessionDao.getById(teaSessionId)
+    if(toTeaSession.isDefined)
+    {
+        val t = new MenuItemBean()
+        t.menuItemName = menuItemName
+        t.teaSessionMenuItem = toTeaSession.get
+        menuItemDao.saveOrUpdate(t)
+
+        if(!menuItemImagePath.isEmpty){
+          addMenuItemImageByMultipart(t.menuItemId, menuItemImagePath, false)
+        }
+
+
+      Map(
+        "error" -> false,
+        "message" -> "Menu item created",
+        "menuItem" -> t
+      )
+    } else {
+      Map(
+        "error" -> true,
+        "message" -> "Invalid Tea Session reference"
+      )
+    }
+  }
+
+
+  @Transactional
+  override def createMenuItemByBatch(teaSessionId: Long, menuList: List[MenuItemBean]): Map[String, Any] = //Not working
   {
     val toTeaSession = teaSessionDao.getById(teaSessionId)
     if(toTeaSession.isDefined)
@@ -54,7 +86,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
         menuItemDao.saveOrUpdate(menuItem)
 
         if(!isStringEmpty(menuItem.menuItemImagePath)){
-          addMenuItemImage(t.menuItemId, menuItem.menuItemImagePath)
+          addMenuItemImageByBase64(t.menuItemId, menuItem.menuItemImagePath, false)
         }
       })
 
@@ -72,7 +104,46 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def addMenuItemImage(menuItemId: Long, teaSessionImage: String): Boolean = {
+  override def addMenuItemImageByMultipart(menuItemId: Long, menuItemImage: MultipartFile, isApiUpload: Boolean): Either[Boolean, Map[String, Any]] = {
+
+    val extensionName: String = FilenameUtils.getExtension(menuItemImage.getOriginalFilename)
+    val imageName: String = "tea_session_" + menuItemId + "." + extensionName
+    val savePath = Paths.get(IMAGE_FILE_DIRECTORY + imageName)
+
+    val to = menuItemDao.getById(menuItemId)
+    if(to.isDefined){
+
+      Files.copy(menuItemImage.getInputStream, savePath, StandardCopyOption.REPLACE_EXISTING)
+
+      val t = to.get
+      t.menuItemImagePath = imageName
+
+
+      if(isApiUpload){
+        Right(Map(
+            "error" -> false,
+            "message" -> "Image saved"
+          ))
+      } else {
+        Left(true)
+      }
+
+
+    } else {
+      if(isApiUpload){
+        Right(Map(
+          "error" -> true,
+          "message" -> "Menu item not exists"
+        ))
+      } else{
+        Left(false)
+      }
+    }
+  }
+
+
+  @Transactional
+  override def addMenuItemImageByBase64(menuItemId: Long, menuItemImage: String, isApiUpload: Boolean): Either[Boolean, Map[String, Any]] = {
 
     val to = menuItemDao.getById(menuItemId)
 
@@ -80,22 +151,29 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
     {
 
       try{
-      val decodedImage: Array[Byte] = Base64.getDecoder.decode(teaSessionImage)
-      val is: InputStream = new ByteArrayInputStream(decodedImage)
+        val decodedImage: Array[Byte] = Base64.getDecoder.decode(menuItemImage)
+        val is: InputStream = new ByteArrayInputStream(decodedImage)
 
-      val mimeType: String = URLConnection.guessContentTypeFromStream(is)
-      val fileExtension = mimeType.split("/")(1)
+        val mimeType: String = URLConnection.guessContentTypeFromStream(is)
+        val fileExtension = mimeType.split("/")(1)
 
-      val imageName: String = "menu_item_" + menuItemId + "." + fileExtension
-      val savePath = Paths.get(IMAGE_FILE_DIRECTORY + imageName)
+        val imageName: String = "menu_item_" + menuItemId + "." + fileExtension
+        val savePath = Paths.get(IMAGE_FILE_DIRECTORY + imageName)
 
-      Files.copy(is, savePath, StandardCopyOption.REPLACE_EXISTING)
+        Files.copy(is, savePath, StandardCopyOption.REPLACE_EXISTING)
 
 
-      val t = to.get
-      t.menuItemImagePath = imageName
+        val t = to.get
+        t.menuItemImagePath = imageName
 
-      true
+        if(isApiUpload){
+          Right(Map(
+            "error" -> false,
+            "message" -> "Image saved"
+            ))
+        } else {
+          Left(true)
+        }
       }
       catch {
         case e: IOException =>
@@ -103,7 +181,15 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
       }
     } else
     {
-      false
+      if(isApiUpload){
+        Right(Map(
+          "error" -> true,
+          "message" -> "Menu item not exists"
+        ))
+      } else{
+        Left(false)
+      }
+
     }
   }
 
@@ -121,14 +207,13 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
       modifiedTeaSession.teaSessionImagePath = generateTeaSessionImageUrl(t.teaSessionImagePath)
 
       modifiedTeaSession.menuItems.asScala.map( (menuItemBean: MenuItemBean) => {
-        if(isStringEmpty(menuItemBean.menuItemImagePath)){
+        if(!isStringEmpty(menuItemBean.menuItemImagePath)){
           menuItemBean.menuItemImagePath = generateMenuItemImageUrl(menuItemBean.menuItemImagePath)
           menuItemBean
         } else {
           menuItemBean
         }
       })
-
 
       Map(
         "error" -> false,

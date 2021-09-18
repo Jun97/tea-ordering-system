@@ -115,19 +115,20 @@ private[impl] class UserServiceImpl extends UserService
   {
     val hashedPassword = passwordEncoder.encode(password)
     val to = userDao.getByEmail(email)
-    val u = new UserBean()
+    val t = new UserBean()
 
     if(!to.isDefined)
     {
-      u.email = email
-      u.password = hashedPassword
-      u.isEnabled = is_Enabled
-      u.lastLoginDate = null
-      u.isAdmin = isAdmin
-      userDao.saveOrUpdate(u)
+      t.email = email
+      t.password = hashedPassword
+      t.isEnabled = is_Enabled
+      t.lastLoginDate = null
+      t.isAdmin = isAdmin
+      userDao.saveOrUpdate(t)
       Map(
         "error" -> false,
-        "message" -> "User details registered"
+        "message" -> "User details registered",
+        "user" -> t
       )
     }
     else

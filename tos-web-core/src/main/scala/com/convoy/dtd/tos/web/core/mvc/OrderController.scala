@@ -22,14 +22,14 @@ private[mvc] class OrderController {
 
 
   @RequestMapping(value = Array("get-by-id"), method = Array(RequestMethod.POST))
-  def getMenuItemByTeaSessionId(@RequestParam(required = true) orderId: Long): Map[String,Any] =
+  def getOrderById(@RequestParam(required = true) orderId: Long): Map[String,Any] =
   {
     orderService.getOrderById(orderId)
   }
 
 
   @RequestMapping(value = Array("delete"), method = Array(RequestMethod.POST))
-  def deleteTeaSessionById(@RequestParam(required = true) orderId: Long): Map[String,Any] =
+  def deleteOrderById(@RequestParam(required = true) orderId: Long): Map[String,Any] =
   {
     orderService.deleteOrderById(orderId)
   }
