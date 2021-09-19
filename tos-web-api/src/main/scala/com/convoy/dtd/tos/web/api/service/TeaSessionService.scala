@@ -9,23 +9,26 @@ trait TeaSessionService
                        treatDate: String,
                        cutOffDate: String,
                        isPublic: Boolean,
-                       password: String,
-                       userId:Long): Map[String, Any]
-  def addTeaSessionImage(teaSessionId: Long, teaSessionImage: MultipartFile): Map[String, Any]
-  def getTeaSessionById(teaSessionId: Long): Map[String, Any]
-  def getTeaSessionImage(imageName: String): Array[Byte]
-  def getTeaSessionUpcoming(): Map[String, Any]
-  def updateTeaSessionDetail(teaSessionId: Long,
+                       password: Option[String],
                        userId:Long,
-                       name: String,
-                       description: String,
-                       treatDate: String,
-                       cutOffDate: String): Map[String, Any]
+                       teaSessionImagePath: Option[MultipartFile]): Map[String, Any]
+  def addTeaSessionImageByMultipart(teaSessionId: Long, teaSessionImage: MultipartFile, isApiUpload: Boolean): Either[Boolean, Map[String, Any]]
+  def getTeaSessionById(teaSessionId: Long): Map[String, Any]
+  def getTeaSessionUpcoming(): Map[String, Any]
+  def getTeaSessionImage(imageName: String): Array[Byte]
+  def updateTeaSessionDetail(teaSessionId: Long,
+                             userId:Long,
+                             name: Option[String],
+                             description: Option[String],
+                             treatDate: Option[String],
+                             cutOffDate: Option[String],
+                             teaSessionImagePath: Option[MultipartFile]): Map[String, Any]
   def updateTeaSessionPrivacy(teaSessionId: Long,
                               userId:Long,
                               isPublic: Boolean,
                               password: String): Map[String, Any]
   def deleteTeaSessionById(teaSessionId: Long, userId: Long): Map[String, Any]
+  def deleteTeaSessionImage(teaSessionImagePath: String): Boolean
   def generateTeaSessionImageUrl(imageName: String): String
 
 

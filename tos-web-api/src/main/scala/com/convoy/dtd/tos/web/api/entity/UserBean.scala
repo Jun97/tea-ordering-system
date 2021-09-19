@@ -2,14 +2,7 @@ package com.convoy.dtd.tos.web.api.entity
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, IOException, ObjectInputStream, ObjectOutputStream}
 
-import javax.persistence.Entity
-import javax.persistence.Table
-import javax.persistence.GeneratedValue
-import javax.persistence.Column
-import javax.persistence.Id
-import javax.persistence.GenerationType
-import javax.persistence.OneToMany
-import javax.persistence.Convert
+import javax.persistence.{Column, Convert, Entity, FetchType, GeneratedValue, GenerationType, Id, OneToMany, Table}
 import java.util.Date
 import java.util.List
 
@@ -41,10 +34,10 @@ class UserBean extends Serializable with Equals
   @Column(name="is_admin", columnDefinition="BIT")
   var isAdmin: Boolean = _
 
-  @OneToMany(mappedBy = "userTeaSession")
+  @OneToMany(mappedBy = "userTeaSession", fetch = FetchType.LAZY)
   var teaSessions: List[TeaSessionBean] = _
 
-  @OneToMany(mappedBy = "userOrder")
+  @OneToMany(mappedBy = "userOrder", fetch = FetchType.LAZY)
   var orders: List[OrderBean] = _
 
 

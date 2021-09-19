@@ -23,18 +23,18 @@ private[impl] class UserServiceImpl extends UserService
   override def checkUserExists(email: String): Map[String, Any]=
   {
     val to = userDao.getByEmail(email)
-    if(to.isDefined)
+    if(!to.isDefined)
     {
       Map(
-        "error" -> true,
-        "message" -> "The username has been used."
+        "error" -> false,
+        "message" -> "Email can be registered"
       )
     }
     else
     {
       Map(
-        "error" -> false,
-        "message" -> "Email already exists. "
+        "error" -> true,
+        "message" -> "Email already exists"
       )
     }
   }
@@ -54,7 +54,8 @@ private[impl] class UserServiceImpl extends UserService
           t.lastLoginDate = Calendar.getInstance().getTime
           Map(
             "error"-> false,
-            "message" -> "Login successful."
+            "message" -> "Login successful.",
+            "user" -> List(t)
           )
         }
         else
@@ -85,7 +86,7 @@ private[impl] class UserServiceImpl extends UserService
   @Transactional
   override def getUserAll(): Map[String,Any] =
   {
-    Map("users" -> userDao.findAllAsScala())
+    Map("user" -> userDao.findAllAsScala())
   }
 
   @Transactional
@@ -100,7 +101,8 @@ private[impl] class UserServiceImpl extends UserService
 
       Map(
         "error" -> false,
-        "message" -> "Privilege changed"
+        "message" -> "Privilege changed",
+        "user" -> List(t)
       )
     } else {
       Map(

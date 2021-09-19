@@ -56,11 +56,21 @@ private[mvc] class MenuItemController {
   @RequestMapping(value = Array("add"), method = Array(RequestMethod.POST))
   def createMenuItem(@RequestParam(required = true) teaSessionId: Long, @RequestParam(required = true) menuItemName: String, menuItemImagePath: MultipartFile): Map[String,Any] =
   {
-    menuItemService.createMenuItem(teaSessionId, menuItemName , menuItemImagePath)
+    menuItemService.createMenuItem(teaSessionId, menuItemName , Option(menuItemImagePath) )
   }
 
 
-  @RequestMapping(value = Array("get-by-id"), method = Array(RequestMethod.POST))
+  @RequestMapping(value=Array("image/add"), method = Array(RequestMethod.POST), consumes = Array(MediaType.MULTIPART_FORM_DATA_VALUE))
+  def addTeaSessionImage( @RequestParam(required = true) menuItemId: Long, @RequestParam(required = true, name="teaSessionImage") menuItemImagePath: MultipartFile): Map[String, Any] =
+  {
+    menuItemService.addMenuItemImageByMultipart(menuItemId, menuItemImagePath, true)
+      .fold(left => null,
+        right=> right
+      )
+  }
+
+
+  @RequestMapping(value = Array("get-by-tea-session-id"), method = Array(RequestMethod.POST))
   def getMenuItemByTeaSessionId(@RequestParam(required = true) teaSessionId: Long, password: String): Map[String,Any] =
   {
     menuItemService.getMenuItemByTeaSessionId(teaSessionId, Option(password))
@@ -76,9 +86,10 @@ private[mvc] class MenuItemController {
 
   @RequestMapping(value = Array("update-detail"))
   def updateTeaSessionDetail(@RequestParam(required = true) menuItemId: Long,
-                             @RequestParam(required = true) name: String):Map[String,Any] =
+                             @RequestParam(required = true) name: String,
+                             menuItemImagePath: MultipartFile):Map[String,Any] =
   {
-    menuItemService.updateMenuItem(menuItemId, name)
+    menuItemService.updateMenuItem(menuItemId, name, Option(menuItemImagePath))
   }
 
 

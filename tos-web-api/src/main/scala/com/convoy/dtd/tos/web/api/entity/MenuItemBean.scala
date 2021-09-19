@@ -2,7 +2,7 @@ package com.convoy.dtd.tos.web.api.entity
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, IOException, ObjectInputStream, ObjectOutputStream}
 
-import javax.persistence.{Column, Embeddable, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
+import javax.persistence.{Column, Embeddable, Entity, FetchType, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
 import java.util.List
 
@@ -23,11 +23,11 @@ class MenuItemBean extends Serializable with Equals
   @Column(name="menu_item_image_path")
   var menuItemImagePath: String = _
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "tea_session_id", nullable = false)
   var teaSessionMenuItem: TeaSessionBean = _
 
-  @OneToMany(mappedBy = "menuItemOrderItem")
+  @OneToMany(mappedBy = "menuItemOrderItem", fetch = FetchType.LAZY)
   var orderItems: List[OrderItemBean] = _
 
 

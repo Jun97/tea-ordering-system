@@ -41,8 +41,9 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
                                 treatDate: String,
                                 cutOffDate: String,
                                 isPublic: Boolean,
-                                password: String,
-                                userId:Long): Map[String, Any] =
+                                password: Option[String],
+                                userId:Long,
+                                teaSessionImagePath: Option[MultipartFile]): Map[String, Any] =
   {
     val userTo = userDao.getById(userId)
     if(userTo.isDefined && checkVisibilityAndPassword(isPublic, password))
@@ -55,16 +56,19 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       t.cutOffDate = dateFormat.parse(cutOffDate)
       t.isPublic = isPublic
       if (!isPublic) {
-        val hashedPassword = passwordEncoder.encode(password)
+        val hashedPassword = passwordEncoder.encode(password.get)
         t.password = hashedPassword
       }
       t.userTeaSession = userTo.get
       teaSessionDao.saveOrUpdate(t)
+      if(teaSessionImagePath.isDefined){
+        addTeaSessionImageByMultipart(t.teaSessionId, teaSessionImagePath.get, false)
+      }
 
       Map(
         "error" -> false,
         "message" -> "Tea session created",
-        "teaSession" -> t
+        "teaSession" -> List(t)
       )
     } else {
       Map(
@@ -78,7 +82,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
 
   @Transactional
-  override def addTeaSessionImage(teaSessionId: Long, teaSessionImage: MultipartFile): Map[String, Any] = {
+  override def addTeaSessionImageByMultipart(teaSessionId: Long, teaSessionImage: MultipartFile, isApiUpload: Boolean): Either[Boolean, Map[String, Any]] = {
 
     val extensionName: String = FilenameUtils.getExtension(teaSessionImage.getOriginalFilename)
     val imageName: String = "tea_session_" + teaSessionId + "." + extensionName
@@ -92,16 +96,24 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       val t = to.get
       t.teaSessionImagePath = imageName
 
-      Map(
+      if(isApiUpload){
+      Right(Map(
         "error" -> false,
         "message" -> "Image saved"
-      )
+        ))
+      } else {
+        Left(true)
+      }
 
     } else {
-      Map(
-        "error" -> true,
-        "message" -> "Tea session not exists"
-      )
+      if(isApiUpload){
+        Right(Map(
+          "error" -> true,
+          "message" -> "Tea session not exists"
+        ))
+      } else {
+        Left(false)
+      }
     }
   }
 
@@ -110,19 +122,15 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
     val to = teaSessionDao.getById(teaSessionId)
 
-
     if(to.isDefined ) {
       val t = to.get
 
-      val copiedTeaSession: TeaSessionBean = t.deepClone
-      copiedTeaSession.teaSessionImagePath = generateTeaSessionImageUrl(t.teaSessionImagePath)
-
-      copiedTeaSession.userTeaSession = new UserBean()
-      copiedTeaSession.userTeaSession.userId = t.userTeaSession.userId
+      val modifiedTeaSession: TeaSessionBean = t.deepClone
+      modifiedTeaSession.teaSessionImagePath = generateTeaSessionImageUrl(modifiedTeaSession.teaSessionImagePath)
 
       Map(
         "error" -> false,
-        "teaSession" -> List(copiedTeaSession)
+        "teaSession" -> List(modifiedTeaSession)
       )
     }
     else
@@ -139,20 +147,9 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   override def getTeaSessionUpcoming(): Map[String, Any] = {
 
     val modifiedTeaSessions:List[TeaSessionBean] =
-    teaSessionDao.getUpcomingTeaSession()
-      .map( (teaSessionBean: TeaSessionBean) => {
+    teaSessionDao.getUpcomingTeaSession().map( (teaSessionBean: TeaSessionBean) => {
       val tempTeaSession: TeaSessionBean = teaSessionBean.deepClone //Leave Original Bean untouched
-
       tempTeaSession.teaSessionImagePath = generateTeaSessionImageUrl(teaSessionBean.teaSessionImagePath) //Convert to URL Link to get image
-
-      tempTeaSession.userTeaSession = new UserBean()
-      tempTeaSession.userTeaSession.userId = teaSessionBean.userTeaSession.userId
-
-      if(!tempTeaSession.isPublic){
-        tempTeaSession.menuItems = null
-      }
-
-
       tempTeaSession
     })
     Map(
@@ -182,10 +179,11 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   @Transactional
   override def updateTeaSessionDetail(teaSessionId: Long,
                                       userId:Long,
-                                      name: String,
-                                      description: String,
-                                      treatDate: String,
-                                      cutOffDate: String): Map[String, Any] = {
+                                      name: Option[String],
+                                      description: Option[String],
+                                      treatDate: Option[String],
+                                      cutOffDate: Option[String],
+                                      teaSessionImagePath: Option[MultipartFile]): Map[String, Any] ={
 
     val to = teaSessionDao.getById(teaSessionId)
     val toUser = userDao.getById(userId)
@@ -197,22 +195,27 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       if( tUser.isAdmin || t.userTeaSession.userId == tUser.userId )
       {
 
-        if (!isStringEmpty(name)){
-          t.name = name
+        if (name.isDefined){
+          t.name = name.get
         }
-        if (!isStringEmpty(description)){
-          t.description = description
+        if (description.isDefined){
+          t.description = description.get
         }
-        if (!isStringEmpty(treatDate)){
-          t.treatDate = dateFormat.parse(treatDate)
+        if (treatDate.isDefined){
+          t.treatDate = dateFormat.parse(treatDate.get)
         }
-        if (!isStringEmpty(cutOffDate)){
-          t.treatDate = dateFormat.parse(cutOffDate)
+        if (cutOffDate.isDefined){
+          t.treatDate = dateFormat.parse(cutOffDate.get)
+        }
+
+        if (teaSessionImagePath.isDefined){
+          addTeaSessionImageByMultipart(t.teaSessionId, teaSessionImagePath.get, false)
         }
 
         Map(
           "error" -> false,
-          "message" -> "Update successfully"
+          "message" -> "Update successfully",
+          "teaSession" -> List(t)
         )
       } else
       {
@@ -245,7 +248,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
     {
       val t = to.get
       val tUser = toUser.get
-      if( tUser.isAdmin || t.userTeaSession.userId == tUser.userId )
+      if( tUser.isAdmin || t.userTeaSession.userId == tUser.userId ) //Admin or the person who created Tea Session
       {
 
         t.isPublic = isPublic
@@ -258,7 +261,8 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
         Map(
           "error" -> false,
-          "message" -> "Update successfully"
+          "message" -> "Update successfully",
+          "teaSession" -> List(t)
         )
       } else
       {
@@ -290,6 +294,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       val tUser = toUser.get
       if(tUser.isAdmin || t.userTeaSession.userId == tUser.userId)
       {
+        deleteTeaSessionImage(t.teaSessionImagePath)
         teaSessionDao.deleteById(teaSessionId)
 
         Map(
@@ -314,6 +319,21 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   }
 
 
+  override def deleteTeaSessionImage(teaSessionImagePath: String): Boolean= {
+
+    try{
+      val deletePath = Paths.get(IMAGE_FILE_DIRECTORY + teaSessionImagePath)
+      Files.delete(deletePath)
+      true
+    }
+    catch {
+      case e: IOException =>
+        throw new RuntimeException(e)
+        false
+    }
+  }
+
+
   def isStringEmpty(string: String): Boolean = string == null || string.trim.isEmpty
 
 
@@ -329,16 +349,16 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   }
 
 
-  def checkVisibilityAndPassword(isPublic: Boolean, password: String): Boolean ={
-    if (!isPublic && "".equals(password) ) {
-      false
-    } else if (isPublic && (!"".equals(password)) )
+  def checkVisibilityAndPassword(isPublic: Boolean, password: Option[String]): Boolean ={
+    if (!isPublic && password.isDefined && !isStringEmpty(password.get)) { //If private and password is defined
+      true
+    } else if (isPublic && !password.isDefined )
     {
-      false
+      true
     }
     else
     {
-      true
+      false
     }
   }
 

@@ -26,24 +26,37 @@ private[impl] class OrderServiceImpl extends OrderService
   @Transactional
   override def createOrder(teaSessionId: Long, userId: Long): Map[String, Any] =
   {
-    val toTeaSession = teaSessionDao.getById(teaSessionId)
-    val toUser = userDao.getById(userId)
-    if(toTeaSession.isDefined && toUser.isDefined)
-    {
-      val t = new OrderBean()
-      t.teaSessionOrder = toTeaSession.get
-      t.userOrder = toUser.get
-      orderDao.saveOrUpdate(t)
+    val orderExists: Option[OrderBean] = orderDao.checkOrderExists(teaSessionId, userId)
+    if(!orderExists.isDefined){
+      val toTeaSession = teaSessionDao.getById(teaSessionId)
+      val toUser = userDao.getById(userId)
 
-      Map(
-        "error" -> false,
-        "message" -> "Order created",
-        "order" -> t
-      )
-    } else {
+      if(toTeaSession.isDefined && toUser.isDefined)
+      {
+        val t = new OrderBean()
+        t.teaSessionOrder = toTeaSession.get
+        t.userOrder = toUser.get
+        orderDao.saveOrUpdate(t)
+
+        val modifiedOrder: OrderBean = t.deepClone //Prevent user info leaked by creating order
+        modifiedOrder.userOrder = null
+
+        Map(
+          "error" -> false,
+          "message" -> "Order created",
+          "order" -> modifiedOrder
+        )
+      } else {
+        Map(
+          "error" -> true,
+          "message" -> "Invalid User/Tea Session Reference"
+        )
+      }
+    }else {
       Map(
         "error" -> true,
-        "message" -> "Invalid User or Tea Session reference"
+        "message" -> "Order already exists",
+        "order" -> orderExists.get
       )
     }
   }
@@ -53,10 +66,9 @@ private[impl] class OrderServiceImpl extends OrderService
   override def getOrderById(orderId: Long): Map[String, Any] = {
 
     val to = orderDao.getById(orderId)
-    val t = to.get
 
     if(to.isDefined) {
-
+      val t = to.get
 
       Map(
         "error" -> false,
@@ -74,11 +86,32 @@ private[impl] class OrderServiceImpl extends OrderService
 
 
   @Transactional
+  override def getOrderSummaryByTeaSessionId(teaSessionId: Long): Map[String, Any] = {
+
+    val toTeaSession = teaSessionDao.getById(teaSessionId)
+
+    if(toTeaSession.isDefined) {
+      val tTeaSession = toTeaSession.get
+
+      Map(
+        "error" -> false,
+        "orderSummary" -> orderDao.getOrderSummaryByTeaSessionId(teaSessionId)
+      )
+    }
+    else
+    {
+      Map(
+        "error" -> true,
+        "message" -> "Invalid Tea Session ID"
+      )
+    }
+  }
+
+
+  @Transactional
   override def deleteOrderById(orderId: Long): Map[String, Any] = {
 
-    val to = orderDao.getById(orderId)
-
-    if(to.isDefined)
+    if(orderDao.exists(orderId))
     {
 
       orderDao.deleteById(orderId)

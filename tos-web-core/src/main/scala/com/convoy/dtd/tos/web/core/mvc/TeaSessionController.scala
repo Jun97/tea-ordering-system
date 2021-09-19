@@ -22,17 +22,21 @@ private[mvc] class TeaSessionController {
                            @RequestParam(required = true) treatDate: String,
                            @RequestParam(required = true) cutOffDate: String,
                            @RequestParam(required = true) isPublic: Boolean,
-                           @RequestParam(required = false, defaultValue = "") password: String,
-                           @RequestParam(required = true) userId:Long): Map[String,Any] =
+                           @RequestParam(required = false) password: String,
+                           @RequestParam(required = true) userId:Long,
+                           @RequestParam(required = false) teaSessionImagePath: MultipartFile): Map[String,Any] =
   {
-    teaSessionService.createTeaSession(name: String, description: String,treatDate: String, cutOffDate: String, isPublic: Boolean, password: String, userId:Long)
+    teaSessionService.createTeaSession(name, description,treatDate, cutOffDate, isPublic, Option(password) , userId, Option(teaSessionImagePath))
   }
 
 
   @RequestMapping(value=Array("image/add"), method = Array(RequestMethod.POST), consumes = Array(MediaType.MULTIPART_FORM_DATA_VALUE))
-  def addTeaSessionImage( @RequestParam(required = true) teaSessionId: Long, @RequestParam(required = true, name="teaSessionImage") teaSessionImage: MultipartFile): Map[String, Any] =
+  def addTeaSessionImage( @RequestParam(required = true) teaSessionId: Long, @RequestParam(required = true, name="teaSessionImage") teaSessionImagePath: MultipartFile): Map[String, Any] =
   {
-    teaSessionService.addTeaSessionImage(teaSessionId, teaSessionImage)
+    teaSessionService.addTeaSessionImageByMultipart(teaSessionId, teaSessionImagePath, true)
+      .fold(left => null,
+            right=> right
+    )
   }
 
 
@@ -62,9 +66,10 @@ private[mvc] class TeaSessionController {
                              name: String,
                              description: String,
                              treatDate: String,
-                             cutOffDate: String):Map[String,Any] =
+                             cutOffDate: String,
+                             teaSessionImagePath: MultipartFile):Map[String,Any] =
   {
-    teaSessionService.updateTeaSessionDetail(teaSessionId: Long, userId:Long, name: String, description: String,treatDate: String, cutOffDate: String)
+    teaSessionService.updateTeaSessionDetail(teaSessionId, userId, Option(name), Option(description),Option(treatDate), Option(cutOffDate), Option(teaSessionImagePath))
   }
 
   @RequestMapping(value = Array("update-privacy"))
@@ -78,7 +83,7 @@ private[mvc] class TeaSessionController {
 
 
   @RequestMapping(value = Array("delete"), method = Array(RequestMethod.POST))
-  def deleteTeaSessionById(teaSessionId: Long, userId: Long): Map[String,Any] =
+  def deleteTeaSessionById(@RequestParam(required = true) teaSessionId: Long, @RequestParam(required = true) userId: Long): Map[String,Any] =
   {
     teaSessionService.deleteTeaSessionById(teaSessionId, userId)
   }

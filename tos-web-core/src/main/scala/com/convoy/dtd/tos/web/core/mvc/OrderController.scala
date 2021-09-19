@@ -3,6 +3,7 @@ package com.convoy.dtd.tos.web.core.mvc
 
 import com.convoy.dtd.tos.web.api.service.OrderService
 import javax.inject.Inject
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation._
 
 @RestController
@@ -15,7 +16,7 @@ private[mvc] class OrderController {
 
 
   @RequestMapping(value = Array("add"), method = Array(RequestMethod.POST))
-  def createOrder(@RequestBody(required = true) teaSessionId: Long, @RequestBody(required = true) userId: Long): Map[String,Any] =
+  def createOrder(@RequestParam(required = true) teaSessionId: Long, @RequestParam(required = true) userId: Long): Map[String,Any] =
   {
     orderService.createOrder(teaSessionId, userId)
   }
@@ -25,6 +26,13 @@ private[mvc] class OrderController {
   def getOrderById(@RequestParam(required = true) orderId: Long): Map[String,Any] =
   {
     orderService.getOrderById(orderId)
+  }
+
+
+  @RequestMapping(value = Array("order-summary"), method = Array(RequestMethod.POST))
+  def getOrderSummaryByTeaSessionId(@RequestParam(required = true) teaSessionId: Long): Map[String,Any] =
+  {
+    orderService.getOrderSummaryByTeaSessionId(teaSessionId)
   }
 
 
