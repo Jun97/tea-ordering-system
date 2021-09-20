@@ -1,11 +1,10 @@
 package com.convoy.dtd.tos.web.api.entity
 
-import javax.persistence.{CascadeType, Column, Convert, Embeddable, EmbeddedId, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
+import javax.persistence.{CascadeType, Column, Entity, FetchType, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table}
 import java.util.Date
+import java.util.List
 
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
-import java.util.Set
-
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -45,13 +44,13 @@ class TeaSessionBean extends Serializable with Equals
   @Column(name="tea_session_image_path")
   var teaSessionImagePath: String = _
 
-  @OneToMany(mappedBy = "teaSessionMenuItem", cascade = Array(CascadeType.REMOVE))
-  var menuItems: Set[MenuItemBean] = _
+  @OneToMany(mappedBy = "teaSessionMenuItem", cascade = Array(CascadeType.REMOVE), fetch = FetchType.LAZY)
+  var menuItems: List[MenuItemBean] = _
 
-  @OneToMany(mappedBy = "teaSessionOrder", cascade = Array(CascadeType.REMOVE))
-  var orders: Set[OrderBean] = _
+  @OneToMany(mappedBy = "teaSessionOrder", cascade = Array(CascadeType.REMOVE), fetch = FetchType.LAZY)
+  var orders: List[OrderBean] = _
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   var userTeaSession: UserBean = _
 

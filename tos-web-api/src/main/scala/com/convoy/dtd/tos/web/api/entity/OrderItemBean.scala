@@ -1,6 +1,8 @@
 package com.convoy.dtd.tos.web.api.entity
 
-import javax.persistence.{Column, Convert, Entity, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, Table}
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, IOException, ObjectInputStream, ObjectOutputStream}
+
+import javax.persistence.{Column, Entity, FetchType, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, Table}
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
 
 
@@ -17,13 +19,28 @@ class OrderItemBean extends Serializable with Equals
   @Column(name="quantity")
   var quantity: Long = _
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "order_id", nullable = false)
   var orderOrderItem: OrderBean = _
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "menu_item_id", nullable = false)
   var menuItemOrderItem: MenuItemBean = _
+
+
+  def deepClone: OrderItemBean = try {
+    val baos = new ByteArrayOutputStream
+    val oos = new ObjectOutputStream(baos)
+    oos.writeObject(this)
+    val bais = new ByteArrayInputStream(baos.toByteArray)
+    val ois = new ObjectInputStream(bais)
+    ois.readObject.asInstanceOf[OrderItemBean]
+  } catch {
+    case e: IOException =>
+      throw e.getCause
+    case e: ClassNotFoundException =>
+      throw e.getException
+  }
 
   override def canEqual(other:Any) = other.isInstanceOf[OrderItemBean]
 

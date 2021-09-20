@@ -1,15 +1,10 @@
 package com.convoy.dtd.tos.web.api.entity
 
-import javax.persistence.Entity
-import javax.persistence.Table
-import javax.persistence.GeneratedValue
-import javax.persistence.Column
-import javax.persistence.Id
-import javax.persistence.GenerationType
-import javax.persistence.OneToMany
-import javax.persistence.Convert
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, IOException, ObjectInputStream, ObjectOutputStream}
+
+import javax.persistence.{Column, Convert, Entity, FetchType, GeneratedValue, GenerationType, Id, OneToMany, Table}
 import java.util.Date
-import java.util.Set
+import java.util.List
 
 import com.convoy.dtd.johnston.domain.api.convert.OptionLongConverter
 
@@ -39,11 +34,26 @@ class UserBean extends Serializable with Equals
   @Column(name="is_admin", columnDefinition="BIT")
   var isAdmin: Boolean = _
 
-  @OneToMany(mappedBy = "userTeaSession")
-  var teaSessions: Set[TeaSessionBean] = _
+  @OneToMany(mappedBy = "userTeaSession", fetch = FetchType.LAZY)
+  var teaSessions: List[TeaSessionBean] = _
 
-  @OneToMany(mappedBy = "userOrder")
-  var orders: Set[OrderBean] = _
+  @OneToMany(mappedBy = "userOrder", fetch = FetchType.LAZY)
+  var orders: List[OrderBean] = _
+
+
+  def deepClone: UserBean = try {
+    val baos = new ByteArrayOutputStream
+    val oos = new ObjectOutputStream(baos)
+    oos.writeObject(this)
+    val bais = new ByteArrayInputStream(baos.toByteArray)
+    val ois = new ObjectInputStream(bais)
+    ois.readObject.asInstanceOf[UserBean]
+  } catch {
+    case e: IOException =>
+      throw e.getCause
+    case e: ClassNotFoundException =>
+      throw e.getException
+  }
 
   override def canEqual(other:Any) = other.isInstanceOf[UserBean]
 
