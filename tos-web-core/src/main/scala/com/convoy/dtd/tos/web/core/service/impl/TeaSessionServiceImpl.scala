@@ -36,14 +36,14 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   val dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
 
   @Transactional
-  override def createTeaSession(name: String,
+  override def add(name: String,
                                 description: String,
                                 treatDate: String,
                                 cutOffDate: String,
                                 isPublic: Boolean,
                                 password: Option[String],
                                 userId:Long,
-                                teaSessionImagePath: Option[MultipartFile]): Map[String, Any] =
+                                imagePath: Option[MultipartFile]): Map[String, Any] =
   {
     val userTo = userDao.getById(userId)
     if(userTo.isDefined && checkVisibilityAndPassword(isPublic, password))
@@ -61,8 +61,8 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       }
       t.userTeaSession = userTo.get
       teaSessionDao.saveOrUpdate(t)
-      if(teaSessionImagePath.isDefined){
-        addTeaSessionImageByMultipart(t.teaSessionId, teaSessionImagePath.get, false)
+      if(imagePath.isDefined){
+        addImageByMultipart(t.teaSessionId, imagePath.get, false)
       }
 
       Map(
@@ -82,7 +82,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
 
   @Transactional
-  override def addTeaSessionImageByMultipart(teaSessionId: Long, teaSessionImage: MultipartFile, isApiUpload: Boolean): Either[Boolean, Map[String, Any]] = {
+  override def addImageByMultipart(teaSessionId: Long, teaSessionImage: MultipartFile, isApiUpload: Boolean): Either[Boolean, Map[String, Any]] = {
 
     val extensionName: String = FilenameUtils.getExtension(teaSessionImage.getOriginalFilename)
     val imageName: String = "tea_session_" + teaSessionId + "." + extensionName
@@ -94,7 +94,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       Files.copy(teaSessionImage.getInputStream, savePath, StandardCopyOption.REPLACE_EXISTING)
 
       val t = to.get
-      t.teaSessionImagePath = imageName
+      t.imagePath = imageName
 
       if(isApiUpload){
       Right(Map(
@@ -117,49 +117,48 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
     }
   }
 
-  @Transactional
-  override def getTeaSessionById(teaSessionId: Long): Map[String, Any] = {
+  @Transactional(readOnly = true)
+  override def getById(teaSessionId: Long): Option[TeaSessionBean] = {
 
-    val to = teaSessionDao.getById(teaSessionId)
+    teaSessionDao.getById(teaSessionId)
 
-    if(to.isDefined ) {
-      val t = to.get
-
-      val modifiedTeaSession: TeaSessionBean = t.deepClone
-      modifiedTeaSession.teaSessionImagePath = generateTeaSessionImageUrl(modifiedTeaSession.teaSessionImagePath)
-
-      Map(
-        "error" -> false,
-        "teaSession" -> List(modifiedTeaSession)
-      )
-    }
-    else
-    {
-      Map(
-        "error" -> true,
-        "message" -> "Tea session not found"
-      )
-    }
+//    if(to.isDefined ) {
+//      val t = to.get
+//
+//      val modifiedTeaSession: TeaSessionBean = t.deepClone
+//      modifiedTeaSession.imagePath = generateImageUrl(modifiedTeaSession.imagePath)
+//
+//      Map(
+//        "error" -> false,
+//        "teaSession" -> List(modifiedTeaSession)
+//      )
+//    }
+//    else
+//    {
+//      Map(
+//        "error" -> true,
+//        "message" -> "Tea session not found"
+//      )
+//    }
   }
 
 
-  @Transactional
-  override def getTeaSessionUpcoming(): Map[String, Any] = {
+  @Transactional(readOnly = true) //Will not fush & modify object
+  override def findUpcoming(): List[TeaSessionBean] = {
 
     val modifiedTeaSessions:List[TeaSessionBean] =
-    teaSessionDao.getUpcomingTeaSession().map( (teaSessionBean: TeaSessionBean) => {
+    teaSessionDao.findUpcoming().map( (teaSessionBean: TeaSessionBean) => {
       val tempTeaSession: TeaSessionBean = teaSessionBean.deepClone //Leave Original Bean untouched
-      tempTeaSession.teaSessionImagePath = generateTeaSessionImageUrl(teaSessionBean.teaSessionImagePath) //Convert to URL Link to get image
+      tempTeaSession.imagePath = generateImageUrl(teaSessionBean.imagePath) //Convert to URL Link to get image
       tempTeaSession
     })
-    Map(
-      "error" -> false,
-      "teaSession" -> modifiedTeaSessions
-    )
+
+
+    modifiedTeaSessions
   }
 
 
-  override def getTeaSessionImage(imageName: String): Array[Byte] = {
+  override def getImageByImageName(imageName: String): Array[Byte] = {
 
     try { // Retrieve image from the classpath.
       val inputStream = Paths.get(IMAGE_FILE_DIRECTORY + imageName)
@@ -177,13 +176,13 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
 
   @Transactional
-  override def updateTeaSessionDetail(teaSessionId: Long,
+  override def updateDetail(teaSessionId: Long,
                                       userId:Long,
                                       name: Option[String],
                                       description: Option[String],
                                       treatDate: Option[String],
                                       cutOffDate: Option[String],
-                                      teaSessionImagePath: Option[MultipartFile]): Map[String, Any] ={
+                                      imagePath: Option[MultipartFile]): Map[String, Any] ={
 
     val to = teaSessionDao.getById(teaSessionId)
     val toUser = userDao.getById(userId)
@@ -208,8 +207,8 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
           t.treatDate = dateFormat.parse(cutOffDate.get)
         }
 
-        if (teaSessionImagePath.isDefined){
-          addTeaSessionImageByMultipart(t.teaSessionId, teaSessionImagePath.get, false)
+        if (imagePath.isDefined){
+          addImageByMultipart(t.teaSessionId, imagePath.get, false)
         }
 
         Map(
@@ -236,7 +235,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
 
   @Transactional
-  override def updateTeaSessionPrivacy( teaSessionId: Long,
+  override def updatePrivacy( teaSessionId: Long,
                                         userId:Long,
                                         isPublic: Boolean,
                                         password: String): Map[String, Any] = {
@@ -283,7 +282,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
 
   @Transactional
-  override def deleteTeaSessionById(teaSessionId: Long, userId: Long): Map[String, Any] = {
+  override def deleteById(teaSessionId: Long, userId: Long): Map[String, Any] = {
 
     val to = teaSessionDao.getById(teaSessionId)
     val toUser = userDao.getById(userId)
@@ -294,7 +293,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       val tUser = toUser.get
       if(tUser.isAdmin || t.userTeaSession.userId == tUser.userId)
       {
-        deleteTeaSessionImage(t.teaSessionImagePath)
+        deleteImage(t.imagePath)
         teaSessionDao.deleteById(teaSessionId)
 
         Map(
@@ -319,10 +318,10 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   }
 
 
-  override def deleteTeaSessionImage(teaSessionImagePath: String): Boolean= {
+  override def deleteImage(imagePath: String): Boolean= {
 
     try{
-      val deletePath = Paths.get(IMAGE_FILE_DIRECTORY + teaSessionImagePath)
+      val deletePath = Paths.get(IMAGE_FILE_DIRECTORY + imagePath)
       Files.delete(deletePath)
       true
     }
@@ -337,7 +336,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   def isStringEmpty(string: String): Boolean = string == null || string.trim.isEmpty
 
 
-  def generateTeaSessionImageUrl(imageName: String): String = {
+  def generateImageUrl(imageName: String): String = {
     if(imageName != null) {
       UriComponentsBuilder.newInstance()
         .scheme("http").host("localhost").port(50001)

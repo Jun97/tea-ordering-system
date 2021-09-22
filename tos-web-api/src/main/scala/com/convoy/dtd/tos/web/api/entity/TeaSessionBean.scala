@@ -41,8 +41,8 @@ class TeaSessionBean extends Serializable with Equals
   @Column(name="cut_off_date")
   var cutOffDate: Date = _
 
-  @Column(name="tea_session_image_path")
-  var teaSessionImagePath: String = _
+  @Column(name="image_path")
+  var imagePath: String = _
 
   @OneToMany(mappedBy = "teaSessionMenuItem", cascade = Array(CascadeType.REMOVE), fetch = FetchType.LAZY)
   var menuItems: List[MenuItemBean] = _

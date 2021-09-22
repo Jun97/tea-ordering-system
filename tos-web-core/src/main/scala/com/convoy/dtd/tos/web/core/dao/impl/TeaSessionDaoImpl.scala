@@ -12,7 +12,7 @@ import collection.JavaConverters._
 @Repository
 private[impl] class TeaSessionDaoImpl extends AbstractGenericDao[TeaSessionBean, Long] with TeaSessionDao{
 
-  override def getUpcomingTeaSession(): List[TeaSessionBean] =
+  override def findUpcoming(): List[TeaSessionBean] =
   {
     val q = new JPAQueryFactory((entityManager))
     q.selectFrom(QTeaSessionBean)

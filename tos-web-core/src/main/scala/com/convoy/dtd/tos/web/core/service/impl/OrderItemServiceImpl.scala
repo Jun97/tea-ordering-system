@@ -1,6 +1,6 @@
 package com.convoy.dtd.tos.web.core.service.impl
 
-import com.convoy.dtd.tos.web.api.entity.{OrderBean, OrderItemBean}
+import com.convoy.dtd.tos.web.api.entity.{OrderItemBean}
 import com.convoy.dtd.tos.web.api.service.OrderItemService
 import com.convoy.dtd.tos.web.core.dao.{MenuItemDao, OrderDao, OrderItemDao}
 import javax.inject.Inject
@@ -21,21 +21,26 @@ private[impl] class OrderItemServiceImpl extends OrderItemService
 
 
   @Transactional
-  override def createOrderItem(orderId: Long, menuItemId: Long, quantity: Long): Map[String, Any] =
+  override def add(orderId: Long, menuItemId: Long, quantity: Long): Map[String, Any] =
   {
     val toOrder = orderDao.getById(orderId)
     val toMenuItem = menuItemDao.getById(menuItemId)
     if(toOrder.isDefined && toMenuItem.isDefined)
     {
-      val t = new OrderItemBean()
-      t.orderOrderItem = toOrder.get
-      t.menuItemOrderItem = toMenuItem.get
+      val t: OrderItemBean= orderItemDao.checkExists(orderId, menuItemId).getOrElse[OrderItemBean]( {
+        val t = new OrderItemBean()
+        t.orderOrderItem = toOrder.get
+        t.menuItemOrderItem = toMenuItem.get
+        t.quantity = quantity
+        orderItemDao.saveOrUpdate(t)
+        t
+      })
+
       t.quantity = quantity
-      orderItemDao.saveOrUpdate(t)
 
       Map(
         "error" -> false,
-        "message" -> "Order created",
+        "message" -> "Order Item created",
         "orderItem" -> t
       )
     } else {
@@ -48,29 +53,27 @@ private[impl] class OrderItemServiceImpl extends OrderItemService
 
 
   @Transactional
-  override def getOrderItemByOrderId(orderId: Long): Map[String, Any] = {
+  override def findByOrderId(orderId: Long): List[OrderItemBean] = {
 
     val toOrder = orderDao.getById(orderId)
 
     if(toOrder.isDefined) {
 
-      Map(
-        "error" -> false,
-        "orderItem" -> orderItemDao.getOrderItemByOrderId(orderId)
-      )
+//      Map(
+//        "error" -> false,
+//        "orderItem" -> orderItemDao.findByOrderId(orderId)
+//      )
+      orderItemDao.findByOrderId(orderId)
     }
     else
     {
-      Map(
-        "error" -> true,
-        "message" -> "Invalid Order ID"
-      )
+      List()
     }
   }
 
 
   @Transactional
-  override def updateOrderItemById(orderItemId: Long, quantity: Long): Map[String, Any] = {
+  override def updateById(orderItemId: Long, quantity: Long): Map[String, Any] = {
 
     val to = orderItemDao.getById(orderItemId)
 
@@ -96,7 +99,7 @@ private[impl] class OrderItemServiceImpl extends OrderItemService
 
 
   @Transactional
-  override def deleteOrderItemById(orderItemId: Long): Map[String, Any] = {
+  override def deleteById(orderItemId: Long): Map[String, Any] = {
 
     val to = orderItemDao.getById(orderItemId)
 

@@ -20,7 +20,7 @@ private[impl] class UserServiceImpl extends UserService
   private var userDao:UserDao = _
 
   @Transactional
-  override def checkUserExists(email: String): Map[String, Any]=
+  override def checkExists(email: String): Map[String, Any]=
   {
     val to = userDao.getByEmail(email)
     if(!to.isDefined)
@@ -40,7 +40,7 @@ private[impl] class UserServiceImpl extends UserService
   }
 
   @Transactional
-  override def loginUserByEmail(email: String, password: String): Map[String, Any] =
+  override def loginByEmail(email: String, password: String): Map[String, Any] =
   {
     val to = userDao.getByEmail(email)
     if(to.isDefined)
@@ -84,13 +84,47 @@ private[impl] class UserServiceImpl extends UserService
   }
 
   @Transactional
-  override def getUserAll(): Map[String,Any] =
+  override def findAll(): List[UserBean] =
   {
-    Map("user" -> userDao.findAllAsScala())
+    //Map("user" -> userDao.findAllAsScala())
+    userDao.findAllAsScala()
   }
 
+
   @Transactional
-  override def updateUser(userId: Long, enable: Boolean, isAdmin: Boolean): Map[String, Any] =
+  override def add(email: String, password: String, isEnabled: Boolean, isAdmin: Boolean): Map[String, Any] =
+  {
+    val hashedPassword = passwordEncoder.encode(password)
+    val to = userDao.getByEmail(email)
+    val t = new UserBean()
+
+    if(!to.isDefined)
+    {
+      t.email = email
+      t.password = hashedPassword
+      t.isEnabled = isEnabled
+      t.lastLoginDate = null
+      t.isAdmin = isAdmin
+      userDao.saveOrUpdate(t)
+      Map(
+        "error" -> false,
+        "message" -> "User details registered",
+        "user" -> t
+      )
+    }
+    else
+    {
+      Map(
+        "error" -> true,
+        "message" -> "User already exists"
+      )
+    }
+
+  }
+
+
+  @Transactional
+  override def updatePrivilege(userId: Long, enable: Boolean, isAdmin: Boolean): Map[String, Any] =
   {
     val to = userDao.getById(userId)
     if(to.isDefined)
@@ -112,35 +146,6 @@ private[impl] class UserServiceImpl extends UserService
     }
   }
 
-  @Transactional
-  override def createUser(email: String, password: String, is_Enabled: Boolean, isAdmin: Boolean): Map[String, Any] =
-  {
-    val hashedPassword = passwordEncoder.encode(password)
-    val to = userDao.getByEmail(email)
-    val t = new UserBean()
 
-    if(!to.isDefined)
-    {
-      t.email = email
-      t.password = hashedPassword
-      t.isEnabled = is_Enabled
-      t.lastLoginDate = null
-      t.isAdmin = isAdmin
-      userDao.saveOrUpdate(t)
-      Map(
-        "error" -> false,
-        "message" -> "User details registered",
-        "user" -> t
-      )
-    }
-    else
-    {
-      Map(
-        "error" -> true,
-        "message" -> "User already exists"
-      )
-    }
-
-  }
 }
 

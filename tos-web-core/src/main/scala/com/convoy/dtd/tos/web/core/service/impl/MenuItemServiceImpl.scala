@@ -44,23 +44,23 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def createMenuItem(teaSessionId: Long, menuItemName: String, menuItemImagePath: Option[MultipartFile]): Map[String, Any] =
+  override def add(teaSessionId: Long, name: String, imagePath: Option[MultipartFile]): Map[String, Any] =
   {
     val toTeaSession = teaSessionDao.getById(teaSessionId)
     if(toTeaSession.isDefined)
     {
       val t = new MenuItemBean()
-      t.menuItemName = menuItemName
+      t.name = name
       t.teaSessionMenuItem = toTeaSession.get
       menuItemDao.saveOrUpdate(t)
 
-      if(menuItemImagePath.isDefined){
-        addMenuItemImageByMultipart(t.menuItemId, menuItemImagePath.get, false)
+      if(imagePath.isDefined){
+        addImageByMultipart(t.menuItemId, imagePath.get, false)
       }
 
       val modifiedMenuItem: MenuItemBean = t.deepClone
-      if(!isStringEmpty(modifiedMenuItem.menuItemImagePath)){
-        modifiedMenuItem.menuItemImagePath = generateMenuItemImageUrl(modifiedMenuItem.menuItemImagePath)
+      if(!isStringEmpty(modifiedMenuItem.imagePath)){
+        modifiedMenuItem.imagePath = generateImageUrl(modifiedMenuItem.imagePath)
       }
 
 
@@ -79,19 +79,19 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def createMenuItemByBatch(teaSessionId: Long, menuList: List[MenuItemBean]): Map[String, Any] = //Not working
+  override def addByBatch(teaSessionId: Long, menuList: List[MenuItemBean]): Map[String, Any] = //Not working
   {
     val toTeaSession = teaSessionDao.getById(teaSessionId)
     if(toTeaSession.isDefined)
     {
       menuList.foreach((menuItem: MenuItemBean) => {
         val t = new MenuItemBean()
-        t.menuItemName = menuItem.menuItemName
+        t.name = menuItem.name
         t.teaSessionMenuItem = toTeaSession.get
         menuItemDao.saveOrUpdate(menuItem)
 
-        if(!isStringEmpty(menuItem.menuItemImagePath)){
-          addMenuItemImageByBase64(t.menuItemId, menuItem.menuItemImagePath, false)
+        if(!isStringEmpty(menuItem.imagePath)){
+          addImageByBase64(t.menuItemId, menuItem.imagePath, false)
         }
       })
 
@@ -109,7 +109,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def addMenuItemImageByMultipart(menuItemId: Long, menuItemImage: MultipartFile, isApiUpload: Boolean): Either[Boolean, Map[String, Any]] = {
+  override def addImageByMultipart(menuItemId: Long, menuItemImage: MultipartFile, isApiUpload: Boolean): Either[Boolean, Map[String, Any]] = {
 
     val extensionName: String = FilenameUtils.getExtension(menuItemImage.getOriginalFilename)
     val imageName: String = "menu_item_" + menuItemId + "." + extensionName
@@ -121,7 +121,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
       Files.copy(menuItemImage.getInputStream, savePath, StandardCopyOption.REPLACE_EXISTING)
 
       val t = to.get
-      t.menuItemImagePath = imageName
+      t.imagePath = imageName
 
 
       if(isApiUpload){
@@ -148,7 +148,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def addMenuItemImageByBase64(menuItemId: Long, menuItemImage: String, isApiUpload: Boolean): Either[Boolean, Map[String, Any]] = {
+  override def addImageByBase64(menuItemId: Long, menuItemImage: String, isApiUpload: Boolean): Either[Boolean, Map[String, Any]] = {
 
     val to = menuItemDao.getById(menuItemId)
 
@@ -169,7 +169,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
         val t = to.get
-        t.menuItemImagePath = imageName
+        t.imagePath = imageName
 
         if(isApiUpload){
           Right(Map(
@@ -200,7 +200,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def getMenuItemByTeaSessionId(teaSessionId: Long, password: Option[String]): Map[String, Any] = {
+  override def findByTeaSessionId(teaSessionId: Long, password: Option[String]): Map[String, Any] = {
 
     val toTeaSession = teaSessionDao.getById(teaSessionId)
     if(toTeaSession.isDefined){
@@ -208,10 +208,10 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
       if(checkVisibilityAndPassword(tTeaSession, password)) {
         val modifiedMenuItem: List[MenuItemBean] =
-        menuItemDao.getMenuItemByTeaSessionId(teaSessionId).map( (menuItemBean: MenuItemBean) => {
-          if(!isStringEmpty(menuItemBean.menuItemImagePath)){
+        menuItemDao.findByTeaSessionId(teaSessionId).map( (menuItemBean: MenuItemBean) => {
+          if(!isStringEmpty(menuItemBean.imagePath)){
             val tempMenuItemBean: MenuItemBean = menuItemBean.deepClone
-            tempMenuItemBean.menuItemImagePath = generateMenuItemImageUrl(tempMenuItemBean.menuItemImagePath)
+            tempMenuItemBean.imagePath = generateImageUrl(tempMenuItemBean.imagePath)
             tempMenuItemBean
           } else {
             menuItemBean
@@ -251,7 +251,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
   }
 
 
-  override def getMenuItemImage(imageName: String): Array[Byte] = {
+  override def getImageByImageName(imageName: String): Array[Byte] = {
 
     try { // Retrieve image from the classpath.
       val inputStream = Paths.get(IMAGE_FILE_DIRECTORY + imageName)
@@ -269,16 +269,16 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def updateMenuItem(menuItemId:Long, name: String, menuItemImagePath: Option[MultipartFile]): Map[String, Any] = {
+  override def update(menuItemId:Long, name: String, imagePath: Option[MultipartFile]): Map[String, Any] = {
 
     val to = menuItemDao.getById(menuItemId)
 
     if(to.isDefined)
     {
       val t = to.get
-      t.menuItemName = name
-      if(menuItemImagePath.isDefined){
-        addMenuItemImageByMultipart(menuItemId, menuItemImagePath.get, false)
+      t.name = name
+      if(imagePath.isDefined){
+        addImageByMultipart(menuItemId, imagePath.get, false)
       }
 
       Map(
@@ -297,14 +297,14 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def deleteMenuItemById(menuItemId: Long): Map[String, Any] = {
+  override def deleteById(menuItemId: Long): Map[String, Any] = {
 
     val to = menuItemDao.getById(menuItemId)
 
     if(to.isDefined)
     {
       val t = to.get
-      deleteMenuItemImage(t.menuItemImagePath)
+      deleteImage(t.imagePath)
       menuItemDao.deleteById(menuItemId)
 
       Map(
@@ -321,10 +321,10 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
   }
 
 
-  override def deleteMenuItemImage(menuItemImagePath: String): Boolean= {
+  override def deleteImage(imagePath: String): Boolean= {
 
     try{
-    val deletePath = Paths.get(IMAGE_FILE_DIRECTORY + menuItemImagePath)
+    val deletePath = Paths.get(IMAGE_FILE_DIRECTORY + imagePath)
     Files.delete(deletePath)
     true
     }
@@ -339,11 +339,11 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
   def isStringEmpty(string: String): Boolean = string == null || string.trim.isEmpty
 
 
-  def generateMenuItemImageUrl(imageName: String): String = {
+  def generateImageUrl(imageName: String): String = {
     if(imageName != null) {
       UriComponentsBuilder.newInstance()
         .scheme("http").host("localhost").port(50001)
-        .path("tos-rest/api/tea-session/menu-item/image/{imageName}")
+        .path("tos-rest/api/tea-session/menu-item/get-menu-item-image-by-image-name/{imageName}")
         .buildAndExpand(imageName).toUriString
     } else {
       ""

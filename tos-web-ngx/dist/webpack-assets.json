@@ -20,9 +20,9 @@
       "polyfills.dll.js"
     ],
     "json": [
+      "locale/locale-zh-CN.json",
       "locale/locale-en-US.json",
-      "locale/locale-zh-HK.json",
-      "locale/locale-zh-CN.json"
+      "locale/locale-zh-HK.json"
     ],
     "html": "index.html"
   }
