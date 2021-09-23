@@ -1,0 +1,35 @@
+<h2>Login</h2>
+<p>{{errorMessage}}</p>
+<form #formLogin="ngForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label for="formEmail">Email: </label>
+        <input type="email" id="formEmail" name="formEmail" class="form-control" #formEmail="ngModel"
+                [(ngModel)]="form.data.email"
+                email
+                required>
+        <div *ngIf="formEmail.errors && (formEmail.dirty || formEmail.touched)">
+            <div [hidden]="!formEmail.errors.required">Required</div>
+            <div [hidden]="!formEmail.errors.email">Please ensure email format correct</div>
+        </div>
+    </div>
+    <br>
+
+    <div>
+        <label for="formPassword">Password: </label>
+        <input type="password" id="formPassword" name="formPassword" class="form-control" #formPassword="ngModel"
+                [(ngModel)]="form.data.password"
+                pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$"
+                [minLength]= "6"
+                required>
+        <div *ngIf="formPassword.errors && (formPassword.dirty || formPassword.touched)">
+            <div [hidden]="!formPassword.errors.required">Required</div>
+            <div [hidden]="!formPassword.errors.minLength">Minimal Length of password should be six</div>
+            <div [hidden]="!formPassword.errors.pattern">Password must contain alphanumeric character</div>
+        </div>
+        <br>
+    </div>
+    <br>
+
+    <button [disabled]="!formLogin.form.valid" type="submit" name="formSubmit">Login</button>
+</form>
+<br>

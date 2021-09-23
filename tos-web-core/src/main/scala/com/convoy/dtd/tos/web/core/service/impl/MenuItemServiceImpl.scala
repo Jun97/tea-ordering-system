@@ -280,10 +280,15 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
       if(imagePath.isDefined){
         addImageByMultipart(menuItemId, imagePath.get, false)
       }
+      val modifiedMenuItem: MenuItemBean = t.deepClone
+      if(!isStringEmpty(modifiedMenuItem.imagePath)){
+        modifiedMenuItem.imagePath = generateImageUrl(modifiedMenuItem.imagePath)
+      }
 
       Map(
         "error" -> false,
-        "message" -> "Update successfully"
+        "message" -> "Update successfully",
+        "menuItem" -> modifiedMenuItem
       )
     }
     else
@@ -343,7 +348,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
     if(imageName != null) {
       UriComponentsBuilder.newInstance()
         .scheme("http").host("localhost").port(50001)
-        .path("tos-rest/api/tea-session/menu-item/get-menu-item-image-by-image-name/{imageName}")
+        .path("tos-rest/api/tea-session/menu-item/image/{imageName}")
         .buildAndExpand(imageName).toUriString
     } else {
       ""

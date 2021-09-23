@@ -23,7 +23,7 @@ export class OrderItemService
         return this.http.post(`${OrderItemService.URL}/add`,params.toString(), { headers: headers }).map(res => res.json());
     }
 
-    findOrderItemByTeaSessionId(orderId: number):Observable<Map<string,any>>
+    findOrderItemByOrderId(orderId: number):Observable<Map<string,any>>
     {
         const headers = new Headers();
         headers.append('Content-Type', 'application/x-www-form-urlencoded');

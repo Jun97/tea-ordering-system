@@ -60,8 +60,8 @@ private[mvc] class MenuItemController {
   }
 
 
-  @RequestMapping(value=Array("add-image"), method = Array(RequestMethod.POST), consumes = Array(MediaType.MULTIPART_FORM_DATA_VALUE))
-  def addImage( @RequestParam(required = true) menuItemId: Long, @RequestParam(required = true, name="imagePath") imagePath: MultipartFile): Map[String, Any] =
+  @RequestMapping(value=Array("add-image-by-multipart"), method = Array(RequestMethod.POST), consumes = Array(MediaType.MULTIPART_FORM_DATA_VALUE))
+  def addImageByMultipart( @RequestParam(required = true) menuItemId: Long, @RequestParam(required = true, name="imagePath") imagePath: MultipartFile): Map[String, Any] =
   {
     menuItemService.addImageByMultipart(menuItemId, imagePath, true)
       .fold(left => null,
@@ -77,7 +77,7 @@ private[mvc] class MenuItemController {
   }
 
 
-  @RequestMapping(value = Array("/get-image-by-image-name/{imageName:.+}"), method = Array(RequestMethod.GET), produces = Array(MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE))
+  @RequestMapping(value = Array("/image/{imageName:.+}"), method = Array(RequestMethod.GET), produces = Array(MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE))
   @ResponseBody
   def getImageByImageName(@PathVariable(name = "imageName", required = true) imageName: String): Array[Byte] = {
     menuItemService.getImageByImageName(imageName)

@@ -1,0 +1,197 @@
+<h2 *ngIf="modeTeaSession == 'add'">Create Tea Session</h2>
+<h2 *ngIf="modeTeaSession == 'edit'">Edit Tea Session</h2>
+
+<!--<h4>Remark: You need to have at least one menu item to save current Tea Session.</h4>-->
+<!--<div>-->
+<!--    <ng-container *ngIf="form.options.teaSession==null || !fetchMenu || isUploadSuccess">-->
+<!--        <div>-->
+<!--            <label for="formMenu">Menu: </label>-->
+<!--            <input type="file" accept="image/*" id="formMenu" name="formMenu" (change)="onFileSelected($event)" required>-->
+<!--            <div *ngIf="isImageMessage">{{isImageMessage}}</div>-->
+<!--            <div>-->
+<!--                <img [src]="imageURL" *ngIf="imageURL">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <br>-->
+<!--        <button [disabled]="!form.data.menu || isImageMessage" type="button" (click)="onUpload()">Upload</button>-->
+<!--    </ng-container>-->
+
+<!--    <ng-container *ngIf="form.options.teaSession!=null && fetchMenu && !isUploadSuccess">-->
+<!--        <div>-->
+<!--            <label for="formMenu">Menu: {{fetchMenu.substring(fetchMenu.indexOf("_") + 1)}}</label>-->
+<!--            <button id="formMenu" (click)="changeMenu()">Change</button>-->
+<!--            <div>-->
+<!--                <img src="assets/menu/{{fetchMenu}}">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <br>-->
+<!--    </ng-container>-->
+<!--    <p *ngIf="isUploadSuccess">{{menuName}} - Upload Successful</p>-->
+<!--</div>-->
+<!--<p>*****************************************************************************************************</p>-->
+
+<form #formTeaSession="ngForm" (ngSubmit)="onTeaSessionSubmit()">
+    <div>
+        <label for="formTeaSessionName">Name: </label>
+        <input type="text" id="formTeaSessionName" name="formTeaSessionName" class="form-control" #formTeaSessionName="ngModel" [(ngModel)]="currentTeaSession.name"
+               required>
+        <div *ngIf="formTeaSessionName.errors && (formTeaSessionName.dirty || formTeaSessionName.touched)">
+            <div [hidden]="!formTeaSessionName.errors.required">Required</div>
+        </div>
+    </div>
+    <br>
+
+    <div>
+        <label for="formTeaSessionDescription">Description: </label>
+        <textarea id="formTeaSessionDescription" name="formDescription" class="form-control" #formTeaSessionDescription="ngModel" [(ngModel)]="currentTeaSession.description" rows = "5" cols = "60"
+                  required></textarea>
+        <div *ngIf="formTeaSessionDescription.errors && (formTeaSessionDescription.dirty || formTeaSessionDescription.touched)">
+            <div [hidden]="!formTeaSessionDescription.errors.required">Required</div>
+        </div>
+    </div>
+    <br>
+
+    <div>
+        <label for="formTeaSessionImage">Image: </label>
+        <input type="file" accept="image/*" id="formTeaSessionImage" name="formTeaSessionImage" (change)="onTeaSessionFileSelected($event)">
+        <div *ngIf="teaSessionImageMessage">{{teaSessionImageMessage}}</div>
+        <div>
+            <img [src]="currentTeaSession.imagePath" *ngIf="currentTeaSession.imagePath">
+        </div>
+    </div>
+    <br>
+
+    <div>
+        <label for="formTeaSessionCreatedBy">Created by (userID): </label>
+        <input type="hidden" id="formTeaSessionCreatedBy" name="formTeaSessionCreatedBy" class="form-control" #formTeaSessionCreatedBy="ngModel" [(ngModel)]="currentTeaSession.userTeaSession.userId"
+               required>
+    </div>
+    <br>
+
+    <div>
+        <label for="formTeaSessionTreatDate">Treat date: </label>
+        <input type="datetime-local" id="formTeaSessionTreatDate" name="formTeaSessionTreatDate" class="form-control" #formTeaSessionTreatDate="ngModel" [(ngModel)]="currentTeaSession.treatDate"
+               required>
+        <div *ngIf="formTeaSessionTreatDate.errors && (formTeaSessionTreatDate.dirty || formTeaSessionTreatDate.touched)">
+            <div [hidden]="!formTeaSessionTreatDate.errors.required">Required</div>
+        </div>
+    </div>
+    <br>
+
+    <div>
+        <label for="formTeaSessionCutOffDate">Cut-off date: </label>
+        <input type="datetime-local" id="formTeaSessionCutOffDate" name="formTeaSessionCutOffDate" class="form-control" #formTeaSessionCutOffDate="ngModel" [(ngModel)]="currentTeaSession.cutOffDate"
+               [pattern]="currentTeaSession.treatDate < currentTeaSession.cutOffDate"
+               required>
+        <div *ngIf="formTeaSessionCutOffDate.errors && (formTeaSessionCutOffDate.dirty || formTeaSessionCutOffDate.touched)">
+            <div [hidden]="!formTeaSessionCutOffDate.errors.pattern">The cut-off date should not be greater than treat date.</div>
+            <div [hidden]="!formTeaSessionCutOffDate.errors.required">Required</div>
+        </div>
+    </div>
+    <br>
+
+    <div>
+        <label>Visibility: </label>
+        <label for="formTeaSessionPublic"><input type="radio" id="formTeaSessionPublic" name="formTeaSessionVisibility" class="form-control" #formTeaSessionVisibility="ngModel" [(ngModel)]="currentTeaSession.isPublic" [value]="true">Public</label>
+        <label for="formTeaSessionPrivate"><input type="radio" id="formTeaSessionPrivate" name="formTeaSessionVisibility" class="form-control" #formTeaSessionVisibility="ngModel" [(ngModel)]="currentTeaSession.isPublic" [value]="false">Private</label>
+    </div>
+    <br>
+
+    <div>
+        <label for="formTeaSessionPassword">Password: </label>
+        <input type="password" id="formTeaSessionPassword" name="formTeaSessionPassword" class="form-control" #formTeaSessionPassword="ngModel" [(ngModel)]="currentTeaSession.password"
+               [hidden]="currentTeaSession.isPublic"
+               [disabled]="currentTeaSession.isPublic"
+               required
+               minlength="6">
+        <div *ngIf="formTeaSessionPassword.errors && (formTeaSessionPassword.dirty || formTeaSessionPassword.touched)">
+            <div [hidden]="!formTeaSessionPassword.errors.required">Required</div>
+            <div [hidden]="!formTeaSessionPassword.errors.minlength">Password must be at least 6 characters long</div>
+        </div>
+    </div>
+    <br>
+
+    <button [disabled]="!formTeaSession.form.valid" name="formSubmit" type="submit">Save</button>
+</form>
+<p *ngIf="teaSessionSubmitMessage">{{teaSessionSubmitMessage}}</p>
+<br>
+
+<ng-container *ngIf="this.currentTeaSession && !this.currentTeaSession.isPublic && !this.menuItemAccessGranted">
+    <h2>Password Required for Menu</h2>
+    <h3>This is private Tea Session, provide Tea Session password to proceed</h3>
+    <form #formMenuAuth="ngForm" (ngSubmit)="onMenuPasswordSubmit()">
+        <div>
+            <label for="formMenuAuthPassword">Tea Session Password: </label>
+            <input type="password" id="formMenuAuthPassword" name="formMenuAuthPassword" class="form-control" #formMenuAuthPassword="ngModel" [(ngModel)]="formMenuAuthPassword"
+                   required
+                   minlength="6">
+            <div *ngIf="formMenuAuthPassword.errors && (formMenuAuthPassword.dirty || formMenuAuthPassword.touched)">
+                <div [hidden]="!formMenuAuthPassword.errors.minlength">Password must be at least 6 characters long</div>
+            </div>
+        </div>
+        <br>
+
+        <button [disabled]="!formMenuAuth.form.valid" name="formSubmit" type="submit">Verify</button>
+    </form>
+    <p *ngIf="menuAuthMessage">{{menuAuthMessage}}</p>
+</ng-container>
+
+<ng-container *ngIf="menuItemAccessGranted">
+    <table>
+        <thead>
+        <tr>
+            <th>MENU ITEM ID</th>
+            <th>NAME</th>
+            <th>IMAGE</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of currentMenuItem; let i = index">
+            <ng-container *ngIf="(currentTeaSession.userTeaSession.userId == currentUser.userId) || currentUser.isAdmin">
+                <td>{{item.menuItemId}}</td>
+                <td>{{item.name}}</td>
+                <td>
+                    <div *ngIf="item.imagePath">
+                        <img [src]="item.imagePath"}} *ngIf="item.imagePath">
+                    </div>
+                </td>
+
+                <td>
+                    <a *ngIf="currentUser.isAdmin || currentUser.userId == currentTeaSession.userTeaSession.userId" href="javascript:void(0)"  (click)="assignMenuItemInForm(item)">Edit</a>
+                </td>
+                <td>
+                    <a *ngIf="currentUser.isAdmin || currentUser.userId == currentTeaSession.userTeaSession.userId" href="javascript:void(0)"  (click)="deleteMenuItem(item)">Delete</a>
+                </td>
+            </ng-container>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <br>
+    <form #formMenu="ngForm" (ngSubmit)="onMenuSubmit()">
+        <div>
+            <label for="formMenuName">Name: </label>
+            <input type="text" id="formMenuName" name="formMenuName" class="form-control" #formMenuName="ngModel" [(ngModel)]="currentTeaSession.name"
+                   required>
+            <div *ngIf="formMenuName.errors && (formMenuName.dirty || formMenuName.touched)">
+                <div [hidden]="!formMenuName.errors.required">Required</div>
+            </div>
+        </div>
+        <br>
+
+        <div>
+            <label for="formMenuImage">Image: </label>
+            <input type="file" accept="image/*" id="formMenuImage" name="formMenuImage" (change)="onMenuItemFileSelected($event)">
+            <div *ngIf="menuItemImageMessage">{{menuItemImageMessage}}</div>
+            <div>
+                <img [src]="formMenuItem.imagePath" *ngIf="formMenuItem.imagePath">
+            </div>
+        </div>
+        <br>
+
+        <button [disabled]="!formMenu.form.valid" name="formSubmit" type="submit">Save</button>
+    </form>
+    <p *ngIf="menuItemSubmitMessage">{{menuItemSubmitMessage}}</p>
+</ng-container>
+
+<button [routerLink]="['/tea-session']" name="formBack">Back</button>

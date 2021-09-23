@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream
 import java.nio.file.{Files, Paths, StandardCopyOption}
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.util.Date
 
 import com.convoy.dtd.tos.web.api.entity.{TeaSessionBean, UserBean}
 import com.convoy.dtd.tos.web.api.service.TeaSessionService
@@ -37,13 +38,13 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
   @Transactional
   override def add(name: String,
-                                description: String,
-                                treatDate: String,
-                                cutOffDate: String,
-                                isPublic: Boolean,
-                                password: Option[String],
-                                userId:Long,
-                                imagePath: Option[MultipartFile]): Map[String, Any] =
+                    description: String,
+                    treatDate: Date,
+                    cutOffDate: Date,
+                    isPublic: Boolean,
+                    password: Option[String],
+                    userId:Long,
+                    imagePath: Option[MultipartFile]): Map[String, Any] =
   {
     val userTo = userDao.getById(userId)
     if(userTo.isDefined && checkVisibilityAndPassword(isPublic, password))
@@ -52,8 +53,8 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       val t = new TeaSessionBean()
       t.name = name
       t.description = description
-      t.treatDate = dateFormat.parse(treatDate)
-      t.cutOffDate = dateFormat.parse(cutOffDate)
+      t.treatDate = treatDate
+      t.cutOffDate = cutOffDate
       t.isPublic = isPublic
       if (!isPublic) {
         val hashedPassword = passwordEncoder.encode(password.get)
@@ -68,7 +69,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       Map(
         "error" -> false,
         "message" -> "Tea session created",
-        "teaSession" -> List(t)
+        "teaSession" -> t
       )
     } else {
       Map(
@@ -180,9 +181,11 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
                                       userId:Long,
                                       name: Option[String],
                                       description: Option[String],
-                                      treatDate: Option[String],
-                                      cutOffDate: Option[String],
-                                      imagePath: Option[MultipartFile]): Map[String, Any] ={
+                                      treatDate: Option[Date],
+                                      cutOffDate: Option[Date],
+                                      imagePath: Option[MultipartFile],
+                                      isPublic: Option[Boolean],
+                                      password: Option[String]): Map[String, Any] ={
 
     val to = teaSessionDao.getById(teaSessionId)
     val toUser = userDao.getById(userId)
@@ -201,67 +204,30 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
           t.description = description.get
         }
         if (treatDate.isDefined){
-          t.treatDate = dateFormat.parse(treatDate.get)
+          t.treatDate = treatDate.get
         }
         if (cutOffDate.isDefined){
-          t.treatDate = dateFormat.parse(cutOffDate.get)
+          t.treatDate = cutOffDate.get
         }
 
         if (imagePath.isDefined){
           addImageByMultipart(t.teaSessionId, imagePath.get, false)
         }
 
-        Map(
-          "error" -> false,
-          "message" -> "Update successfully",
-          "teaSession" -> List(t)
-        )
-      } else
-      {
-        Map(
-          "error" -> true,
-          "message" -> "Malformed request or wrong user privilege"
-        )
-      }
-    }
-    else
-    {
-      Map(
-        "error" -> true,
-        "message" -> "Tea session not found"
-      )
-    }
-  }
-
-
-  @Transactional
-  override def updatePrivacy( teaSessionId: Long,
-                                        userId:Long,
-                                        isPublic: Boolean,
-                                        password: String): Map[String, Any] = {
-
-    val to = teaSessionDao.getById(teaSessionId)
-    val toUser = userDao.getById(userId)
-
-    if(to.isDefined && toUser.isDefined)
-    {
-      val t = to.get
-      val tUser = toUser.get
-      if( tUser.isAdmin || t.userTeaSession.userId == tUser.userId ) //Admin or the person who created Tea Session
-      {
-
-        t.isPublic = isPublic
-        if (!isPublic) {
-          val hashedPassword = passwordEncoder.encode(password)
-          t.password = hashedPassword
-        } else if (isPublic) {
-          t.password = null
+        if (isPublic.isDefined){
+          t.isPublic = isPublic.get
+          if (!isPublic.get) {
+            val hashedPassword = passwordEncoder.encode(password.get)
+            t.password = hashedPassword
+          } else if (isPublic.get) {
+            t.password = null
+          }
         }
 
         Map(
           "error" -> false,
           "message" -> "Update successfully",
-          "teaSession" -> List(t)
+          "teaSession" -> t
         )
       } else
       {
@@ -279,6 +245,53 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       )
     }
   }
+
+
+//  @Transactional
+//  override def updatePrivacy( teaSessionId: Long,
+//                                        userId:Long,
+//                                        isPublic: Boolean,
+//                                        password: String): Map[String, Any] = {
+//
+//    val to = teaSessionDao.getById(teaSessionId)
+//    val toUser = userDao.getById(userId)
+//
+//    if(to.isDefined && toUser.isDefined)
+//    {
+//      val t = to.get
+//      val tUser = toUser.get
+//      if( tUser.isAdmin || t.userTeaSession.userId == tUser.userId ) //Admin or the person who created Tea Session
+//      {
+//
+//        t.isPublic = isPublic
+//        if (!isPublic) {
+//          val hashedPassword = passwordEncoder.encode(password)
+//          t.password = hashedPassword
+//        } else if (isPublic) {
+//          t.password = null
+//        }
+//
+//        Map(
+//          "error" -> false,
+//          "message" -> "Update successfully",
+//          "teaSession" -> t
+//        )
+//      } else
+//      {
+//        Map(
+//          "error" -> true,
+//          "message" -> "Malformed request or wrong user privilege"
+//        )
+//      }
+//    }
+//    else
+//    {
+//      Map(
+//        "error" -> true,
+//        "message" -> "Tea session not found"
+//      )
+//    }
+//  }
 
 
   @Transactional
