@@ -1,0 +1,47 @@
+<style>
+    table {
+        width: 100%;
+    }
+
+    span td, th {
+        text-align: left;
+    }
+</style>
+
+<h2>Users</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>NO</th>
+            <th>USER ID</th>
+            <th>EMAIL</th>
+            <th>ACCOUNT STATUS</th>
+            <th>LAST LOGIN DATE</th>
+            <th>ROLE</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let u of users; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{u.userId}}</td>
+            <td>{{u.email}}</td>
+            <td *ngIf="u.isEnabled">Active</td>
+            <td *ngIf="!u.isEnabled">Inactive</td>
+            <td>{{u.lastLoginDate | date:'short'}}</td>
+            <td *ngIf="u.isAdmin">Admin</td>
+            <td *ngIf="!u.isAdmin">User</td>
+            <td>
+                <a *ngIf="u.isEnabled" href="javascript:void(0)"  (click)="modifyAccountStatus(u.userId, u.isEnabled, u.isAdmin)">lock</a> |
+                <a *ngIf="!u.isEnabled" href="javascript:void(0)"  (click)="modifyAccountStatus(u.userId, u.isEnabled, u.isAdmin)">Unlock</a> |
+                <a *ngIf="u.isAdmin" href="javascript:void(0)"  (click)="modifyRole(u.userId, u.isEnabled, u.isAdmin)">User</a>
+                <a *ngIf="!u.isAdmin" href="javascript:void(0)"  (click)="modifyRole(u.userId, u.isEnabled, u.isAdmin)">Admin</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br>
+<button [routerLink]="['./add']" name="formAddUser" >Create User</button>
+<br>
+<br>
+<button [routerLink]="['/tea-session']" name="formBack" >Back</button>

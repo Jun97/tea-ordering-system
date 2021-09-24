@@ -21,7 +21,7 @@ export class TeaSessionModifyComponent implements OnInit
     currentUser: UserModel;
     currentMenuItem: MenuItemModel[];
     formMenuItem: MenuItemModel;
-    formMenuAuthPassword: string | null;
+    formModelMenuAuthPassword: string | null;
 
     modeTeaSession: 'edit' | 'add';
     modeMenuItem: 'edit' | 'add' = 'add';
@@ -32,6 +32,8 @@ export class TeaSessionModifyComponent implements OnInit
     menuAuthMessage: string;
     menuItemImageMessage: string;
     menuItemSubmitMessage: string;
+
+    teaSessionImagePreview: string;
 
 
     constructor(private route: ActivatedRoute,
@@ -61,10 +63,13 @@ export class TeaSessionModifyComponent implements OnInit
         this.teaSessionService.getTeaSessionById(teaSessionId).subscribe(
             (res: TeaSessionModel) => {
                 this.currentTeaSession = res;
+                this.currentTeaSession.cutOffDate = this.datePipe.transform(res.cutOffDate, "yyyy-MM-dd");
+                this.currentTeaSession.treatDate = this.datePipe.transform(res.treatDate, "yyyy-MM-dd");
                 if(this.currentTeaSession.isPublic){
                     this.getMenuItemByTeaSessionId(this.currentTeaSession.teaSessionId, "");
                 }
                 this.currentTeaSession.password = "";
+                console.log(this.currentTeaSession);
             },
             (err: any) => {
                 console.log("getTeaSessionByIdErr:",err);
@@ -132,8 +137,11 @@ export class TeaSessionModifyComponent implements OnInit
                 (res:any) => {
                     this.teaSessionSubmitMessage = res.message;
                     if(!res.error){
-                        this.currentTeaSession = res.teaSession
+                        this.currentTeaSession = res.teaSession;
+                        this.currentTeaSession.cutOffDate = this.datePipe.transform(res.teaSession.cutOffDate, "yyyy-MM-dd");
+                        this.currentTeaSession.treatDate = this.datePipe.transform(res.teaSession.treatDate, "yyyy-MM-dd");
                     }
+                    console.log("updateTea", this.currentTeaSession);
 
                 },
                 (err: any) => {
@@ -193,23 +201,37 @@ export class TeaSessionModifyComponent implements OnInit
     }
 
     private onTeaSessionFileSelected(event:any) {
-        if(this.currentTeaSession.imagePath instanceof File){
-            if(this.currentTeaSession.imagePath.type.match(/image\/*/) == null) {
+        if(event.target.files[0] instanceof File){
+            if(event.target.files[0].type.match(/image\/*/) == null) {
                 this.teaSessionImageMessage = "Only images are supported";
             }
             else {
                 this.currentTeaSession.imagePath = event.target.files[0];
+
+                const reader = new FileReader();
+                reader.onload = (_event) => {
+                    this.teaSessionImagePreview = reader.result as string;
+                }
+                reader.readAsDataURL(event.target.files[0]);
+                console.log("File assigned");
             }
         }
     }
 
     private onMenuItemFileSelected(event:any) {
-        if(this.formMenuItem.imagePath instanceof File){
-            if(this.formMenuItem.imagePath.type.match(/image\/*/) == null) {
+        if(event.target.files[0] instanceof File){
+            if(event.target.files[0].match(/image\/*/) == null) {
                 this.menuItemImageMessage = "Only images are supported";
             }
             else {
                 this.formMenuItem.imagePath = event.target.files[0];
+
+                const reader = new FileReader();
+                reader.onload = (_event) => {
+                    this.teaSessionImagePreview = reader.result as string;
+                }
+                reader.readAsDataURL(event.target.files[0]);
+                console.log("File assigned");
             }
         }
     }
@@ -229,7 +251,7 @@ export class TeaSessionModifyComponent implements OnInit
     }
 
     private onMenuPasswordSubmit() {
-        this.getMenuItemByTeaSessionId(this.currentTeaSession.teaSessionId, this.formMenuAuthPassword);
+        this.getMenuItemByTeaSessionId(this.currentTeaSession.teaSessionId, this.formModelMenuAuthPassword);
     }
 
     private onMenuSubmit() {
@@ -239,5 +261,9 @@ export class TeaSessionModifyComponent implements OnInit
         if(this.modeMenuItem == "add"){
             this.addMenuItem();
         }
+    }
+
+    private logDate(){
+        console.log(this.currentTeaSession.treatDate);
     }
 }

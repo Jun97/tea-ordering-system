@@ -19,6 +19,7 @@ import { AppComponent } from './app.component';
 
 
 import '../styles/theme.scss';
+import {HttpClientModule} from "@angular/common/http";
 
 
 /**
@@ -37,6 +38,7 @@ import '../styles/theme.scss';
     HttpModule,
     RouterModule.forRoot(routes, { useHash: false, enableTracing :true, preloadingStrategy: PreloadAllModules }),
     ServiceModule,
+    HttpClientModule,
   ],
 })
 export class AppModule {

@@ -50,7 +50,7 @@ class TeaSessionBean extends Serializable with Equals
   @OneToMany(mappedBy = "teaSessionOrder", cascade = Array(CascadeType.REMOVE), fetch = FetchType.LAZY)
   var orders: List[OrderBean] = _
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "user_id", nullable = false)
   var userTeaSession: UserBean = _
 

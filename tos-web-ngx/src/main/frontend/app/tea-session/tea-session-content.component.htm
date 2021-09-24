@@ -1,3 +1,4 @@
+<ng-container *ngIf="teaSession">
 <style>
     table {
         width: 100%;
@@ -24,8 +25,8 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let item of teaSession; let i = index">
-            <ng-container *ngIf="item.isPublic || isAdmin">
+        <tr *ngFor="let item of teaSession">
+            <ng-container *ngIf="currentUser && teaSession">
                 <td>{{item.teaSessionId}}</td>
                 <td>{{item.name}}</td>
                 <td>{{item.description}}</td>
@@ -43,14 +44,15 @@
 <!--                    </ng-container>-->
 <!--                </td>-->
                 <td>
-                    <a [routerLink]="['/orders', item.teaSessionId]">Order</a>
+                    <a [routerLink]="['/order', item.teaSessionId]">Order</a>
                 </td>
                 <td>
-                    <a *ngIf="currentUser.isAdmin || currentUser.userId == item.userTeaSession.userId" [routerLink]="['./edit', item.teaSessionId]" [queryParams]="{teaSessionId:item.teaSessionId, name:item.name}">Edit</a>
+                    <a *ngIf="currentUser.isAdmin || (currentUser.userId == item.userTeaSession.userId)" [routerLink]="['./edit', item.teaSessionId]" [queryParams]="{teaSessionId:item.teaSessionId, name:item.name}">Edit</a>
                 </td>
                 <td>
-                    <a *ngIf="currentUser.isAdmin || currentUser.userId == item.userTeaSession.userId" href="javascript:void(0)"  (click)="deleteTeaSession(item.teaSessionId)">Delete</a>
+                    <a *ngIf="currentUser.isAdmin || (currentUser.userId == item.userTeaSession.userId)" href="javascript:void(0)"  (click)="deleteTeaSession(item.teaSessionId)">Delete</a>
                 </td>
+
             </ng-container>
         </tr>
     </tbody>
@@ -60,4 +62,5 @@
 <button [routerLink]="['./add']">New Tea Session</button>
 <br><br>
 
-<button *ngIf="isAdmin" [routerLink]="['/user']">Manage Users</button>
+<button *ngIf="currentUser.isAdmin" [routerLink]="['/user']">Manage Users</button>
+</ng-container>

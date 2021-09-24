@@ -55,7 +55,7 @@ private[impl] class UserServiceImpl extends UserService
           Map(
             "error"-> false,
             "message" -> "Login successful.",
-            "user" -> List(t)
+            "user" -> t
           )
         }
         else
@@ -136,7 +136,7 @@ private[impl] class UserServiceImpl extends UserService
       Map(
         "error" -> false,
         "message" -> "Privilege changed",
-        "user" -> List(t)
+        "user" -> t
       )
     } else {
       Map(

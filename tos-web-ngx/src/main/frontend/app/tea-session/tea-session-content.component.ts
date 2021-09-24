@@ -13,9 +13,8 @@ import {OrderService} from "../service/order.service";
 })
 export class TeaSessionContentComponent implements OnInit
 {
-  currentUser:UserModel = null;
-  teaSession:TeaSessionModel[] = [];
-  isAdmin:boolean = null;
+  currentUser:UserModel;
+  teaSession:TeaSessionModel[];
 
   constructor(private route: ActivatedRoute, private router: Router, private userService:UserService, private teaSessionService:TeaSessionService, private orderService:OrderService)
   {}
@@ -24,11 +23,8 @@ export class TeaSessionContentComponent implements OnInit
     this.findUpcomingTeaSession();
 
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if(this.currentUser.isAdmin) {
-      this.isAdmin = true;
-    } else {
-      this.isAdmin = false;
-    }
+    console.log("user:", this.currentUser);
+    console.log("isAdmin", this.currentUser.isAdmin);
   }
 
   private findUpcomingTeaSession() {

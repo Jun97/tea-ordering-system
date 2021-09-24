@@ -21,13 +21,13 @@ trait TeaSessionService
   def getImageByImageName(imageName: String): Array[Byte]
   def updateDetail(teaSessionId: Long,
                    userId:Long,
-                   name: Option[String],
+                   name: String,
                    description: Option[String],
-                   treatDate: Option[Date],
-                   cutOffDate: Option[Date],
+                   treatDate: Date,
+                   cutOffDate: Date,
                    imagePath: Option[MultipartFile],
-                   isPublic: Option[Boolean],
-                   password: Option[String]): Map[String, Any]
+                   isPublic: Boolean,
+                   password: String): Map[String, Any]
 //  def updatePrivacy(teaSessionId: Long,
 //                              userId:Long,
 //                              isPublic: Boolean,

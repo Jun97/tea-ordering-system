@@ -121,26 +121,28 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   @Transactional(readOnly = true)
   override def getById(teaSessionId: Long): Option[TeaSessionBean] = {
 
-    teaSessionDao.getById(teaSessionId)
+    val to = teaSessionDao.getById(teaSessionId)
 
-//    if(to.isDefined ) {
-//      val t = to.get
-//
-//      val modifiedTeaSession: TeaSessionBean = t.deepClone
-//      modifiedTeaSession.imagePath = generateImageUrl(modifiedTeaSession.imagePath)
-//
+    if(to.isDefined ) {
+      val t = to.get
+
+      val modifiedTeaSession: TeaSessionBean = t.deepClone
+      modifiedTeaSession.imagePath = generateImageUrl(modifiedTeaSession.imagePath)
+      Option(modifiedTeaSession)
+
 //      Map(
 //        "error" -> false,
 //        "teaSession" -> List(modifiedTeaSession)
 //      )
-//    }
-//    else
-//    {
+    }
+    else
+    {
 //      Map(
 //        "error" -> true,
 //        "message" -> "Tea session not found"
 //      )
-//    }
+      to
+    }
   }
 
 
@@ -179,13 +181,13 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   @Transactional
   override def updateDetail(teaSessionId: Long,
                                       userId:Long,
-                                      name: Option[String],
+                                      name: String,
                                       description: Option[String],
-                                      treatDate: Option[Date],
-                                      cutOffDate: Option[Date],
+                                      treatDate: Date,
+                                      cutOffDate: Date,
                                       imagePath: Option[MultipartFile],
-                                      isPublic: Option[Boolean],
-                                      password: Option[String]): Map[String, Any] ={
+                                      isPublic: Boolean,
+                                      password: String): Map[String, Any] ={
 
     val to = teaSessionDao.getById(teaSessionId)
     val toUser = userDao.getById(userId)
@@ -196,32 +198,26 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       val tUser = toUser.get
       if( tUser.isAdmin || t.userTeaSession.userId == tUser.userId )
       {
+        t.name = name
 
-        if (name.isDefined){
-          t.name = name.get
-        }
         if (description.isDefined){
           t.description = description.get
         }
-        if (treatDate.isDefined){
-          t.treatDate = treatDate.get
-        }
-        if (cutOffDate.isDefined){
-          t.treatDate = cutOffDate.get
-        }
+
+        t.treatDate = treatDate
+        t.cutOffDate = cutOffDate
 
         if (imagePath.isDefined){
           addImageByMultipart(t.teaSessionId, imagePath.get, false)
         }
 
-        if (isPublic.isDefined){
-          t.isPublic = isPublic.get
-          if (!isPublic.get) {
-            val hashedPassword = passwordEncoder.encode(password.get)
-            t.password = hashedPassword
-          } else if (isPublic.get) {
-            t.password = null
-          }
+        t.isPublic = isPublic
+
+        if (!isPublic) {
+          val hashedPassword = passwordEncoder.encode(password)
+          t.password = hashedPassword
+        } else if (isPublic) {
+          t.password = null
         }
 
         Map(

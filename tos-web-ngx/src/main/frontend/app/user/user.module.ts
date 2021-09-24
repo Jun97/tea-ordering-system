@@ -3,14 +3,12 @@
   import { RouterModule } from '@angular/router';
   import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-  import { TeaSessionContentComponent }  from './tea-session-content.component';
-  import { TeaSessionModifyComponent }  from './tea-session-modify.component';
+  import { UserContentComponent }  from './user-content.component';
+  import { UserAddComponent }  from './user-add.component';
 
   import { TemplateModule } from '../template/template.module';
 
-  import * as resolve from './tea-session.resolve';
-  import { routes } from './tea-session.routes';
-  import {MenuItemService} from "../service/menu-item.service";
+  import { routes } from './user.routes';
 
   @NgModule({
     imports: [
@@ -22,12 +20,10 @@
       TemplateModule,
     ],
     providers: [
-      resolve.ResolveTeaSessionByTeaSessionId,
       DatePipe,
-      MenuItemService,
     ],
-    declarations: [ TeaSessionContentComponent, TeaSessionModifyComponent ]
+    declarations: [ UserContentComponent, UserAddComponent ]
   })
-  export class TeaSessionModule {
+  export class UserModule {
     public static routes = routes;
   }

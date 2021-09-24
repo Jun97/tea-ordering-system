@@ -1,0 +1,41 @@
+<h2>Create New User</h2>
+{{errorMessage}}
+<form #formAddUser="ngForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label for="formUsername">Username: </label>
+        <input type="text" id="formUsername" name="formUsername" class="form-control" #formUsername="ngModel" [(ngModel)]="form.data.username" required>
+        <div *ngIf="formUsername.errors && (formUsername.dirty || formUsername.touched)">
+            <div [hidden]="!formUsername.errors.required">Required</div>
+        </div>
+    </div>
+    <br>
+
+    <div>
+        <label for="formPassword">Password: </label>
+        <input type="password" id="formPassword" name="formPassword" class="form-control" #formPassword="ngModel" [(ngModel)]="form.data.password" required minlength="8">
+        <div *ngIf="formPassword.errors && (formPassword.dirty || formPassword.touched)">
+            <div [hidden]="!formPassword.errors.required">Required</div>
+            <div [hidden]="!formPassword.errors.minlength">Password must be at least 8 characters long</div>
+        </div>
+    </div>
+    <br>
+
+    <div>
+        <label>Account Status: </label>
+        <label for="formEnable"><input type="radio" id="formEnable" name="formAccountStatus" class="form-control" #formAccountStatus="ngModel" [(ngModel)]="form.data.accountStatus" [value]="true">Active</label>
+        <label for="formDisable"><input type="radio" id="formDisable" name="formAccountStatus" class="form-control" #formAccountStatus="ngModel" [(ngModel)]="form.data.accountStatus" [value]="false">Inactive</label>
+    </div>
+    <br>
+
+    <div>
+        <label>Role: </label>
+        <label for="formUser"><input type="radio" id="formUser" name="formRole" class="form-control" #formRole="ngModel" [(ngModel)]="form.data.role" [value]="false">User</label>
+        <label for="formAdmin"><input type="radio" id="formAdmin" name="formRole" class="form-control" #formRole="ngModel" [(ngModel)]="form.data.role" [value]="true">Admin</label>
+    </div>
+    <br>
+
+    <button [disabled]="!formAddUser.form.valid" name="formSubmit" type="submit">Create</button>
+</form>
+<br>
+
+<button [routerLink]="['/users']" name="formBack" >Back</button>

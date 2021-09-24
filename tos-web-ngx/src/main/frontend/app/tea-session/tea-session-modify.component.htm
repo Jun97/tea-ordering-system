@@ -29,7 +29,7 @@
 <!--    <p *ngIf="isUploadSuccess">{{menuName}} - Upload Successful</p>-->
 <!--</div>-->
 <!--<p>*****************************************************************************************************</p>-->
-
+<ng-container *ngIf="currentTeaSession">
 <form #formTeaSession="ngForm" (ngSubmit)="onTeaSessionSubmit()">
     <div>
         <label for="formTeaSessionName">Name: </label>
@@ -43,8 +43,7 @@
 
     <div>
         <label for="formTeaSessionDescription">Description: </label>
-        <textarea id="formTeaSessionDescription" name="formDescription" class="form-control" #formTeaSessionDescription="ngModel" [(ngModel)]="currentTeaSession.description" rows = "5" cols = "60"
-                  required></textarea>
+        <textarea id="formTeaSessionDescription" name="formTeaSessionDescription" class="form-control" #formTeaSessionDescription="ngModel" [(ngModel)]="currentTeaSession.description" rows = "5" cols = "60"></textarea>
         <div *ngIf="formTeaSessionDescription.errors && (formTeaSessionDescription.dirty || formTeaSessionDescription.touched)">
             <div [hidden]="!formTeaSessionDescription.errors.required">Required</div>
         </div>
@@ -55,22 +54,24 @@
         <label for="formTeaSessionImage">Image: </label>
         <input type="file" accept="image/*" id="formTeaSessionImage" name="formTeaSessionImage" (change)="onTeaSessionFileSelected($event)">
         <div *ngIf="teaSessionImageMessage">{{teaSessionImageMessage}}</div>
-        <div>
-            <img [src]="currentTeaSession.imagePath" *ngIf="currentTeaSession.imagePath">
+        <div >
+            <img style="width: 33%" *ngIf="currentTeaSession.imagePath" [src]="currentTeaSession.imagePath" onerror="this.style.display='none'">
+            <img style="width: 33%" *ngIf="teaSessionImagePreview" [src]="teaSessionImagePreview" onerror="this.style.display='none'">
         </div>
     </div>
     <br>
 
     <div>
-        <label for="formTeaSessionCreatedBy">Created by (userID): </label>
-        <input type="hidden" id="formTeaSessionCreatedBy" name="formTeaSessionCreatedBy" class="form-control" #formTeaSessionCreatedBy="ngModel" [(ngModel)]="currentTeaSession.userTeaSession.userId"
+<!--        <label for="formTeaSessionCreatedBy">Created by (userID): </label>-->
+        <input type="text" id="formTeaSessionCreatedBy" name="formTeaSessionCreatedBy" class="form-control" #formTeaSessionCreatedBy="ngModel" [(ngModel)]="currentTeaSession.userTeaSession.userId"
                required>
     </div>
     <br>
 
     <div>
         <label for="formTeaSessionTreatDate">Treat date: </label>
-        <input type="datetime-local" id="formTeaSessionTreatDate" name="formTeaSessionTreatDate" class="form-control" #formTeaSessionTreatDate="ngModel" [(ngModel)]="currentTeaSession.treatDate"
+        <input type="date" id="formTeaSessionTreatDate" name="formTeaSessionTreatDate" class="form-control" #formTeaSessionTreatDate="ngModel" [(ngModel)]="currentTeaSession.treatDate"
+               value="{{ currentTeaSession.treatDate | date:'yyyy-MM-dd' }}"
                required>
         <div *ngIf="formTeaSessionTreatDate.errors && (formTeaSessionTreatDate.dirty || formTeaSessionTreatDate.touched)">
             <div [hidden]="!formTeaSessionTreatDate.errors.required">Required</div>
@@ -80,11 +81,9 @@
 
     <div>
         <label for="formTeaSessionCutOffDate">Cut-off date: </label>
-        <input type="datetime-local" id="formTeaSessionCutOffDate" name="formTeaSessionCutOffDate" class="form-control" #formTeaSessionCutOffDate="ngModel" [(ngModel)]="currentTeaSession.cutOffDate"
-               [pattern]="currentTeaSession.treatDate < currentTeaSession.cutOffDate"
+        <input type="date" id="formTeaSessionCutOffDate" name="formTeaSessionCutOffDate" class="form-control" #formTeaSessionCutOffDate="ngModel" [(ngModel)]="currentTeaSession.cutOffDate"
                required>
         <div *ngIf="formTeaSessionCutOffDate.errors && (formTeaSessionCutOffDate.dirty || formTeaSessionCutOffDate.touched)">
-            <div [hidden]="!formTeaSessionCutOffDate.errors.pattern">The cut-off date should not be greater than treat date.</div>
             <div [hidden]="!formTeaSessionCutOffDate.errors.required">Required</div>
         </div>
     </div>
@@ -98,7 +97,7 @@
     <br>
 
     <div>
-        <label for="formTeaSessionPassword">Password: </label>
+        <label *ngIf="!currentTeaSession.isPublic" for="formTeaSessionPassword">Password: </label>
         <input type="password" id="formTeaSessionPassword" name="formTeaSessionPassword" class="form-control" #formTeaSessionPassword="ngModel" [(ngModel)]="currentTeaSession.password"
                [hidden]="currentTeaSession.isPublic"
                [disabled]="currentTeaSession.isPublic"
@@ -115,14 +114,14 @@
 </form>
 <p *ngIf="teaSessionSubmitMessage">{{teaSessionSubmitMessage}}</p>
 <br>
-
+</ng-container>
 <ng-container *ngIf="this.currentTeaSession && !this.currentTeaSession.isPublic && !this.menuItemAccessGranted">
     <h2>Password Required for Menu</h2>
     <h3>This is private Tea Session, provide Tea Session password to proceed</h3>
     <form #formMenuAuth="ngForm" (ngSubmit)="onMenuPasswordSubmit()">
         <div>
             <label for="formMenuAuthPassword">Tea Session Password: </label>
-            <input type="password" id="formMenuAuthPassword" name="formMenuAuthPassword" class="form-control" #formMenuAuthPassword="ngModel" [(ngModel)]="formMenuAuthPassword"
+            <input type="password" id="formMenuAuthPassword" name="formMenuAuthPassword" class="form-control" #formMenuAuthPassword="ngModel" [(ngModel)]="formModelMenuAuthPassword"
                    required
                    minlength="6">
             <div *ngIf="formMenuAuthPassword.errors && (formMenuAuthPassword.dirty || formMenuAuthPassword.touched)">

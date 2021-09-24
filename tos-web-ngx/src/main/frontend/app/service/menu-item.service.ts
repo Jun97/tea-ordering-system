@@ -16,6 +16,7 @@ export class MenuItemService
   {
     const headers = new Headers();
     headers.append('Content-Type', 'multipart/form-data');
+    headers.append('enctype', 'multipart/form-data');
 
     const formData = new FormData();
     formData.append('teaSessionId', <string><any>teaSessionId);
@@ -28,6 +29,7 @@ export class MenuItemService
   {
     const headers = new Headers();
     headers.append('Content-Type', 'multipart/form-data');
+    headers.append('enctype', 'multipart/form-data');
 
     const formData:FormData = new FormData();
     formData.append('teaSessionId', <string><any>teaSessionId);
@@ -50,6 +52,7 @@ export class MenuItemService
   {
     const headers = new Headers();
     headers.append('Content-Type', 'multipart/form-data');
+    headers.append('enctype', 'multipart/form-data');
 
     const formData = new FormData();
     formData.append('menuItemId', <string><any>menuItemId);

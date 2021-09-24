@@ -77,13 +77,13 @@ private[mvc] class TeaSessionController {
   {
     teaSessionService.updateDetail(teaSessionId,
                                     userId,
-                                    Option(name),
+                                    name,
                                     Option(description),
-                                    Option(treatDate),
-                                    Option(cutOffDate),
+                                    treatDate,
+                                    cutOffDate,
                                     Option(teaSessionImagePath),
-                                    Option(isPublic),
-                                    Option(password))
+                                    isPublic,
+                                    password)
   }
 
 //  @RequestMapping(value = Array("update-privacy"))

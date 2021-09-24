@@ -15,7 +15,8 @@ export class TeaSessionService
   addTeaSession(name: string, description: string, userId: number, password: string, treatDate: string, cutOffDate: string, isPublic: boolean, teaSessionImagePath: File):Observable<Map<string,any>>
   {
     const headers = new Headers();
-    headers.append('Content-Type', 'multipart/form-data');
+    // headers.append('Content-Type', 'multipart/form-data');
+    // headers.append('enctype', 'multipart/form-data');
 
     const formData = new FormData();
     formData.append('name', name);
@@ -32,7 +33,8 @@ export class TeaSessionService
   uploadTeaSessionImage(teaSessionId: number, teaSessionImagePath: File):Observable<Map<string,any>>
   {
     const headers = new Headers();
-    headers.append('Content-Type', 'multipart/form-data');
+    // headers.append('Content-Type', 'multipart/form-data');
+    // headers.append('enctype', 'multipart/form-data');
 
     const formData:FormData = new FormData();
     formData.append('teaSessionId', <string><any>teaSessionId);
@@ -52,13 +54,14 @@ export class TeaSessionService
 
   findTeaSessionAll():Observable<TeaSessionModel[]>
   {
-    return this.http.get(`${TeaSessionService.URL}/get-upcoming`,'').map(res => res.json());
+    return this.http.get(`${TeaSessionService.URL}/find-upcoming`,'').map(res => res.json());
   }
 
   updateTeaSession(teaSessionId: number, userId: number, name: string, description: string, treatDate: string, cutOffDate: string, teaSessionImagePath: File, isPublic: Boolean, password: String | null):Observable<Map<string,any>>
   {
     const headers = new Headers();
-    headers.append('Content-Type', 'multipart/form-data');
+    // headers.append('Content-Type', 'multipart/form-data');
+    // headers.append('enctype', 'multipart/form-data');
 
     const formData = new FormData();
     formData.append('teaSessionId', <string><any>teaSessionId);

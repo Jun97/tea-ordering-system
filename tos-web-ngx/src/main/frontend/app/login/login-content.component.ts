@@ -41,7 +41,6 @@ export class LoginContentComponent implements OnInit
             }
         },
         (err: any) => {
-            this.errorMessage = err.toString();
             console.log(err);
         });
   }
