@@ -32,7 +32,7 @@ export class UserService
        return this.http.post(`${UserService.URL}/login-by-email`, params.toString(), { headers: headers }).map(res => res.json());
     }
 
-    findUserAll():Observable<UserModel>
+    findUserAll():Observable<UserModel[]>
     {
       return this.http.post(`${UserService.URL}/find-all`,'').map(res => res.json());
     }

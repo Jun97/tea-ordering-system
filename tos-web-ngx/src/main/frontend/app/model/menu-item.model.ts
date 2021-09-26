@@ -5,7 +5,7 @@ export class MenuItemModel
 {
   constructor(
   public menuItemId: number | null,
-  public name: string,
+  public name: string = "",
   public imagePath: string | File |null,
   public teaSessionMenuItem: TeaSessionModel | null,
   public orderItems: Array<OrderItemModel> | null,

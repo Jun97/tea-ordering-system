@@ -30,14 +30,16 @@ export class TeaSessionContentComponent implements OnInit
   private findUpcomingTeaSession() {
     this.teaSessionService.findTeaSessionAll().subscribe( (res:TeaSessionModel[]) =>{
       this.teaSession = res;
+      console.log("teaSession:", this.teaSession);
     });
   }
 
   deleteTeaSession(teaSessionId:number) {
-    this.teaSessionService.deleteTeaSessionById(teaSessionId).subscribe(
+    this.teaSessionService.deleteTeaSessionById(teaSessionId, this.currentUser.userId).subscribe(
         (res: any)=> {
           if(!res.error) {
-            this.router.navigate(['./complete', 'delete', teaSessionId], {relativeTo: this.route});
+            let index = this.teaSession.findIndex(x => x.teaSessionId === teaSessionId);
+            delete this.teaSession[index];
           } else {
             console.log(res);
           }

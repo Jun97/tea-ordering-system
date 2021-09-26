@@ -22,7 +22,7 @@ private[mvc] class TeaSessionController {
 
   @RequestMapping(value = Array("add"), method = Array(RequestMethod.POST))
   def add(@RequestParam(required = true) name: String,
-                           @RequestParam(required = true) description: String,
+                           @RequestParam(required = false) description: String,
                            @RequestParam(required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") treatDate: Date,
                            @RequestParam(required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") cutOffDate: Date,
                            @RequestParam(required = true) isPublic: Boolean,
@@ -30,7 +30,7 @@ private[mvc] class TeaSessionController {
                            @RequestParam(required = true) userId:Long,
                            @RequestParam(required = false) teaSessionImagePath: MultipartFile): Map[String,Any] =
   {
-    teaSessionService.add(name, description,treatDate, cutOffDate, isPublic, Option(password) , userId, Option(teaSessionImagePath))
+    teaSessionService.add(name, Option(description),treatDate, cutOffDate, isPublic, Option(password) , userId, Option(teaSessionImagePath))
   }
 
 
@@ -83,7 +83,7 @@ private[mvc] class TeaSessionController {
                                     cutOffDate,
                                     Option(teaSessionImagePath),
                                     isPublic,
-                                    password)
+                                    Option(password))
   }
 
 //  @RequestMapping(value = Array("update-privacy"))

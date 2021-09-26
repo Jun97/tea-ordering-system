@@ -61,17 +61,17 @@
     </div>
     <br>
 
-    <div>
-<!--        <label for="formTeaSessionCreatedBy">Created by (userID): </label>-->
-        <input type="text" id="formTeaSessionCreatedBy" name="formTeaSessionCreatedBy" class="form-control" #formTeaSessionCreatedBy="ngModel" [(ngModel)]="currentTeaSession.userTeaSession.userId"
-               required>
-    </div>
+<!--    <div>-->
+<!--&lt;!&ndash;        <label for="formTeaSessionCreatedBy">Created by (userID): </label>&ndash;&gt;-->
+<!--        <input type="hidden" id="formTeaSessionCreatedBy" name="formTeaSessionCreatedBy" class="form-control" #formTeaSessionCreatedBy="ngModel" [(ngModel)]="currentTeaSession.userTeaSession.userId"-->
+<!--               required>-->
+<!--    </div>-->
     <br>
 
     <div>
         <label for="formTeaSessionTreatDate">Treat date: </label>
         <input type="date" id="formTeaSessionTreatDate" name="formTeaSessionTreatDate" class="form-control" #formTeaSessionTreatDate="ngModel" [(ngModel)]="currentTeaSession.treatDate"
-               value="{{ currentTeaSession.treatDate | date:'yyyy-MM-dd' }}"
+               value="{{ currentTeaSession.treatDate }}"
                required>
         <div *ngIf="formTeaSessionTreatDate.errors && (formTeaSessionTreatDate.dirty || formTeaSessionTreatDate.touched)">
             <div [hidden]="!formTeaSessionTreatDate.errors.required">Required</div>
@@ -82,6 +82,7 @@
     <div>
         <label for="formTeaSessionCutOffDate">Cut-off date: </label>
         <input type="date" id="formTeaSessionCutOffDate" name="formTeaSessionCutOffDate" class="form-control" #formTeaSessionCutOffDate="ngModel" [(ngModel)]="currentTeaSession.cutOffDate"
+               value="{{ currentTeaSession.cutOffDate }}"
                required>
         <div *ngIf="formTeaSessionCutOffDate.errors && (formTeaSessionCutOffDate.dirty || formTeaSessionCutOffDate.touched)">
             <div [hidden]="!formTeaSessionCutOffDate.errors.required">Required</div>
@@ -115,7 +116,7 @@
 <p *ngIf="teaSessionSubmitMessage">{{teaSessionSubmitMessage}}</p>
 <br>
 </ng-container>
-<ng-container *ngIf="this.currentTeaSession && !this.currentTeaSession.isPublic && !this.menuItemAccessGranted">
+<ng-container *ngIf="this.currentTeaSession && !this.currentTeaSession.isPublic && !this.menuItemAccessGranted == undefined">
     <h2>Password Required for Menu</h2>
     <h3>This is private Tea Session, provide Tea Session password to proceed</h3>
     <form #formMenuAuth="ngForm" (ngSubmit)="onMenuPasswordSubmit()">
@@ -135,7 +136,7 @@
     <p *ngIf="menuAuthMessage">{{menuAuthMessage}}</p>
 </ng-container>
 
-<ng-container *ngIf="menuItemAccessGranted">
+<ng-container *ngIf="menuItemAccessGranted && currentMenuItem">
     <table>
         <thead>
         <tr>
@@ -145,21 +146,19 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let item of currentMenuItem; let i = index">
+        <tr *ngFor="let item of currentMenuItem" >
             <ng-container *ngIf="(currentTeaSession.userTeaSession.userId == currentUser.userId) || currentUser.isAdmin">
                 <td>{{item.menuItemId}}</td>
                 <td>{{item.name}}</td>
                 <td>
-                    <div *ngIf="item.imagePath">
-                        <img [src]="item.imagePath"}} *ngIf="item.imagePath">
-                    </div>
+                        <img style="width: 12%; text-align: center;" [src]="item.imagePath" *ngIf="item.imagePath">
                 </td>
 
                 <td>
-                    <a *ngIf="currentUser.isAdmin || currentUser.userId == currentTeaSession.userTeaSession.userId" href="javascript:void(0)"  (click)="assignMenuItemInForm(item)">Edit</a>
+                    <a *ngIf="currentUser.isAdmin || currentUser.userId == currentTeaSession.userTeaSession.userId" href="javascript:void(0)"  (click)="assignMenuToForm(item)">Edit</a>
                 </td>
                 <td>
-                    <a *ngIf="currentUser.isAdmin || currentUser.userId == currentTeaSession.userTeaSession.userId" href="javascript:void(0)"  (click)="deleteMenuItem(item)">Delete</a>
+                    <a *ngIf="currentUser.isAdmin || currentUser.userId == currentTeaSession.userTeaSession.userId" href="javascript:void(0)"  (click)="deleteMenu(item)">Delete</a>
                 </td>
             </ng-container>
         </tr>
@@ -167,10 +166,14 @@
     </table>
     <br>
     <br>
-    <form #formMenu="ngForm" (ngSubmit)="onMenuSubmit()">
+
+    <h2 *ngIf="modeMenuItem == 'add'">Add Menu Item</h2>
+    <h2 *ngIf="modeMenuItem == 'edit'">Edit Menu Item</h2>
+    <form #formMenu="ngForm" *ngIf="formMenuItem" (ngSubmit)="onMenuSubmit()">
+
         <div>
             <label for="formMenuName">Name: </label>
-            <input type="text" id="formMenuName" name="formMenuName" class="form-control" #formMenuName="ngModel" [(ngModel)]="currentTeaSession.name"
+            <input type="text" id="formMenuName" name="formMenuName" class="form-control" #formMenuName="ngModel" [(ngModel)]="formMenuItem.name"
                    required>
             <div *ngIf="formMenuName.errors && (formMenuName.dirty || formMenuName.touched)">
                 <div [hidden]="!formMenuName.errors.required">Required</div>
@@ -180,15 +183,17 @@
 
         <div>
             <label for="formMenuImage">Image: </label>
-            <input type="file" accept="image/*" id="formMenuImage" name="formMenuImage" (change)="onMenuItemFileSelected($event)">
+            <input type="file" accept="image/*" id="formMenuImage" name="formMenuImage" (change)="onMenuFileSelected($event)">
             <div *ngIf="menuItemImageMessage">{{menuItemImageMessage}}</div>
             <div>
-                <img [src]="formMenuItem.imagePath" *ngIf="formMenuItem.imagePath">
+                <img style="width: 33%" *ngIf="formMenuItem.imagePath" [src]="formMenuItem.imagePath" onerror="this.style.display='none'">
+                <img style="width: 33%" *ngIf="menuItemImagePreview" [src]="menuItemImagePreview" onerror="this.style.display='none'">
             </div>
         </div>
         <br>
 
         <button [disabled]="!formMenu.form.valid" name="formSubmit" type="submit">Save</button>
+        <button name="formSubmit" href="javascript:void(0)"  (click)="clearMenuForm()">Clear</button>
     </form>
     <p *ngIf="menuItemSubmitMessage">{{menuItemSubmitMessage}}</p>
 </ng-container>

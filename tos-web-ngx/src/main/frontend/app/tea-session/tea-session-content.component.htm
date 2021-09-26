@@ -1,4 +1,4 @@
-<ng-container *ngIf="teaSession">
+<ng-container *ngIf="currentUser && teaSession">
 <style>
     table {
         width: 100%;
@@ -26,7 +26,7 @@
     </thead>
     <tbody>
         <tr *ngFor="let item of teaSession">
-            <ng-container *ngIf="currentUser && teaSession">
+            <ng-container *ngIf="item">
                 <td>{{item.teaSessionId}}</td>
                 <td>{{item.name}}</td>
                 <td>{{item.description}}</td>
@@ -47,12 +47,11 @@
                     <a [routerLink]="['/order', item.teaSessionId]">Order</a>
                 </td>
                 <td>
-                    <a *ngIf="currentUser.isAdmin || (currentUser.userId == item.userTeaSession.userId)" [routerLink]="['./edit', item.teaSessionId]" [queryParams]="{teaSessionId:item.teaSessionId, name:item.name}">Edit</a>
+                    <a *ngIf="currentUser.isAdmin || (currentUser.userId == item.userTeaSession.userId)" [routerLink]="['./edit', item.teaSessionId]">Edit</a>
                 </td>
                 <td>
                     <a *ngIf="currentUser.isAdmin || (currentUser.userId == item.userTeaSession.userId)" href="javascript:void(0)"  (click)="deleteTeaSession(item.teaSessionId)">Delete</a>
                 </td>
-
             </ng-container>
         </tr>
     </tbody>

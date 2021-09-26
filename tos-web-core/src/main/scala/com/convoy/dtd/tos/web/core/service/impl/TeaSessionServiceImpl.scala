@@ -16,6 +16,7 @@ import org.apache.commons.io.FilenameUtils
 import org.springframework.web.util.UriComponentsBuilder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.support.{TransactionSynchronizationAdapter, TransactionSynchronizationManager}
 
 import scala.collection.JavaConverters._
 
@@ -38,7 +39,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
   @Transactional
   override def add(name: String,
-                    description: String,
+                    description: Option[String],
                     treatDate: Date,
                     cutOffDate: Date,
                     isPublic: Boolean,
@@ -52,7 +53,10 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
       val t = new TeaSessionBean()
       t.name = name
-      t.description = description
+      if(description.isDefined){
+        t.description = description.get
+      }
+
       t.treatDate = treatDate
       t.cutOffDate = cutOffDate
       t.isPublic = isPublic
@@ -187,7 +191,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
                                       cutOffDate: Date,
                                       imagePath: Option[MultipartFile],
                                       isPublic: Boolean,
-                                      password: String): Map[String, Any] ={
+                                      password: Option[String]): Map[String, Any] ={
 
     val to = teaSessionDao.getById(teaSessionId)
     val toUser = userDao.getById(userId)
@@ -202,6 +206,8 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
         if (description.isDefined){
           t.description = description.get
+        } else {
+          t.description = null
         }
 
         t.treatDate = treatDate
@@ -214,16 +220,19 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
         t.isPublic = isPublic
 
         if (!isPublic) {
-          val hashedPassword = passwordEncoder.encode(password)
+          val hashedPassword = passwordEncoder.encode(password.get)
           t.password = hashedPassword
         } else if (isPublic) {
           t.password = null
         }
 
+        val modifiedTeaSession: TeaSessionBean = t.deepClone
+        modifiedTeaSession.imagePath = generateImageUrl(modifiedTeaSession.imagePath)
+
         Map(
           "error" -> false,
           "message" -> "Update successfully",
-          "teaSession" -> t
+          "teaSession" -> modifiedTeaSession
         )
       } else
       {
@@ -296,13 +305,19 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
     val to = teaSessionDao.getById(teaSessionId)
     val toUser = userDao.getById(userId)
 
+    TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+      override def afterCommit(): Unit = { //do stuff right after commit
+        val t = to.get
+        deleteImage(t.imagePath)
+      }
+    })
+
     if(to.isDefined && toUser.isDefined)
     {
       val t = to.get
       val tUser = toUser.get
       if(tUser.isAdmin || t.userTeaSession.userId == tUser.userId)
       {
-        deleteImage(t.imagePath)
         teaSessionDao.deleteById(teaSessionId)
 
         Map(
@@ -360,7 +375,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   def checkVisibilityAndPassword(isPublic: Boolean, password: Option[String]): Boolean ={
     if (!isPublic && password.isDefined && !isStringEmpty(password.get)) { //If private and password is defined
       true
-    } else if (isPublic && !password.isDefined )
+    } else if (isPublic && isStringEmpty(password.get) )
     {
       true
     }

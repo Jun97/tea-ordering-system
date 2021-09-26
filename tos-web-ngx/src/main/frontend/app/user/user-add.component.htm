@@ -1,40 +1,37 @@
-<h2>Create New User</h2>
-{{errorMessage}}
-<form #formAddUser="ngForm" (ngSubmit)="onSubmit()">
+<h2>Register</h2>
+<h4>Remark: You will be registered with active status & normal privilege, kindly seek admin for privilege elevation. </h4>
+<form *ngIf="userForm" #formAddUser="ngForm" (ngSubmit)="onFormSubmit()">
     <div>
-        <label for="formUsername">Username: </label>
-        <input type="text" id="formUsername" name="formUsername" class="form-control" #formUsername="ngModel" [(ngModel)]="form.data.username" required>
-        <div *ngIf="formUsername.errors && (formUsername.dirty || formUsername.touched)">
-            <div [hidden]="!formUsername.errors.required">Required</div>
+        <label for="formEmail">Email: </label>
+        <input type="text" #formEmail id="formEmail" name="formEmail" class="form-control" #formEmail="ngModel" [(ngModel)]="userForm.email"
+               email
+               required>
+        <div *ngIf="formEmail.errors && (formEmail.dirty || formEmail.touched)">
+            <div [hidden]="!formEmail.errors.email">Please ensure email correct</div>
+            <div [hidden]="!formEmail.errors.required">Required</div>
         </div>
+        <div *ngIf="userEmailExistsMessage">{{userEmailExistsMessage}}</div>
     </div>
     <br>
+
 
     <div>
         <label for="formPassword">Password: </label>
-        <input type="password" id="formPassword" name="formPassword" class="form-control" #formPassword="ngModel" [(ngModel)]="form.data.password" required minlength="8">
+        <input type="password" id="formPassword" name="formPassword" class="form-control" #formPassword="ngModel" [(ngModel)]="userForm.password"
+               pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$"
+               required
+               minlength="6">
         <div *ngIf="formPassword.errors && (formPassword.dirty || formPassword.touched)">
             <div [hidden]="!formPassword.errors.required">Required</div>
-            <div [hidden]="!formPassword.errors.minlength">Password must be at least 8 characters long</div>
+            <div [hidden]="!formPassword.errors.minlength">Password must be at least 6 characters long</div>
+            <div [hidden]="!formPassword.errors.pattern">Password must contain alphanumeric character</div>
         </div>
     </div>
     <br>
 
-    <div>
-        <label>Account Status: </label>
-        <label for="formEnable"><input type="radio" id="formEnable" name="formAccountStatus" class="form-control" #formAccountStatus="ngModel" [(ngModel)]="form.data.accountStatus" [value]="true">Active</label>
-        <label for="formDisable"><input type="radio" id="formDisable" name="formAccountStatus" class="form-control" #formAccountStatus="ngModel" [(ngModel)]="form.data.accountStatus" [value]="false">Inactive</label>
-    </div>
-    <br>
+    <p *ngIf="userSubmitMessage">{{userSubmitMessage}}</p>
 
-    <div>
-        <label>Role: </label>
-        <label for="formUser"><input type="radio" id="formUser" name="formRole" class="form-control" #formRole="ngModel" [(ngModel)]="form.data.role" [value]="false">User</label>
-        <label for="formAdmin"><input type="radio" id="formAdmin" name="formRole" class="form-control" #formRole="ngModel" [(ngModel)]="form.data.role" [value]="true">Admin</label>
-    </div>
-    <br>
-
-    <button [disabled]="!formAddUser.form.valid" name="formSubmit" type="submit">Create</button>
+    <button [disabled]="!formAddUser.form.valid || !isUserEmailUnique" name="formSubmit" type="submit">Register</button>
 </form>
 <br>
 

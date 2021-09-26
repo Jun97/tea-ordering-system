@@ -19,13 +19,13 @@ export class TeaSessionModifyComponent implements OnInit
 
     currentTeaSession: TeaSessionModel;
     currentUser: UserModel;
-    currentMenuItem: MenuItemModel[];
+    currentMenuItem: MenuItemModel[] = [];
     formMenuItem: MenuItemModel;
-    formModelMenuAuthPassword: string | null;
+    formModelMenuAuthPassword: string = "";
 
     modeTeaSession: 'edit' | 'add';
     modeMenuItem: 'edit' | 'add' = 'add';
-    menuItemAccessGranted: boolean;
+    menuItemAccessGranted: boolean | undefined = undefined;
 
     teaSessionImageMessage: string;
     teaSessionSubmitMessage: string;
@@ -34,6 +34,7 @@ export class TeaSessionModifyComponent implements OnInit
     menuItemSubmitMessage: string;
 
     teaSessionImagePreview: string;
+    menuItemImagePreview: string;
 
 
     constructor(private route: ActivatedRoute,
@@ -44,17 +45,19 @@ export class TeaSessionModifyComponent implements OnInit
     {}
 
     ngOnInit() {
-        this.getCurrentTeaSessionParam();
+        this.parseCurrentTeaSessionParam();
         this.fetchCurrentUser();
+        this.initMenuForm();
     }
 
-    private getCurrentTeaSessionParam() {
+    private parseCurrentTeaSessionParam() {
         this.route.paramMap.subscribe(paramMap => {
           if (paramMap.has('teaSessionId')) {
               this.getTeaSessionById(Number(paramMap.get('teaSessionId')));
               this.modeTeaSession = "edit";
           } else {
               this.modeTeaSession = "add";
+              this.initTeaSessionForm();
           }
         });
     }
@@ -63,12 +66,14 @@ export class TeaSessionModifyComponent implements OnInit
         this.teaSessionService.getTeaSessionById(teaSessionId).subscribe(
             (res: TeaSessionModel) => {
                 this.currentTeaSession = res;
+
                 this.currentTeaSession.cutOffDate = this.datePipe.transform(res.cutOffDate, "yyyy-MM-dd");
                 this.currentTeaSession.treatDate = this.datePipe.transform(res.treatDate, "yyyy-MM-dd");
-                if(this.currentTeaSession.isPublic){
-                    this.getMenuItemByTeaSessionId(this.currentTeaSession.teaSessionId, "");
-                }
                 this.currentTeaSession.password = "";
+                if(this.currentTeaSession.isPublic){
+                    this.initMenuSection();
+                }
+
                 console.log(this.currentTeaSession);
             },
             (err: any) => {
@@ -77,14 +82,15 @@ export class TeaSessionModifyComponent implements OnInit
         )
     }
 
-    private getMenuItemByTeaSessionId(teaSessionId: number, password: string) {
+    private findMenuItemByTeaSessionId(teaSessionId: number, password: string) {
         this.menuItemService.findMenuItemByTeaSessionIdAndPassword(teaSessionId, password).subscribe(
             (res:any) => {
                 if(!res.error){
                     this.currentMenuItem = res.menuItem;
+                    this.menuItemAccessGranted = true;
                 }
                 this.menuAuthMessage = res.message;
-
+                console.log("menuItemResponse:", this.currentMenuItem);
             },
             (err: any) => {
                 console.log("findMenuItemByTeaSessionIdAndPassword:", err);
@@ -96,21 +102,27 @@ export class TeaSessionModifyComponent implements OnInit
     }
 
     private addTeaSession() {
-        if(this.currentTeaSession.imagePath instanceof File) {
+
             this.teaSessionService.addTeaSession(
                 this.currentTeaSession.name,
-                this.currentTeaSession.description,
                 this.currentUser.userId,
                 this.currentTeaSession.password,
                 this.datePipe.transform(this.currentTeaSession.treatDate, 'yyyy-MM-dd'),
                 this.datePipe.transform(this.currentTeaSession.cutOffDate,'yyyy-MM-dd'),
                 this.currentTeaSession.isPublic,
-                this.currentTeaSession.imagePath
+                this.currentTeaSession.description,
+                this.currentTeaSession.imagePath instanceof File? this.currentTeaSession.imagePath: undefined
             ).subscribe(
                 (res:any) => {
                     this.teaSessionSubmitMessage = res.message;
+
                     if(!res.error){
-                        this.currentTeaSession = res.teaSession
+                        this.currentTeaSession = res.teaSession;
+                        this.currentTeaSession.cutOffDate = this.datePipe.transform(res.teaSession.cutOffDate, "yyyy-MM-dd");
+                        this.currentTeaSession.treatDate = this.datePipe.transform(res.teaSession.treatDate, "yyyy-MM-dd");
+
+                        this.menuItemAccessGranted = true;
+                        this.initMenuForm();
                     }
 
                 },
@@ -118,21 +130,20 @@ export class TeaSessionModifyComponent implements OnInit
                     console.log("addTeaSessionErr:", err);
                 }
             )
-        }
+
     }
 
     private updateTeaSession() {
-        if(this.currentTeaSession.imagePath instanceof File){
             this.teaSessionService.updateTeaSession(
                 this.currentTeaSession.teaSessionId,
                 this.currentUser.userId,
                 this.currentTeaSession.name,
-                this.currentTeaSession.description,
                 this.datePipe.transform(this.currentTeaSession.treatDate, 'yyyy-MM-dd'),
                 this.datePipe.transform(this.currentTeaSession.cutOffDate,'yyyy-MM-dd'),
-                this.currentTeaSession.imagePath,
                 this.currentTeaSession.isPublic,
-                this.currentTeaSession.password
+                this.currentTeaSession.password,
+                this.currentTeaSession.description,
+                this.currentTeaSession.imagePath instanceof File? this.currentTeaSession.imagePath: undefined
             ).subscribe(
                 (res:any) => {
                     this.teaSessionSubmitMessage = res.message;
@@ -148,34 +159,37 @@ export class TeaSessionModifyComponent implements OnInit
                     console.log("updateTeaSessionErr:", err);
                 }
             )
-        }
-
     }
 
-    private addMenuItem() {
-        if(this.formMenuItem.imagePath instanceof File) {
-            this.menuItemService.addMenuItem(this.currentTeaSession.teaSessionId, this.formMenuItem.name, this.formMenuItem.imagePath).subscribe(
+    private addMenu() {
+            this.menuItemService.addMenuItem(
+                this.currentTeaSession.teaSessionId,
+                this.formMenuItem.name,
+                this.formMenuItem.imagePath instanceof File?this.formMenuItem.imagePath: undefined).subscribe(
                 (res: any) => {
                     this.menuItemSubmitMessage = res.message;
                     if(!res.error){
                        this.currentMenuItem = [...this.currentMenuItem, res.menuItem];
+                       this.initMenuForm();
                     }
                 },
                 (err: any)=> {
                     console.log("updateMenuItemErr:", err)
                 }
             )
-        }
     }
 
-    private updateMenuItem() {
-        if(this.formMenuItem.imagePath instanceof File) {
-            this.menuItemService.updateMenuItem(this.formMenuItem.menuItemId, this.formMenuItem.name, this.formMenuItem.imagePath).subscribe(
+    private updateMenu() {
+            this.menuItemService.updateMenuItem(
+                this.formMenuItem.menuItemId,
+                this.formMenuItem.name,
+                this.formMenuItem.imagePath instanceof File? this.formMenuItem.imagePath: undefined).subscribe(
                 (res: any) => {
                     this.menuItemSubmitMessage = res.message;
                     if(!res.error){
                         let index = this.currentMenuItem.findIndex(x => x.menuItemId === this.formMenuItem.menuItemId);
                         this.currentMenuItem[index] = res.menuItem;
+                        this.initMenuForm();
                         this.modeMenuItem = "add"; //Assign back to default mode
                     }
                 },
@@ -183,12 +197,12 @@ export class TeaSessionModifyComponent implements OnInit
                     console.log("updateMenuItemErr:", err)
                 }
             )
-        }
     }
 
-    private deleteMenuItem(menuItem: MenuItemModel) {
+    private deleteMenu(menuItem: MenuItemModel) {
         this.menuItemService.deleteMenuItemById(menuItem.menuItemId).subscribe(
             (res: any) => {
+                this.menuItemSubmitMessage = res.message;
                 if(!res.error){
                     let index = this.currentMenuItem.findIndex(x => x.menuItemId === menuItem.menuItemId);
                     delete this.currentMenuItem[index];
@@ -218,9 +232,9 @@ export class TeaSessionModifyComponent implements OnInit
         }
     }
 
-    private onMenuItemFileSelected(event:any) {
+    private onMenuFileSelected(event:any) {
         if(event.target.files[0] instanceof File){
-            if(event.target.files[0].match(/image\/*/) == null) {
+            if(event.target.files[0].type.match(/image\/*/) == null) {
                 this.menuItemImageMessage = "Only images are supported";
             }
             else {
@@ -228,17 +242,12 @@ export class TeaSessionModifyComponent implements OnInit
 
                 const reader = new FileReader();
                 reader.onload = (_event) => {
-                    this.teaSessionImagePreview = reader.result as string;
+                    this.menuItemImagePreview = reader.result as string;
                 }
                 reader.readAsDataURL(event.target.files[0]);
                 console.log("File assigned");
             }
         }
-    }
-
-    private assignMenuItemInForm(menuItem: MenuItemModel) {
-        this.formMenuItem = menuItem;
-        this.modeMenuItem = "edit";
     }
 
     private onTeaSessionSubmit() {
@@ -251,19 +260,53 @@ export class TeaSessionModifyComponent implements OnInit
     }
 
     private onMenuPasswordSubmit() {
-        this.getMenuItemByTeaSessionId(this.currentTeaSession.teaSessionId, this.formModelMenuAuthPassword);
+        this.findMenuItemByTeaSessionId(this.currentTeaSession.teaSessionId, this.formModelMenuAuthPassword);
     }
 
     private onMenuSubmit() {
         if(this.modeMenuItem == "edit"){
-            this.updateMenuItem();
+            this.updateMenu();
         }
         if(this.modeMenuItem == "add"){
-            this.addMenuItem();
+            this.addMenu();
         }
     }
 
-    private logDate(){
-        console.log(this.currentTeaSession.treatDate);
+    private assignMenuToForm(menuItem: MenuItemModel) {
+        Object.assign(this.formMenuItem, menuItem);
+        this.modeMenuItem = "edit";
+
+    }
+
+    private initMenuSection() {
+        if (this.currentTeaSession.isPublic) {
+            this.menuItemAccessGranted = true;
+            this.findMenuItemByTeaSessionId(this.currentTeaSession.teaSessionId, "");
+        } else{
+            this.menuItemAccessGranted = false;
+        }
+    }
+
+    private initMenuForm() {
+        this.formMenuItem = new MenuItemModel(
+            null, "", null, null, null
+        );
+    }
+
+    private clearMenuForm() {
+        this.initMenuForm();
+        this.modeMenuItem = "add";
+    }
+
+    private initTeaSessionForm() {
+        this.currentTeaSession = new TeaSessionModel(
+            null,
+            null,
+            null, null,
+            null,
+            "",
+            "",
+            null ,
+            null, null, null)
     }
 }

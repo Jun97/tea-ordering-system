@@ -27,7 +27,7 @@ private[impl] class UserServiceImpl extends UserService
     {
       Map(
         "error" -> false,
-        "message" -> "Email can be registered"
+        "message" -> "Email has not been used"
       )
     }
     else

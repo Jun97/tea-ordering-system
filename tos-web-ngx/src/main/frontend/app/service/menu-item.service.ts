@@ -12,24 +12,26 @@ export class MenuItemService
 
   constructor( private http:Http, private httpClient:HttpClient) {}
 
-  addMenuItem(teaSessionId: number, name: string, imagePath: File):Observable<Map<string,any>>
+  addMenuItem(teaSessionId: number, name: string, imagePath?: File):Observable<Map<string,any>>
   {
     const headers = new Headers();
-    headers.append('Content-Type', 'multipart/form-data');
-    headers.append('enctype', 'multipart/form-data');
+    // headers.append('Content-Type', 'multipart/form-data');
+    // headers.append('enctype', 'multipart/form-data');
 
     const formData = new FormData();
     formData.append('teaSessionId', <string><any>teaSessionId);
     formData.append('name', name);
-    formData.append('imagePath', imagePath);
+    if(imagePath != undefined){
+      formData.append('imagePath', imagePath);
+    }
     return this.http.post(`${MenuItemService.URL}/add`,formData, { headers: headers }).map(res => res.json());
   }
 
   uploadMenuItemImage(teaSessionId: number, imagePath: File):Observable<Map<string,any>>
   {
     const headers = new Headers();
-    headers.append('Content-Type', 'multipart/form-data');
-    headers.append('enctype', 'multipart/form-data');
+    // headers.append('Content-Type', 'multipart/form-data');
+    // headers.append('enctype', 'multipart/form-data');
 
     const formData:FormData = new FormData();
     formData.append('teaSessionId', <string><any>teaSessionId);
@@ -48,16 +50,18 @@ export class MenuItemService
     return this.http.post(`${MenuItemService.URL}/find-by-tea-session-id`,params.toString(), { headers: headers }).map(res => res.json());
   }
 
-  updateMenuItem(menuItemId: number, name: string, imagePath: File):Observable<Map<string,any>>
+  updateMenuItem(menuItemId: number, name: string, imagePath?: File):Observable<Map<string,any>>
   {
     const headers = new Headers();
-    headers.append('Content-Type', 'multipart/form-data');
-    headers.append('enctype', 'multipart/form-data');
+    // headers.append('Content-Type', 'multipart/form-data');
+    // headers.append('enctype', 'multipart/form-data');
 
     const formData = new FormData();
     formData.append('menuItemId', <string><any>menuItemId);
     formData.append('name', name);
-    formData.append('imagePath', imagePath);
+    if(imagePath != undefined){
+      formData.append('imagePath', imagePath);
+    }
     return this.http.post(`${MenuItemService.URL}/update`,formData, { headers: headers }).map(res => res.json());
   }
 
@@ -67,7 +71,7 @@ export class MenuItemService
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
     const params = new URLSearchParams();
-    params.append('teaSessionId', <string><any>menuItemId);
+    params.append('menuItemId', <string><any>menuItemId);
     return this.http.post(`${MenuItemService.URL}/delete-by-id`,params.toString(), { headers: headers }).map(res => res.json());
   }
 }

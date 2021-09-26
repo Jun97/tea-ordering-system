@@ -13,7 +13,6 @@
 <table>
     <thead>
         <tr>
-            <th>NO</th>
             <th>USER ID</th>
             <th>EMAIL</th>
             <th>ACCOUNT STATUS</th>
@@ -22,8 +21,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let u of users; let i = index">
-            <td>{{i + 1}}</td>
+        <tr *ngFor="let u of users;">
             <td>{{u.userId}}</td>
             <td>{{u.email}}</td>
             <td *ngIf="u.isEnabled">Active</td>
@@ -32,10 +30,10 @@
             <td *ngIf="u.isAdmin">Admin</td>
             <td *ngIf="!u.isAdmin">User</td>
             <td>
-                <a *ngIf="u.isEnabled" href="javascript:void(0)"  (click)="modifyAccountStatus(u.userId, u.isEnabled, u.isAdmin)">lock</a> |
-                <a *ngIf="!u.isEnabled" href="javascript:void(0)"  (click)="modifyAccountStatus(u.userId, u.isEnabled, u.isAdmin)">Unlock</a> |
-                <a *ngIf="u.isAdmin" href="javascript:void(0)"  (click)="modifyRole(u.userId, u.isEnabled, u.isAdmin)">User</a>
-                <a *ngIf="!u.isAdmin" href="javascript:void(0)"  (click)="modifyRole(u.userId, u.isEnabled, u.isAdmin)">Admin</a>
+                <a *ngIf="u.isEnabled" href="javascript:void(0)"  (click)="updateUserPrivilege(u.userId, false, u.isAdmin)">Lock</a> |
+                <a *ngIf="!u.isEnabled" href="javascript:void(0)"  (click)="updateUserPrivilege(u.userId, true, u.isAdmin)">Unlock</a> |
+                <a *ngIf="u.isAdmin" href="javascript:void(0)"  (click)="updateUserPrivilege(u.userId, u.isEnabled, false)">Downgrade to User</a>
+                <a *ngIf="!u.isAdmin" href="javascript:void(0)"  (click)="updateUserPrivilege(u.userId, u.isEnabled, true)">Upgrade to Admin</a>
             </td>
         </tr>
     </tbody>

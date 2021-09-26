@@ -44,7 +44,7 @@ private[impl] class OrderServiceImpl extends OrderService
       Map(
         "error" -> false,
         "message" -> "Order created",
-        "orderItem" -> modifiedT
+        "order" -> modifiedT
       )
     } else {
       Map(

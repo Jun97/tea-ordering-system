@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile
 trait TeaSessionService
 {
   def add( name: String,
-                     description: String,
+                     description: Option[String],
                      treatDate: Date,
                      cutOffDate: Date,
                      isPublic: Boolean,
@@ -27,7 +27,7 @@ trait TeaSessionService
                    cutOffDate: Date,
                    imagePath: Option[MultipartFile],
                    isPublic: Boolean,
-                   password: String): Map[String, Any]
+                   password: Option[String]): Map[String, Any]
 //  def updatePrivacy(teaSessionId: Long,
 //                              userId:Long,
 //                              isPublic: Boolean,

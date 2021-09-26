@@ -19,6 +19,8 @@ import org.apache.commons.io.FilenameUtils
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionSynchronizationAdapter
+import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -306,11 +308,18 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
     val to = menuItemDao.getById(menuItemId)
 
+    TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+      override def afterCommit(): Unit = { //do stuff right after commit
+        val t = to.get
+        deleteImage(t.imagePath)
+      }
+    })
+
     if(to.isDefined)
     {
       val t = to.get
-      deleteImage(t.imagePath)
       menuItemDao.deleteById(menuItemId)
+
 
       Map(
         "error" -> false,

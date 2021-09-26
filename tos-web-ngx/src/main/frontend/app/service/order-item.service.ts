@@ -3,6 +3,7 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { OrderModel } from '../model/order.model';
+import {OrderItemModel} from "../model/order-item.model";
 
 @Injectable()
 export class OrderItemService
@@ -23,7 +24,7 @@ export class OrderItemService
         return this.http.post(`${OrderItemService.URL}/add`,params.toString(), { headers: headers }).map(res => res.json());
     }
 
-    findOrderItemByOrderId(orderId: number):Observable<Map<string,any>>
+    findOrderItemByOrderId(orderId: number):Observable<OrderItemModel[]>
     {
         const headers = new Headers();
         headers.append('Content-Type', 'application/x-www-form-urlencoded');

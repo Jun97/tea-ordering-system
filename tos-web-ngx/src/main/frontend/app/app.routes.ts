@@ -6,8 +6,8 @@ export const routes: Routes = [
   { path: 'test', loadChildren: './test/test.module#TestModule' },
   { path: 'login', loadChildren: './login/login.module#LoginModule' },
   { path: 'tea-session', loadChildren: './tea-session/tea-session.module#TeaSessionModule' },
-  // { path: 'user', loadChildren: './users/users.module#UserModule' },
-  // { path: 'order', loadChildren: './orders/orders.module#OrderModule' },
+  { path: 'user', loadChildren: './user/user.module#UserModule' },
+  { path: 'order', loadChildren: './order/order.module#OrderModule' },
     
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'home' },

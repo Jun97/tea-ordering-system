@@ -1,0 +1,143 @@
+<style>
+    table {
+        width: 100%;
+    }
+
+    span td, th {
+        text-align: left;
+    }
+</style>
+
+    <h2>Make An Order</h2>
+
+    <ng-container *ngIf="currentTeaSession">
+        <div *ngIf="currentTeaSession.imagePath">
+            <img style="width: 33%" [src]=currentTeaSession.imagePath />
+        </div>
+        <h3>
+            {{currentTeaSession.name}}
+        </h3>
+        <p *ngIf="currentTeaSession.description">{{currentTeaSession.description}}</p>
+        <p>Hosted by: {{currentTeaSession.userTeaSession.email}}</p>
+        <p>{{currentTeaSession.treatDate | date:'short'}}</p>
+        <p>{{currentTeaSession.cutOffDate  | date:'short'}}</p>
+
+
+
+        <ng-container *ngIf="this.currentTeaSession && !this.currentTeaSession.isPublic && !this.isMenuItemAccessGranted == undefined">
+            <h2>Password Required for Menu</h2>
+            <h3>This is private Tea Session, provide Tea Session password to proceed</h3>
+            <form #formMenuAuth="ngForm" (ngSubmit)="onMenuPasswordSubmit()">
+                <div>
+                    <label for="formMenuAuthPassword">Tea Session Password: </label>
+                    <input type="password" id="formMenuAuthPassword" name="formMenuAuthPassword" class="form-control" #formMenuAuthPassword="ngModel" [(ngModel)]="formModelMenuAuthPassword"
+                           required
+                           minlength="6">
+                    <div *ngIf="formMenuAuthPassword.errors && (formMenuAuthPassword.dirty || formMenuAuthPassword.touched)">
+                        <div [hidden]="!formMenuAuthPassword.errors.minlength">Password must be at least 6 characters long</div>
+                    </div>
+                </div>
+                <br>
+
+                <button [disabled]="!formMenuAuth.form.valid" name="formSubmit" type="submit">Verify</button>
+            </form>
+            <p *ngIf="menuAuthMessage">{{menuAuthMessage}}</p>
+        </ng-container>
+
+
+
+        <ng-container *ngIf="isMenuItemAccessGranted && currentTeaSession.menuItems">
+        <h3>Menu Items Available: </h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th>NAME</th>
+                <th>IMAGE</th>
+                <th>ACTION</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of currentTeaSession.menuItems; let i = index">
+                <td>{{item.name}}</td>
+                <td><div *ngIf="item.imagePath"><img style="width: 33%;" [src]=item.imagePath> </div></td>
+<!--                <ng-container *ngIf="currentDate <= currentTeaSession.cutOffDate">-->
+                <td>
+                    <a href="javascript:void(0)" (click)="updateUserOrderItem(this.currentTeaSession.orders[0].orderId, item.menuItemId, 1)">Add to My Order</a>
+                </td>
+<!--                </ng-container>-->
+            </tr>
+            </tbody>
+        </table>
+        </ng-container>
+
+
+
+        <ng-container *ngIf="isOrderItemUpdated">
+        <h3>My Orders</h3>
+        <p *ngIf="currentDate > currentTeaSession.cutOffDate">Your order is read-only after Tea Session Cut-Off.</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>NAME</th>
+                <th>IMAGE</th>
+                <th>QUANTITY</th>
+                <th>ACTION</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of currentTeaSession.orders[0].orderItems;">
+                <ng-container *ngIf="item">
+                <td>{{item.menuItemOrderItem.name}}</td>
+                <td><img style="width: 16%;" *ngIf="item.menuItemOrderItem.imagePath" [src]="item.menuItemOrderItem.imagePath"></td>
+                <td>{{item.quantity}}</td>
+<!--                <ng-container *ngIf="currentDate <= currentTeaSession.cutOffDate">-->
+                    <td>
+                        <div>
+                            <form #formOrder="ngForm" (ngSubmit)="updateUserOrderItem(this.currentTeaSession.orders[0].orderId, item.menuItemOrderItem.menuItemId,formOrder.form.value.quantity)">
+                                <input [step]="1" [min]="1" type="number" name="quantity" ngModel="quantity">
+                                <button [disabled]="!formOrder.form.valid" type="submit">Edit Quantity</button>
+                            </form>
+                        </div>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)"  (click)="deleteUserOderItemById(item.orderItemId)">Delete</a>
+                    </td>
+<!--                </ng-container>-->
+                    </ng-container>
+            </tr>
+            </tbody>
+        </table>
+
+        <br>
+        </ng-container>
+
+
+
+        <h2>Summary List Of Order</h2>
+        <button (click)="getOrderSummary(currentTeaSession.teaSessionId)" type="button" name="generateOrderSummary">Refresh Order Summary</button>
+        <ng-container *ngIf="currentOrderSummary">
+        <table>
+            <thead>
+            <tr>
+                <th>ITEM NAME</th>
+                <th>QUANTITY</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let key of objectKeys(currentOrderSummary);">
+                <td>{{key}}</td>
+                <td>{{currentOrderSummary[key]}}</td>
+            </tr>
+            </tbody>
+        </table>
+        </ng-container>
+        <br>
+
+    </ng-container>
+
+
+<br>
+<button [routerLink]="['/tea-session']" >Back</button>
+
