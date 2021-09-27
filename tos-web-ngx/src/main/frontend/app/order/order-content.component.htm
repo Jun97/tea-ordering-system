@@ -19,14 +19,14 @@
         </h3>
         <p *ngIf="currentTeaSession.description">{{currentTeaSession.description}}</p>
         <p>Hosted by: {{currentTeaSession.userTeaSession.email}}</p>
-        <p>{{currentTeaSession.treatDate | date:'short'}}</p>
-        <p>{{currentTeaSession.cutOffDate  | date:'short'}}</p>
+        <p>Order before: {{currentTeaSession.cutOffDate  | date:'dd MMM yyyy'}}</p>
+        <p>Treat date:{{currentTeaSession.treatDate | date:'dd MMM yyyy'}}</p>
 
 
 
-        <ng-container *ngIf="this.currentTeaSession && !this.currentTeaSession.isPublic && !this.isMenuItemAccessGranted == undefined">
+        <ng-container *ngIf="this.currentTeaSession && this.isMenuItemAccessGranted === false">
             <h2>Password Required for Menu</h2>
-            <h3>This is private Tea Session, provide Tea Session password to proceed</h3>
+            <h3>This is private Tea Session, provide Tea Session password to proceed for order</h3>
             <form #formMenuAuth="ngForm" (ngSubmit)="onMenuPasswordSubmit()">
                 <div>
                     <label for="formMenuAuthPassword">Tea Session Password: </label>
@@ -115,7 +115,7 @@
 
 
 
-        <h2>Summary List Of Order</h2>
+        <h2>Summary List Of Overall Order</h2>
         <button (click)="getOrderSummary(currentTeaSession.teaSessionId)" type="button" name="generateOrderSummary">Refresh Order Summary</button>
         <ng-container *ngIf="currentOrderSummary">
         <table>

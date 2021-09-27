@@ -29,7 +29,6 @@ export class OrderContentComponent implements OnInit
     menuAuthMessage: string;
 
     formModelMenuAuthPassword: string = "";
-    modelOrderQuantity: number[] = [];
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -58,13 +57,13 @@ export class OrderContentComponent implements OnInit
             (res: TeaSessionModel) => {
                 this.currentTeaSession = res;
 
-                this.currentTeaSession.cutOffDate = this.datePipe.transform(res.cutOffDate, "dd-MM-yyyy");
-                this.currentTeaSession.treatDate = this.datePipe.transform(res.treatDate, "dd-MM-yyyy");
+                // this.currentTeaSession.cutOffDate = this.datePipe.transform(res.cutOffDate, "dd-MM-yyyy");
+                // this.currentTeaSession.treatDate = this.datePipe.transform(res.treatDate, "dd-MM-yyyy");
                 this.currentTeaSession.password = "";
-                if(this.currentTeaSession.isPublic){
+
                     this.initMenuSection();
                     this.getOrderSummary(teaSessionId);
-                }
+
 
                 console.log(this.currentTeaSession);
             },

@@ -1,9 +1,9 @@
-import { Component, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild, ViewChildren} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TeaSessionService } from '../service/tea-session.service';
 import { FileUploader } from 'ng2-file-upload';
 import { DatePipe } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {FormsModule, NgForm, ReactiveFormsModule} from '@angular/forms';
 
 import { TeaSessionModel } from '../model/tea-session.model'
 import {MenuItemModel} from "../model/menu-item.model";
@@ -14,9 +14,20 @@ import {MenuItemService} from "../service/menu-item.service";
 {
   templateUrl: './tea-session-modify.component.htm'
 })
-export class TeaSessionModifyComponent implements OnInit
+export class TeaSessionModifyComponent implements OnInit, AfterViewInit
 {
-
+    elementTeaSessionFileInput: ElementRef;
+    @ViewChild('formTeaSessionImage') set formTeaSessionImageContent(formTeaSessionImageContent: ElementRef) {
+        if(formTeaSessionImageContent) { // initially setter gets called with undefined
+            this.elementTeaSessionFileInput = formTeaSessionImageContent;
+        }
+    }
+    elementMenuFileInput: ElementRef;
+    @ViewChild('formMenuImage') set formMenuImageContent(formMenuImageContent: ElementRef) {
+        if(formMenuImageContent) { // initially setter gets called with undefined
+            this.elementTeaSessionFileInput = formMenuImageContent;
+        }
+    }
     currentTeaSession: TeaSessionModel;
     currentUser: UserModel;
     currentMenuItem: MenuItemModel[] = [];
@@ -41,13 +52,18 @@ export class TeaSessionModifyComponent implements OnInit
                 private router: Router,
                 private teaSessionService: TeaSessionService,
                 private  menuItemService: MenuItemService,
-                private datePipe:DatePipe)
+                private datePipe:DatePipe,
+                private changeDetectorRef : ChangeDetectorRef)
     {}
 
     ngOnInit() {
         this.parseCurrentTeaSessionParam();
         this.fetchCurrentUser();
         this.initMenuForm();
+    }
+
+    ngAfterViewInit() {
+
     }
 
     private parseCurrentTeaSessionParam() {
@@ -70,9 +86,8 @@ export class TeaSessionModifyComponent implements OnInit
                 this.currentTeaSession.cutOffDate = this.datePipe.transform(res.cutOffDate, "yyyy-MM-dd");
                 this.currentTeaSession.treatDate = this.datePipe.transform(res.treatDate, "yyyy-MM-dd");
                 this.currentTeaSession.password = "";
-                if(this.currentTeaSession.isPublic){
-                    this.initMenuSection();
-                }
+
+                this.initMenuSection();
 
                 console.log(this.currentTeaSession);
             },
@@ -169,8 +184,10 @@ export class TeaSessionModifyComponent implements OnInit
                 (res: any) => {
                     this.menuItemSubmitMessage = res.message;
                     if(!res.error){
+                        res.menuItem.imagePath = this.addRandomQuery(res.menuItem.imagePath);
                        this.currentMenuItem = [...this.currentMenuItem, res.menuItem];
                        this.initMenuForm();
+
                     }
                 },
                 (err: any)=> {
@@ -188,9 +205,10 @@ export class TeaSessionModifyComponent implements OnInit
                     this.menuItemSubmitMessage = res.message;
                     if(!res.error){
                         let index = this.currentMenuItem.findIndex(x => x.menuItemId === this.formMenuItem.menuItemId);
+                        res.menuItem.imagePath = this.addRandomQuery(res.menuItem.imagePath);
+                        console.log(res.menuItem.imagePath);
                         this.currentMenuItem[index] = res.menuItem;
                         this.initMenuForm();
-                        this.modeMenuItem = "add"; //Assign back to default mode
                     }
                 },
                 (err: any)=> {
@@ -205,7 +223,7 @@ export class TeaSessionModifyComponent implements OnInit
                 this.menuItemSubmitMessage = res.message;
                 if(!res.error){
                     let index = this.currentMenuItem.findIndex(x => x.menuItemId === menuItem.menuItemId);
-                    delete this.currentMenuItem[index];
+                    this.currentMenuItem.splice(index, 1);
                 }
             },
             (err: any) => {
@@ -291,6 +309,8 @@ export class TeaSessionModifyComponent implements OnInit
         this.formMenuItem = new MenuItemModel(
             null, "", null, null, null
         );
+        this.menuItemImagePreview = undefined;
+        this.modeMenuItem = "add";
     }
 
     private clearMenuForm() {
@@ -308,5 +328,12 @@ export class TeaSessionModifyComponent implements OnInit
             "",
             null ,
             null, null, null)
+        this.teaSessionImagePreview = undefined;
     }
+
+    private addRandomQuery(url: string): string {
+        return url + "?q=" + Math.random().toString(8);
+    }
+
+
 }

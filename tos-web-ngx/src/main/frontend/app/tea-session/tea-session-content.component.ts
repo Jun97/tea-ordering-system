@@ -39,7 +39,7 @@ export class TeaSessionContentComponent implements OnInit
         (res: any)=> {
           if(!res.error) {
             let index = this.teaSession.findIndex(x => x.teaSessionId === teaSessionId);
-            delete this.teaSession[index];
+            this.teaSession.splice(index, 1);
           } else {
             console.log(res);
           }

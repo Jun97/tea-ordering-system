@@ -311,7 +311,9 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
     TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
       override def afterCommit(): Unit = { //do stuff right after commit
         val t = to.get
-        deleteImage(t.imagePath)
+        if(!isStringEmpty(t.imagePath)){
+          deleteImage(t.imagePath)
+        }
       }
     })
 
@@ -338,9 +340,14 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
   override def deleteImage(imagePath: String): Boolean= {
 
     try{
-    val deletePath = Paths.get(IMAGE_FILE_DIRECTORY + imagePath)
-    Files.delete(deletePath)
-    true
+      val deletePath = Paths.get(IMAGE_FILE_DIRECTORY + imagePath)
+      if(Files.exists(deletePath)){
+      Files.delete(deletePath)
+      true
+      }
+      else {
+        false
+      }
     }
     catch {
       case e: IOException =>

@@ -19,8 +19,8 @@
             <th>NAME</th>
             <th>DESCRIPTION</th>
             <th>CREATED BY</th>
-            <th>TREAT DATE</th>
             <th>CUT-OFF DATE</th>
+            <th>TREAT DATE</th>
             <th *ngIf="currentUser.isAdmin">VISIBILITY</th>
         </tr>
     </thead>
@@ -31,12 +31,11 @@
                 <td>{{item.name}}</td>
                 <td>{{item.description}}</td>
                 <td>{{item.userTeaSession.email}}</td>
-                <td>{{item.treatDate | date:'short'}}</td>
-                <td>{{item.cutOffDate  | date:'short'}}</td>
-                <ng-container *ngIf="currentUser.isAdmin || currentUser.userId == item.userTeaSession.userId">
-                    <td *ngIf="item.isPublic">Public</td>
-                    <td *ngIf="!item.isPublic">Private</td>
-                </ng-container>
+                <td>{{item.cutOffDate  | date:'dd MMM yyyy'}}</td>
+                <td>{{item.treatDate | date:'dd MMM yyyy'}}</td>
+
+                <td *ngIf="item.isPublic">Public</td>
+                <td *ngIf="!item.isPublic">Private</td>
 <!--                <td>-->
 <!--                    <ng-container *ngIf="currentUser.isAdmin || currentUser.userId == item.userTeaSession.userId">-->
 <!--                        <a *ngIf="!item.isPublic" href="javascript:void(0)" (click)="updateVisibility(item.teaSessionId, true, null)">Update to Public</a>-->
