@@ -2,32 +2,6 @@
 <h2 *ngIf="modeTeaSession == 'edit'">Edit Tea Session</h2>
 
 <!--<h4>Remark: You need to have at least one menu item to save current Tea Session.</h4>-->
-<!--<div>-->
-<!--    <ng-container *ngIf="form.options.teaSession==null || !fetchMenu || isUploadSuccess">-->
-<!--        <div>-->
-<!--            <label for="formMenu">Menu: </label>-->
-<!--            <input type="file" accept="image/*" id="formMenu" name="formMenu" (change)="onFileSelected($event)" required>-->
-<!--            <div *ngIf="isImageMessage">{{isImageMessage}}</div>-->
-<!--            <div>-->
-<!--                <img [src]="imageURL" *ngIf="imageURL">-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <br>-->
-<!--        <button [disabled]="!form.data.menu || isImageMessage" type="button" (click)="onUpload()">Upload</button>-->
-<!--    </ng-container>-->
-
-<!--    <ng-container *ngIf="form.options.teaSession!=null && fetchMenu && !isUploadSuccess">-->
-<!--        <div>-->
-<!--            <label for="formMenu">Menu: {{fetchMenu.substring(fetchMenu.indexOf("_") + 1)}}</label>-->
-<!--            <button id="formMenu" (click)="changeMenu()">Change</button>-->
-<!--            <div>-->
-<!--                <img src="assets/menu/{{fetchMenu}}">-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <br>-->
-<!--    </ng-container>-->
-<!--    <p *ngIf="isUploadSuccess">{{menuName}} - Upload Successful</p>-->
-<!--</div>-->
 <!--<p>*****************************************************************************************************</p>-->
 <ng-container *ngIf="currentTeaSession">
 <form #formTeaSession="ngForm" (ngSubmit)="onTeaSessionSubmit()">
@@ -53,24 +27,19 @@
     <div>
         <label for="formTeaSessionImage">Image: </label>
         <input type="file" accept="image/*" id="formTeaSessionImage" name="formTeaSessionImage" #formTeaSessionImage (change)="onTeaSessionFileSelected($event)">
+        <button type="button" (click)="removeTeaSessionFileInputAndPreview(formTeaSessionImage)">Remove File</button>
         <div *ngIf="teaSessionImageMessage">{{teaSessionImageMessage}}</div>
         <div >
             <img style="width: 33%" *ngIf="currentTeaSession.imagePath" [src]="currentTeaSession.imagePath" onerror="this.style.display='none'">
-            <img style="width: 33%" *ngIf="teaSessionImagePreview" [src]="teaSessionImagePreview" onerror="this.style.display='none'">
+            <img style="width: 33%" *ngIf="teaSessionImagePreview" [src]="teaSessionImagePreview | safeUrl" onerror="this.style.display='none'">
         </div>
     </div>
     <br>
 
-<!--    <div>-->
-<!--&lt;!&ndash;        <label for="formTeaSessionCreatedBy">Created by (userID): </label>&ndash;&gt;-->
-<!--        <input type="hidden" id="formTeaSessionCreatedBy" name="formTeaSessionCreatedBy" class="form-control" #formTeaSessionCreatedBy="ngModel" [(ngModel)]="currentTeaSession.userTeaSession.userId"-->
-<!--               required>-->
-<!--    </div>-->
-<!--    <br>-->
-
     <div>
         <label for="formTeaSessionCutOffDate">Cut-off date: </label>
         <input type="date" id="formTeaSessionCutOffDate" name="formTeaSessionCutOffDate" class="form-control" #formTeaSessionCutOffDate="ngModel" [(ngModel)]="currentTeaSession.cutOffDate"
+               (change)="checkCutOffAndTreatDate(this.currentTeaSession.cutOffDate, this.currentTeaSession.treatDate)"
                value="{{ currentTeaSession.cutOffDate }}"
                required>
         <div *ngIf="formTeaSessionCutOffDate.errors && (formTeaSessionCutOffDate.dirty || formTeaSessionCutOffDate.touched)">
@@ -82,12 +51,15 @@
     <div>
         <label for="formTeaSessionTreatDate">Treat date: </label>
         <input type="date" id="formTeaSessionTreatDate" name="formTeaSessionTreatDate" class="form-control" #formTeaSessionTreatDate="ngModel" [(ngModel)]="currentTeaSession.treatDate"
+               (change)="checkCutOffAndTreatDate(this.currentTeaSession.cutOffDate, this.currentTeaSession.treatDate)"
                value="{{ currentTeaSession.treatDate }}"
                required>
         <div *ngIf="formTeaSessionTreatDate.errors && (formTeaSessionTreatDate.dirty || formTeaSessionTreatDate.touched)">
             <div [hidden]="!formTeaSessionTreatDate.errors.required">Required</div>
+
         </div>
     </div>
+    <div *ngIf="!cutOffAndTreatDateValid">Treat Date must be placed AFTER Cut Off Date. </div>
     <br>
 
     <div>
@@ -111,8 +83,8 @@
     </div>
     <br>
 
-    <div (click)="formTeaSession.form.markAsTouched({onlySelf: true})">
-    <button [disabled]="!formTeaSession.form.valid" name="formSubmit" type="submit">Save</button>
+    <div (click)="formTeaSession.form.markAsTouched()">
+    <button [disabled]="!formTeaSession.form.valid || !cutOffAndTreatDateValid" name="formSubmit" type="submit">Save</button>
     </div>
 </form>
 <p *ngIf="teaSessionSubmitMessage">{{teaSessionSubmitMessage}}</p>
@@ -190,12 +162,12 @@
 
         <div>
             <label for="formMenuImage">Image: </label>
-            <input type="file" accept="image/*" id="formMenuImage" name="formMenuImage" #formMenuImage (change)="onMenuFileSelected($event)" caN>
-            <button type="button" (click)="formMenuImage.value = null">Remove File</button>
+            <input type="file" accept="image/*" id="formMenuImage" name="formMenuImage" #formMenuImage (change)="onMenuFileSelected($event)">
+            <button type="button" (click)="removeMenuFileInputAndPreview(formMenuImage)">Remove File</button>
             <div *ngIf="menuItemImageMessage">{{menuItemImageMessage}}</div>
             <div>
                 <img style="width: 33%" *ngIf="formMenuItem.imagePath" [src]="formMenuItem.imagePath" onerror="this.style.display='none'">
-                <img style="width: 33%" *ngIf="menuItemImagePreview" [src]="menuItemImagePreview" onerror="this.style.display='none'">
+                <img style="width: 33%" *ngIf="menuItemImagePreview" [src]="menuItemImagePreview | safeUrl" onerror="this.style.display='none'">
             </div>
         </div>
         <br>

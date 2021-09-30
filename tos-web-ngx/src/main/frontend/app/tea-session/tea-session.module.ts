@@ -11,6 +11,7 @@
   import * as resolve from './tea-session.resolve';
   import { routes } from './tea-session.routes';
   import {MenuItemService} from "../service/menu-item.service";
+  import {SafeUrlPipe} from "../pipe/safe-url.pipe";
 
   @NgModule({
     imports: [
@@ -26,7 +27,7 @@
       DatePipe,
       MenuItemService,
     ],
-    declarations: [ TeaSessionContentComponent, TeaSessionModifyComponent ]
+      declarations: [TeaSessionContentComponent, TeaSessionModifyComponent, SafeUrlPipe]
   })
   export class TeaSessionModule {
     public static routes = routes;

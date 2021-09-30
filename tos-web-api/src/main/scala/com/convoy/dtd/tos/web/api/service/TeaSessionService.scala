@@ -19,7 +19,7 @@ trait TeaSessionService
   def getById(teaSessionId: Long): Option[TeaSessionBean]
   def findUpcoming(): List[TeaSessionBean]
   def getImageByImageName(imageName: String): Array[Byte]
-  def updateDetail(teaSessionId: Long,
+  def update(teaSessionId: Long,
                    userId:Long,
                    name: String,
                    description: Option[String],
@@ -35,6 +35,6 @@ trait TeaSessionService
   def deleteById(teaSessionId: Long, userId: Long): Map[String, Any]
   def deleteImage(imagePath: String): Boolean
   def generateImageUrl(imageName: String): String
-
+  def getShareLink(teaSessionId: Long): Map[String, Any]
 
 }

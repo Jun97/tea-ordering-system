@@ -16,7 +16,7 @@ export const routes:Routes = [
  },
 
  {
-       path: 'add',
+       path: 'register',
        component: TemplateDefaultComponent,
        children: [
          { path: '', component: UserAddComponent, outlet: 'content' },

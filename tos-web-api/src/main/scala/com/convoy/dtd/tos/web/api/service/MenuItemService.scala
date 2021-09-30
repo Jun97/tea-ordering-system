@@ -15,4 +15,5 @@ trait MenuItemService
   def update(menuItemId:Long, name: String, imagePath: Option[MultipartFile]): Map[String, Any]
   def deleteById(menuItemId: Long): Map[String, Any]
   def deleteImage(imagePath: String): Boolean
+  def findByShareLink(teaSessionId: Long, cipherText: String): Map[String, Any]
 }

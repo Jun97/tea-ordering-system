@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core'
-import { Http, Headers, RequestOptions } from '@angular/http';
+import {Http, Headers, RequestOptions, Response} from '@angular/http';
 import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
+// import { Observable } from 'rxjs/Observable';
+import {Observable, Observer} from 'rxjs';
+// import 'rxjs/add/operator/map';
 import { TeaSessionModel } from '../model/tea-session.model';
+import {map, switchMap} from "rxjs/operators";
+import {of} from "rxjs/observable/of";
 
 @Injectable()
 export class TeaSessionService
@@ -83,7 +86,7 @@ export class TeaSessionService
     if(teaSessionImagePath != undefined){
       formData.append('teaSessionImagePath', teaSessionImagePath);
     }
-    return this.http.post(`${TeaSessionService.URL}/update-detail`,formData, { headers: headers }).map(res => res.json());
+    return this.http.post(`${TeaSessionService.URL}/update`,formData, { headers: headers }).map(res => res.json());
   }
 
   // updateTeaSessionByVisibility(teaSessionId:number, isPublic:boolean, password: string):Observable<Map<string,any>>
@@ -108,4 +111,70 @@ export class TeaSessionService
     params.append('userId', <string><any>userId);
     return this.http.post(`${TeaSessionService.URL}/delete-by-id`,params.toString(), { headers: headers }).map(res => res.json());
   }
+
+  getFileFromUrl(url: string):Observable<File> {
+    let filename = url.split('/').pop();
+    return this.http
+        .get(url, {responseType:2}) //Response as ArrayBuffer for 2
+        .pipe(
+            map((response: Response) => new File([response.arrayBuffer()], filename))
+        );
+  }
+
+    getFileFromUrl2(url: string):Observable<File> {
+      let filename = url.split('/').pop();
+
+      const headers = new Headers();
+      headers.append('observe', 'response');
+      return this.http
+          .get(url, {headers: headers, responseType:2})
+          .pipe(
+              switchMap((response: Response) => this.getFileFromArrayBuffer(response.arrayBuffer(), filename))
+          );
+    }
+
+    private getFileFromArrayBuffer(arrayBuffer: ArrayBuffer, filename: string) {
+    return Observable.create((observer:Observer<File>)=> {
+
+      let fileReader =  new FileReader();
+
+      fileReader.onerror = err => observer.error(err);
+      fileReader.onabort = err => observer.error(err);
+      fileReader.onload = () => {
+        let file: File = new File([fileReader.result as ArrayBuffer], filename);
+        observer.next(file);
+      }
+      fileReader.onloadend = () => observer.complete();
+
+      return fileReader.readAsArrayBuffer(new Blob([arrayBuffer]));
+    })
+
+  }
+
+//   map((response: Response) => {
+//
+//   const arrayBufferCallback = new Promise<ArrayBuffer>( ((resolve, reject) => {
+//       let arrayBuffer: ArrayBuffer;
+//       let fileReader =  new FileReader();
+//       fileReader.readAsArrayBuffer(new Blob([response]));
+//       fileReader.onload = (event) => {
+//         arrayBuffer = fileReader.result as ArrayBuffer;
+//         resolve (arrayBuffer);
+//       }
+//     })
+// );
+//
+//
+//   const fileCallback:Observable<File> = Observable.fromPromise(arrayBufferCallback)
+//     .mergeMap( (arrayBuffer: ArrayBuffer, index: number) => {
+//       let file: File = new File([arrayBuffer], filename);
+//       return file;
+//     }).pipe(
+//
+//     );
+//
+// })
+
+
+
 }

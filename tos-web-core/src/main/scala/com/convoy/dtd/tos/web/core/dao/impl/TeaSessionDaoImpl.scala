@@ -14,9 +14,9 @@ private[impl] class TeaSessionDaoImpl extends AbstractGenericDao[TeaSessionBean,
 
   override def findUpcoming(): List[TeaSessionBean] =
   {
+    //.where( QTeaSessionBean.cutOffDate > Calendar.getInstance().getTime )
     val q = new JPAQueryFactory((entityManager))
     q.selectFrom(QTeaSessionBean)
-      .where( QTeaSessionBean.cutOffDate > Calendar.getInstance().getTime )
       .orderBy(QTeaSessionBean.treatDate.asc)
       .fetch.asScala.toList
   }

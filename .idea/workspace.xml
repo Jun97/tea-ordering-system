@@ -2,20 +2,53 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="630d4d30-1b37-4612-9fd8-1c53999f6272" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/AesEncryptionService.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/AesEncryptionServiceImpl.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/pipe/safe-url.pipe.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DATA/db/tea_session/tea_session_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/DATA/db/tea_session/tea_session_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DATA/db/tea_session/tea_session_7.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_22.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_30.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_32.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_36.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_36.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_38.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_39.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_40.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_41.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_43.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_44.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_46.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_47.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_48.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_49.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_50.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_51.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_52.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_53.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_54.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/menu_item/menu_item_74.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/tea_session/tea_session_19.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/tea_session/tea_session_23.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/tea_session/tea_session_24.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/tea_session/tea_session_25.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/tea_session/tea_session_26.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/tea_session/tea_session_27.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/tea_session/tea_session_28.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATA/db/tea_session/tea_session_9.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/MenuItemService.scala" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/MenuItemService.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/TeaSessionService.scala" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/TeaSessionService.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/dao/impl/TeaSessionDaoImpl.scala" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/dao/impl/TeaSessionDaoImpl.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/MenuItemController.scala" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/MenuItemController.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/TeaSessionController.scala" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/TeaSessionController.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/MenuItemServiceImpl.scala" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/MenuItemServiceImpl.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/TeaSessionServiceImpl.scala" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/TeaSessionServiceImpl.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tos-web-ngx/dist/webpack-assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/dist/webpack-assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/order/order-content.component.htm" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/order/order-content.component.htm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/order/order-content.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/order/order-content.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-content.component.htm" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-content.component.htm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-content.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-content.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/menu-item.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/menu-item.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/tea-session.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/tea-session.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-modify.component.htm" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-modify.component.htm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-modify.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-modify.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/template/default/template-default-footer.component.htm" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/template/default/template-default-footer.component.htm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/template/default/template-default-header.component.htm" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/template/default/template-default-header.component.htm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-content.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-content.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-content.component.htm" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-content.component.htm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user.routes.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -50,21 +83,63 @@
     <favorites_list name="tos" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-content.component.htm">
+        <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/MenuItemServiceImpl.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="331">
-              <caret line="37" column="13" lean-forward="true" selection-start-line="37" selection-start-column="13" selection-end-line="37" selection-end-column="13" />
+            <state relative-caret-position="149">
+              <caret line="377" column="45" selection-start-line="377" selection-start-column="45" selection-end-line="377" selection-end-column="117" />
+              <folding>
+                <element signature="e#51#122#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-content.component.ts">
+        <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/TeaSessionServiceImpl.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" selection-start-line="1" selection-end-line="1" />
+            <state relative-caret-position="110">
+              <caret line="378" column="176" selection-start-line="378" selection-start-column="176" selection-end-line="378" selection-end-column="176" />
+              <folding>
+                <element signature="e#50#86#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/AesEncryptionServiceImpl.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="74" selection-start-line="74" selection-end-line="74" />
+              <folding>
+                <element signature="e#50#81#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/TeaSessionController.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1836">
+              <caret line="108" selection-start-line="108" selection-end-line="108" />
+              <folding>
+                <element signature="e#42#63#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/MenuItemController.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="249">
+              <caret line="79" column="51" selection-start-line="79" selection-start-column="33" selection-end-line="79" selection-end-column="51" />
+              <folding>
+                <element signature="e#42#95#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -76,41 +151,42 @@
       <list>
         <option value="Package Object" />
         <option value="Scala Trait" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>init</find>
-      <find>findin</find>
-      <find>initUserOrder</find>
-      <find>map</find>
-      <find>.map</find>
-      <find>Generate</find>
-      <find>Hoste</find>
-      <find>transform</find>
-      <find>clear</find>
-      <find>menuItemAccessGranted</find>
-      <find>accessgranted</find>
-      <find>initMenuSection</find>
-      <find>getorelse</find>
-      <find>treat date</find>
-      <find>to proceed</find>
-      <find>Object.ass</find>
-      <find>formMenuItem</find>
-      <find>public</find>
-      <find>formMenuImage</find>
-      <find>file</find>
       <find>formmenuimage</find>
-      <find>formTeaSessionImage</find>
-      <find>remove</find>
-      <find>initMenuForm</find>
       <find>updateMenu</find>
       <find>src</find>
       <find>changeDetectorRef</find>
+      <find>delete</find>
+      <find>update</find>
+      <find>REMOVE</find>
+      <find>initMenuForm</find>
+      <find>Edit</find>
+      <find>onload</find>
+      <find>assign</find>
+      <find>DatePipe</find>
+      <find>formTeaSessionImage</find>
       <find>img</find>
-      <find>delete</find>
-      <find>delete</find>
+      <find>imagepath</find>
+      <find>elementTeaSessionFileInput</find>
+      <find>preview</find>
+      <find>append</find>
+      <find>event.target.files[0]</find>
+      <find>files</find>
+      <find>Array.from</find>
+      <find>getImageFileToMenuFormAndPreview</find>
+      <find>initTeaSessionForm</find>
+      <find>safe</find>
+      <find>remove</find>
+      <find>onTea</find>
+      <find>getorelse</find>
+      <find>salt</find>
+      <find>aesiv</find>
+      <find>spec</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -125,25 +201,16 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/OrderService.scala" />
-        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/OrderController.scala" />
-        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/OrderItemController.scala" />
-        <option value="$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/UserService.scala" />
-        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/UserController.scala" />
-        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/order.service.ts" />
         <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/dao/impl/OrderItemDaoImpl.scala" />
         <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/dao/OrderItemDao.scala" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/service.module.ts" />
-        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/MenuItemController.scala" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/login/login-content.component.htm" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-verify-password.component.ts" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/scriptFile.scala" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session.resolve.ts" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session.routes.ts" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user.module.ts" />
-        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user.routes.ts" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/app.module.ts" />
-        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session.module.ts" />
         <option value="$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/entity/TeaSessionBean.scala" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/login/login-content.component.ts" />
         <option value="$PROJECT_DIR$/tos-web-core/pom.xml" />
@@ -151,31 +218,40 @@
         <option value="$PROJECT_DIR$/tos-web-core/src/main/resources/application.properties" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/model/tea-session.model.ts" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/model/menu-item.model.ts" />
-        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/menu-item.service.ts" />
-        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/TeaSessionController.scala" />
-        <option value="$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/TeaSessionService.scala" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/user.service.ts" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-add.component.ts" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-add.component.htm" />
         <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/UserServiceImpl.scala" />
-        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-content.component.htm" />
-        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/tea-session.service.ts" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/app.routes.ts" />
         <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/OrderServiceImpl.scala" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/order/order.module.ts" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/order-item.service.ts" />
         <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/OrderItemServiceImpl.scala" />
-        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/TeaSessionServiceImpl.scala" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/order/order-content.component.htm" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/order/order-content.component.ts" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/template/default/template-default-footer.component.htm" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/template/default/template-default-header.component.htm" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-content.component.htm" />
-        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/MenuItemServiceImpl.scala" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-content.component.ts" />
+        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-content.component.ts" />
+        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/dao/impl/TeaSessionDaoImpl.scala" />
+        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/pipe/safe-html.pipe.ts" />
+        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session.module.ts" />
+        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user.routes.ts" />
+        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-content.component.htm" />
+        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/tea-session.service.ts" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-modify.component.htm" />
         <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-modify.component.ts" />
-        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-content.component.ts" />
+        <option value="$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/menu-item.service.ts" />
+        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/TeaSessionController.scala" />
+        <option value="$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/TeaSessionService.scala" />
+        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/MenuItemController.scala" />
+        <option value="$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/MenuItemService.scala" />
+        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/AesEncryption.scala" />
+        <option value="$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/AesEncryptionService.scala" />
+        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/MenuItemServiceImpl.scala" />
+        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/AesEncryptionServiceImpl.scala" />
+        <option value="$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/TeaSessionServiceImpl.scala" />
       </list>
     </option>
   </component>
@@ -234,8 +310,8 @@
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-12" />
     <option name="y" value="-12" />
-    <option name="width" value="1944" />
-    <option name="height" value="1044" />
+    <option name="width" value="861" />
+    <option name="height" value="461" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -392,29 +468,6 @@
               <item name="scala" type="462c0819:PsiDirectoryNode" />
               <item name="tos" type="462c0819:PsiDirectoryNode" />
               <item name="core" type="462c0819:PsiDirectoryNode" />
-              <item name="dao" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="tos" type="b2602c69:ProjectViewProjectNode" />
-              <item name="tos" type="462c0819:PsiDirectoryNode" />
-              <item name="tos-web-core" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="tos" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-              <item name="dao" type="462c0819:PsiDirectoryNode" />
-              <item name="impl" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="tos" type="b2602c69:ProjectViewProjectNode" />
-              <item name="tos" type="462c0819:PsiDirectoryNode" />
-              <item name="tos-web-core" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="tos" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
               <item name="mvc" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -472,6 +525,26 @@
               <item name="frontend" type="462c0819:PsiDirectoryNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
               <item name="order" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tos" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tos" type="462c0819:PsiDirectoryNode" />
+              <item name="tos-web-ngx" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="pipe" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tos" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tos" type="462c0819:PsiDirectoryNode" />
+              <item name="tos-web-ngx" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="service" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="tos" type="b2602c69:ProjectViewProjectNode" />
@@ -562,8 +635,8 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -727,12 +800,14 @@
       <workItem from="1632546081950" duration="26701000" />
       <workItem from="1632629907952" duration="36101000" />
       <workItem from="1632673965784" duration="87000" />
-      <workItem from="1632705231113" duration="24112000" />
+      <workItem from="1632705231113" duration="24467000" />
+      <workItem from="1632791094168" duration="48765000" />
+      <workItem from="1632964096180" duration="36420000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="578206000" />
+    <option name="totallyTimeSpent" value="663746000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -752,14 +827,14 @@
       <window_info id="UI Designer" order="2" />
       <window_info id="Favorites" order="3" sideWeight="0.50333333" side_tool="true" weight="0.27516234" />
       <window_info id="Designer" order="4" />
-      <window_info active="true" content_ui="combo" id="Project" order="5" sideWeight="0.49666667" visible="true" weight="0.302834" />
+      <window_info content_ui="combo" id="Project" order="5" sideWeight="0.49666667" visible="true" weight="0.31336033" />
       <window_info id="Structure" order="6" sideWeight="0.50333333" side_tool="true" weight="0.27516234" />
       <window_info id="Web" order="7" sideWeight="0.50333333" side_tool="true" weight="0.27516234" />
-      <window_info anchor="bottom" id="Terminal" order="0" sideWeight="0.4979757" visible="true" weight="0.28774422" />
+      <window_info anchor="bottom" id="Terminal" order="0" sideWeight="0.4979757" weight="0.28774422" />
       <window_info anchor="bottom" id="Docker" order="1" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="2" sideWeight="0.5020243" side_tool="true" weight="0.30373" />
       <window_info anchor="bottom" id="Database Changes" order="3" />
-      <window_info anchor="bottom" id="Run" order="4" sideWeight="0.49837664" weight="0.27353463" />
+      <window_info active="true" anchor="bottom" id="Run" order="4" sideWeight="0.49837664" visible="true" weight="0.27353463" />
       <window_info anchor="bottom" id="Messages" order="5" sideWeight="0.4991883" weight="0.3268206" />
       <window_info anchor="bottom" id="TypeScript" order="6" weight="0.3285968" />
       <window_info anchor="bottom" id="Message" order="7" />
@@ -787,101 +862,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/tos-web-ngx/node_modules/@angular/http/src/http.d.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="65" column="21" selection-start-line="65" selection-start-column="21" selection-end-line="65" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/SecurityConfig.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1258">
-          <caret line="74" column="3" selection-start-line="3" selection-end-line="74" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-core/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="54" selection-start-line="54" selection-start-column="4" selection-end-line="58" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/resources/application.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="28" selection-start-line="15" selection-start-column="28" selection-end-line="15" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/model/tea-session.model.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="36" selection-start-line="13" selection-start-column="36" selection-end-line="13" selection-end-column="36" />
-          <folding>
-            <element signature="e#0#48#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/model/menu-item.model.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="5" column="2" selection-start-line="5" selection-start-column="2" selection-end-line="5" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/MenuItemService.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="15" column="6" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/menu-item.service.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="24" column="46" selection-start-line="24" selection-start-column="46" selection-end-line="24" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#42#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DATA/db/tea_session/tea_session_3.jpg" />
-    <entry file="file://$PROJECT_DIR$/DATA/db/tea_session/tea_session_4.jpg" />
-    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user.module.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-75">
-          <caret column="9" selection-start-column="9" selection-end-column="9" />
-          <folding>
-            <element signature="e#2#43#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-ngx/node_modules/rxjs/src/Observable.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="76" column="2" selection-start-line="76" selection-start-column="2" selection-end-line="76" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/UserService.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="6" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/UserController.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="17" column="74" selection-start-line="17" selection-start-column="74" selection-end-line="17" selection-end-column="74" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-add.component.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
@@ -892,43 +872,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-add.component.htm">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="76" selection-start-line="12" selection-start-column="76" selection-end-line="12" selection-end-column="76" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/login/login-content.component.htm">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
           <caret line="26" column="12" selection-start-line="26" selection-start-column="12" selection-end-line="26" selection-end-column="107" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user.routes.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/UserServiceImpl.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="29" column="45" selection-start-line="29" selection-start-column="45" selection-end-line="29" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/tea-session.service.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="488">
-          <caret line="107" column="47" selection-start-line="107" selection-start-column="47" selection-end-line="107" selection-end-column="47" />
-          <folding>
-            <element signature="e#0#42#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1007,29 +954,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session.module.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-102">
-          <folding>
-            <element signature="e#2#43#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/OrderItemController.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
           <caret line="25" column="25" selection-start-line="25" selection-start-column="25" selection-end-line="25" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/TeaSessionService.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="21" column="6" selection-start-line="21" selection-start-column="6" selection-end-line="21" selection-end-column="6" />
-          <folding>
-            <element signature="e#44#65#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1046,26 +974,6 @@
           <caret line="7" column="24" selection-start-line="7" selection-start-column="12" selection-end-line="7" selection-end-column="24" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/TeaSessionServiceImpl.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="39">
-          <caret line="227" lean-forward="true" selection-start-line="227" selection-end-line="227" />
-          <folding>
-            <element signature="e#50#86#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/OrderItemServiceImpl.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-420">
-          <caret line="31" column="83" selection-start-line="31" selection-start-column="74" selection-end-line="31" selection-end-column="83" />
-          <folding>
-            <element signature="e#50#104#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1113,27 +1021,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-modify.component.htm">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="159" column="91" selection-start-line="159" selection-start-column="91" selection-end-line="159" selection-end-column="91" />
-          <folding>
-            <element signature="n#style#0;n#img#0;n#div#1;n#div#2;n#form#0;n#ng-container#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#1;n#div#1;n#div#2;n#form#0;n#ng-container#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#td#2;n#ng-container#0;n#tr#0;n#tbody#0;n#table#0;n#ng-container#2;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#div#1;n#div#1;n#form#0;n#ng-container#2;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#1;n#div#1;n#div#1;n#form#0;n#ng-container#2;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-modify.component.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="121">
-          <caret line="334" column="21" selection-start-line="334" selection-start-column="21" selection-end-line="334" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-content.component.htm">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="110">
@@ -1151,47 +1038,251 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/TeaSessionController.scala">
+    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-content.component.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-94">
-          <caret line="77" column="27" selection-start-line="77" selection-start-column="27" selection-end-line="77" selection-end-column="27" />
+        <state relative-caret-position="17">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-add.component.htm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-205">
+          <caret line="12" column="76" selection-start-line="12" selection-start-column="76" selection-end-line="12" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/UserServiceImpl.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="32" column="8" lean-forward="true" selection-start-line="32" selection-start-column="8" selection-end-line="32" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/dao/impl/TeaSessionDaoImpl.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="15" column="3" lean-forward="true" selection-start-line="15" selection-start-column="3" selection-end-line="15" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DATA/db/menu_item/menu_item_78.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-ngx/node_modules/@angular/http/src/enums.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="63" column="20" selection-start-line="63" selection-start-column="20" selection-end-line="63" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-ngx/node_modules/@angular/http/src/interfaces.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="59" column="24" selection-start-line="59" selection-start-column="24" selection-end-line="59" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user.routes.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="17" column="2" selection-start-line="17" selection-start-column="2" selection-end-line="17" selection-end-column="2" />
           <folding>
-            <element signature="e#42#63#0" expanded="true" />
+            <element signature="e#0#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/MenuItemController.scala">
+    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session.module.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="183">
-          <caret line="98" selection-start-line="98" selection-end-line="98" />
+          <caret line="29" column="75" selection-start-line="29" selection-start-column="75" selection-end-line="29" selection-end-column="75" />
           <folding>
-            <element signature="e#42#95#0" expanded="true" />
+            <element signature="e#2#43#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/MenuItemServiceImpl.scala">
+    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/pipe/safe-url.pipe.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="315" column="9" selection-start-line="315" selection-start-column="9" selection-end-line="315" selection-end-column="9" />
+        <state relative-caret-position="68">
+          <caret line="4" column="18" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
           <folding>
-            <element signature="e#51#122#0" expanded="true" />
+            <element signature="e#0#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user.module.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="9" selection-start-column="9" selection-end-column="9" />
+          <folding>
+            <element signature="e#2#43#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/tea-session.service.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-172">
+          <caret line="88" column="58" selection-start-line="88" selection-start-column="58" selection-end-line="88" selection-end-column="58" />
+          <folding>
+            <element signature="e#0#42#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-content.component.htm">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="331">
-          <caret line="37" column="13" lean-forward="true" selection-start-line="37" selection-start-column="13" selection-end-line="37" selection-end-column="13" />
+        <state relative-caret-position="319">
+          <caret line="41" column="34" selection-start-line="41" selection-start-column="34" selection-end-line="41" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/user/user-content.component.ts">
+    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/OrderItemServiceImpl.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        <state relative-caret-position="-272">
+          <caret line="32" column="35" lean-forward="true" selection-start-line="32" selection-start-column="35" selection-end-line="32" selection-end-column="35" />
+          <folding>
+            <element signature="e#50#104#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/service/menu-item.service.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="73" column="3" selection-start-line="73" selection-start-column="3" selection-end-line="73" selection-end-column="3" />
+          <folding>
+            <element signature="e#0#42#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-modify.component.htm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="29" column="65" selection-start-line="29" selection-start-column="65" selection-end-line="29" selection-end-column="65" />
+          <folding>
+            <element signature="n#style#0;n#img#0;n#div#1;n#div#2;n#form#0;n#ng-container#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#1;n#div#1;n#div#2;n#form#0;n#ng-container#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#td#2;n#ng-container#0;n#ng-container#0;n#tr#0;n#tbody#0;n#table#0;n#ng-container#2;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#1;n#div#1;n#form#0;n#ng-container#2;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#1;n#div#1;n#div#1;n#form#0;n#ng-container#2;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-ngx/src/main/frontend/app/tea-session/tea-session-modify.component.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="381" column="35" selection-start-line="381" selection-start-column="35" selection-end-line="381" selection-end-column="35" />
+          <folding>
+            <element signature="e#0#86#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/TeaSessionService.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="37" column="56" selection-start-line="37" selection-start-column="56" selection-end-line="37" selection-end-column="56" />
+          <folding>
+            <element signature="e#44#65#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/SecurityConfig.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-350" />
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/jre/lib/ext/sunjce_provider.jar!/com/sun/crypto/provider/CipherBlockChaining.class">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/AesEncryption.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="24" selection-start-line="24" selection-end-line="88" selection-end-column="3" />
+          <folding>
+            <element signature="e#29#65#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/entity/OrderItemBean.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-280">
+          <caret line="11" column="6" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/MenuItemService.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="217">
+          <caret line="16" column="45" selection-start-line="16" selection-start-column="45" selection-end-line="16" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-api/src/main/scala/com/convoy/dtd/tos/web/api/service/AesEncryptionService.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="6" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+          <folding>
+            <element signature="e#44#73#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/MenuItemController.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="249">
+          <caret line="79" column="51" selection-start-line="79" selection-start-column="33" selection-end-line="79" selection-end-column="51" />
+          <folding>
+            <element signature="e#42#95#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/mvc/TeaSessionController.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1836">
+          <caret line="108" selection-start-line="108" selection-end-line="108" />
+          <folding>
+            <element signature="e#42#63#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/MenuItemServiceImpl.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="149">
+          <caret line="377" column="45" selection-start-line="377" selection-start-column="45" selection-end-line="377" selection-end-column="117" />
+          <folding>
+            <element signature="e#51#122#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/AesEncryptionServiceImpl.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="74" selection-start-line="74" selection-end-line="74" />
+          <folding>
+            <element signature="e#50#81#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tos-web-core/src/main/scala/com/convoy/dtd/tos/web/core/service/impl/TeaSessionServiceImpl.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="378" column="176" selection-start-line="378" selection-start-column="176" selection-end-line="378" selection-end-column="176" />
+          <folding>
+            <element signature="e#50#86#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

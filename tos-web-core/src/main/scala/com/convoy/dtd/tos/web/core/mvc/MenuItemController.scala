@@ -77,6 +77,13 @@ private[mvc] class MenuItemController {
   }
 
 
+  @RequestMapping(value = Array("find-by-share-link"), method = Array(RequestMethod.POST))
+  def findByShareLink(@RequestParam(required = true) teaSessionId: Long, @RequestParam(required = true)  cipherText: String): Map[String,Any] =
+  {
+    menuItemService.findByShareLink(teaSessionId, cipherText)
+  }
+
+
   @RequestMapping(value = Array("/image/{imageName:.+}"), method = Array(RequestMethod.GET), produces = Array(MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE))
   @ResponseBody
   def getImageByImageName(@PathVariable(name = "imageName", required = true) imageName: String): Array[Byte] = {
@@ -98,6 +105,9 @@ private[mvc] class MenuItemController {
   {
     menuItemService.deleteById(menuItemId)
   }
+
+
+
 
 
 }

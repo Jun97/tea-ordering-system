@@ -7,12 +7,15 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import com.convoy.dtd.tos.web.api.entity.{TeaSessionBean, UserBean}
-import com.convoy.dtd.tos.web.api.service.TeaSessionService
+import com.convoy.dtd.tos.web.api.service.{AesEncryptionService, TeaSessionService}
 import com.convoy.dtd.tos.web.core.dao.{TeaSessionDao, UserDao}
+import javax.crypto.SecretKey
+import javax.crypto.spec.IvParameterSpec
 import javax.inject.Inject
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import org.apache.commons.io.FilenameUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.util.UriComponentsBuilder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -28,6 +31,9 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   private var teaSessionDao: TeaSessionDao = _
   @Inject
   private var userDao: UserDao = _
+
+  @Autowired
+  private var aesEncryptionService: AesEncryptionService = _
 
 
   /* hashing */
@@ -81,8 +87,6 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
         "message" -> "Malformed request, kindly check user referenced user ID and visibility/password combination"
       )
     }
-
-
   }
 
 
@@ -121,6 +125,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       }
     }
   }
+
 
   @Transactional(readOnly = true)
   override def getById(teaSessionId: Long): Option[TeaSessionBean] = {
@@ -165,6 +170,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
   }
 
 
+
   override def getImageByImageName(imageName: String): Array[Byte] = {
 
     try { // Retrieve image from the classpath.
@@ -183,7 +189,7 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
 
 
   @Transactional
-  override def updateDetail(teaSessionId: Long,
+  override def update(teaSessionId: Long,
                                       userId:Long,
                                       name: String,
                                       description: Option[String],
@@ -213,8 +219,12 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
         t.treatDate = treatDate
         t.cutOffDate = cutOffDate
 
-        if (imagePath.isDefined){
+        if (imagePath.isDefined) { //Check if Image
           addImageByMultipart(t.teaSessionId, imagePath.get, false)
+        }
+        else if (!isStringEmpty(t.imagePath)) {
+          deleteImage(t.imagePath)
+          t.imagePath = null
         }
 
         t.isPublic = isPublic
@@ -353,6 +363,31 @@ private[impl] class TeaSessionServiceImpl extends TeaSessionService
       case e: IOException =>
         throw new RuntimeException(e)
         false
+    }
+  }
+
+
+  @Transactional
+  override def getShareLink(teaSessionId: Long): Map[String, Any] = {
+    val toTeaSession: Option[TeaSessionBean] = teaSessionDao.getById(teaSessionId)
+
+
+    if(toTeaSession.isDefined){
+      val tTeaSession: TeaSessionBean = toTeaSession.get
+
+      val key: SecretKey = aesEncryptionService.getKeyFromPassword()
+      val ivParameterSpec: IvParameterSpec = new IvParameterSpec( tTeaSession.password.slice(0,16).getBytes("UTF-8")) // Get first 16 bytes of hashed tea password as initVector
+      val encryptedPassword: String = aesEncryptionService.encrypt(tTeaSession.password, key, ivParameterSpec)
+
+      Map(
+        "error" -> false,
+        "cipherText" -> encryptedPassword
+      )
+    } else {
+      Map(
+        "error" -> true,
+        "message" -> "Invalid tea session ID or privacy combination to generate Cipher text"
+      )
     }
   }
 

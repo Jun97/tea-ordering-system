@@ -2,9 +2,8 @@ package com.convoy.dtd.tos.web.core.service.impl
 
 
 import com.convoy.dtd.tos.web.api.entity.{MenuItemBean, TeaSessionBean}
-import com.convoy.dtd.tos.web.api.service.{MenuItemService}
+import com.convoy.dtd.tos.web.api.service.{AesEncryptionService, MenuItemService}
 import com.convoy.dtd.tos.web.core.dao.{MenuItemDao, TeaSessionDao}
-
 import java.io.{ByteArrayOutputStream, IOException}
 import java.net.URLConnection
 import java.nio.file.{Files, Paths, StandardCopyOption}
@@ -12,10 +11,13 @@ import java.text.SimpleDateFormat
 import java.util.Base64
 import java.io.ByteArrayInputStream
 import java.io.InputStream
+
 import javax.inject.Inject
-
-
+import javax.crypto.Cipher
+import javax.crypto.spec.{IvParameterSpec}
+import javax.crypto.SecretKey
 import org.apache.commons.io.FilenameUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -35,10 +37,14 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
   @Inject
   private var teaSessionDao: TeaSessionDao = _
 
+  @Autowired
+  private var aesEncryptionService: AesEncryptionService = _
+
 
 
   /* hashing */
   private val passwordEncoder: BCryptPasswordEncoder = new BCryptPasswordEncoder()
+
 
   private val IMAGE_FILE_DIRECTORY = "C:\\Users\\jiajunang\\Documents\\tos\\DATA\\db\\menu_item\\"
 
@@ -225,15 +231,14 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
           "menuItem" -> modifiedMenuItem
         )
       }
-      else
-      {
+      else {
         Map(
           "error" -> true,
           "message" -> "Please provide correct password for tea session menu"
         )
       }
     }
-    else{
+    else {
       Map(
         "error" -> true,
         "message" -> "Invalid tea session reference"
@@ -279,8 +284,13 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
     {
       val t = to.get
       t.name = name
-      if(imagePath.isDefined){
+      if(imagePath.isDefined){ //Check if Image
         addImageByMultipart(menuItemId, imagePath.get, false)
+      } else {
+        if(!isStringEmpty(t.imagePath)){
+          deleteImage(t.imagePath);
+          t.imagePath = null;
+        }
       }
       val modifiedMenuItem: MenuItemBean = t.deepClone
       if(!isStringEmpty(modifiedMenuItem.imagePath)){
@@ -354,6 +364,52 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
         throw new RuntimeException(e)
         false
     }
+  }
+
+
+  @Transactional
+  override def findByShareLink(teaSessionId: Long, cipherText: String): Map[String, Any] = {
+
+    val tTeaSession: TeaSessionBean = teaSessionDao.getById(teaSessionId).get
+
+    if(tTeaSession != None && !tTeaSession.isPublic) {
+
+      val key: SecretKey = aesEncryptionService.getKeyFromPassword()
+      val ivParameterSpec: IvParameterSpec = new IvParameterSpec( tTeaSession.password.slice(0,16).getBytes("UTF-8"))
+      val decryptedPassword: String = aesEncryptionService.decrypt(cipherText, key, ivParameterSpec)
+
+      if(tTeaSession.password.equals(decryptedPassword)){
+
+        val modifiedMenuItem: List[MenuItemBean] =
+          menuItemDao.findByTeaSessionId(teaSessionId).map( (menuItemBean: MenuItemBean) => {
+            if(!isStringEmpty(menuItemBean.imagePath)){
+              val tempMenuItemBean: MenuItemBean = menuItemBean.deepClone
+              tempMenuItemBean.imagePath = generateImageUrl(tempMenuItemBean.imagePath)
+              tempMenuItemBean
+            } else {
+              menuItemBean
+            }
+          })
+
+        Map(
+          "error" -> false,
+          "menuItem" -> modifiedMenuItem
+        )
+
+
+      } else {
+        Map(
+          "error" -> true,
+          "message" -> "Incorrect cipher text"
+        )
+      }
+    } else {
+      Map(
+        "error" -> true,
+        "message" -> "Invalid tea session ID or privacy combination"
+      )
+    }
+
   }
 
 

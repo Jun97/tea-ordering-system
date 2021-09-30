@@ -64,7 +64,7 @@ private[mvc] class TeaSessionController {
   }
 
 
-  @RequestMapping(value = Array("update-detail"))
+  @RequestMapping(value = Array("update"))
   def updateDetail(@RequestParam(required = true) teaSessionId: Long,
                    @RequestParam(required = true) userId:Long,
                    name: String,
@@ -75,7 +75,7 @@ private[mvc] class TeaSessionController {
                    isPublic: Boolean,
                    password: String):Map[String,Any] =
   {
-    teaSessionService.updateDetail(teaSessionId,
+    teaSessionService.update(teaSessionId,
                                     userId,
                                     name,
                                     Option(description),
@@ -103,4 +103,9 @@ private[mvc] class TeaSessionController {
   }
 
 
+  @RequestMapping(value = Array("get-share-link"), method = Array(RequestMethod.POST))
+  def getShareLink(@RequestParam(required = true) teaSessionId: Long): Map[String,Any] =
+  {
+    teaSessionService.getShareLink(teaSessionId)
+  }
 }
