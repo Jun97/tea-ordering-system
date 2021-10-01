@@ -15,6 +15,11 @@ export class TeaSessionContentComponent implements OnInit
 {
   currentUser:UserModel;
   teaSession:TeaSessionModel[];
+  shareLinkTeaSessionId: number;
+  shareLinkCipherText: string;
+  shareLinkURL: string;
+
+  isShareLinkGenerate: boolean = undefined;
 
   constructor(private route: ActivatedRoute, private router: Router, private userService:UserService, private teaSessionService:TeaSessionService, private orderService:OrderService)
   {}
@@ -47,6 +52,22 @@ export class TeaSessionContentComponent implements OnInit
         (err: any)=> {
           console.log(err);
         });
+  }
+
+  generateShareLink(teaSessionId: number) {
+    this.teaSessionService.getShareLink(teaSessionId).subscribe(
+        (res: any) => {
+          if(!res.error) {
+            this.shareLinkCipherText = res.cipherText;
+            this.shareLinkTeaSessionId = teaSessionId;
+            this.isShareLinkGenerate = true;
+          }
+
+        },
+        (err: any) => {
+          console.log(err);
+        }
+    )
   }
 
   // updateVisibility(teaSessionId:number, isPublic:boolean, password: string)

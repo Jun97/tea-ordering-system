@@ -48,6 +48,16 @@ export class MenuItemService
     return this.http.post(`${MenuItemService.URL}/find-by-tea-session-id`,params.toString(), { headers: headers }).map(res => res.json());
   }
 
+  findMenuItemByShareLink(teaSessionId: number, cipherText: string):Observable<Map<string,any>> {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/x-www-form-urlencoded');
+
+    const params = new URLSearchParams();
+    params.append('teaSessionId', <string><any>teaSessionId);
+    params.append('cipherText', cipherText)
+    return this.http.post(`${MenuItemService.URL}/find-by-share-link`,params.toString(), { headers: headers }).map(res => res.json());
+  }
+
   updateMenuItem(menuItemId: number, name: string, imagePath?: File):Observable<Map<string,any>>
   {
     const headers = new Headers();

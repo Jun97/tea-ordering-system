@@ -21,7 +21,9 @@ export class OrderContentComponent implements OnInit
     currentTeaSession: TeaSessionModel;
     currrentUser: UserModel;
     currentOrderSummary: Map<string, any>;
-    currentDate: Date = new Date();
+    todayDate: Date = new Date();
+    currentTeaSessionId: number;
+    currentCipherText: string;
 
     isMenuItemAccessGranted: boolean = undefined;
     isOrderReadOnly: boolean = undefined;
@@ -30,7 +32,7 @@ export class OrderContentComponent implements OnInit
 
     formModelMenuAuthPassword: string = "";
 
-    constructor(private route: ActivatedRoute,
+    constructor(private activatedRoute: ActivatedRoute,
                 private router: Router,
                 private teaSessionService:TeaSessionService,
                 private menuItemService: MenuItemService,
@@ -45,11 +47,21 @@ export class OrderContentComponent implements OnInit
     }
 
     private parseTeaSessionParam() {
-        this.route.paramMap.subscribe(paramMap => {
+        this.activatedRoute.paramMap.subscribe(paramMap => {
             if (paramMap.has('teaSessionId')) {
-                this.getTeaSessionById(Number(paramMap.get('teaSessionId')));
+                this.currentTeaSessionId = Number(paramMap.get('teaSessionId'));
+                this.getTeaSessionById(this.currentTeaSessionId);
             }
         });
+
+        this.activatedRoute.queryParamMap.subscribe(queryParamMap => {
+            if (queryParamMap.has('ciphertext')) {
+                this.currentCipherText = queryParamMap.get('ciphertext');
+
+                console.log("hasCipher",queryParamMap.get('ciphertext'));
+            }
+        });
+
     }
 
     private getTeaSessionById(teaSessionId: number) {
@@ -63,6 +75,8 @@ export class OrderContentComponent implements OnInit
 
                     this.initMenuSection();
                     this.getOrderSummary(teaSessionId);
+
+                    this.checkTodayAndCutOffDate(this.todayDate, this.currentTeaSession.cutOffDate);
 
 
                 console.log(this.currentTeaSession);
@@ -89,8 +103,32 @@ export class OrderContentComponent implements OnInit
             })
     }
 
+
+    private findMenuItemByShareLink(teaSessionId: number, ciphertext: string) {
+        this.menuItemService.findMenuItemByShareLink(teaSessionId, ciphertext).subscribe(
+            (res:any) => {
+                if(!res.error){
+                    this.currentTeaSession.menuItems = res.menuItem;
+                    this.isMenuItemAccessGranted = true;
+                    this.addUserOrder();
+
+                } else {
+                    this.isMenuItemAccessGranted = false;
+                }
+
+                if(res.message) {
+                    this.menuAuthMessage = res.message;
+                }
+                console.log("menuItemResponse:", this.currentTeaSession.menuItems);
+            },
+            (err: any) => {
+                this.isMenuItemAccessGranted = false;
+                console.log("findMenuItemByTeaSessionIdAndPassword:", err);
+            })
+    }
+
     private getOrderSummary(teaSessionId: number) {
-        this.orderService.getOrderSummaryByTeaSessionId(this.currentTeaSession.teaSessionId).subscribe(
+        this.orderService.getOrderSummaryByTeaSessionId(teaSessionId).subscribe(
             (res: any) => {
                 this.currentOrderSummary = res.orderSummary;
             },
@@ -134,6 +172,7 @@ export class OrderContentComponent implements OnInit
                 console.log(res);
                 if(!res.error) {
                     let index = this.currentTeaSession.orders[0].orderItems.findIndex(x => x.orderItemId === res.orderItem.orderItemId);
+                    console.log("index",index);
                     if(index != -1) {
                         this.currentTeaSession.orders[0].orderItems[index] = res.orderItem;
                     } else {
@@ -152,7 +191,7 @@ export class OrderContentComponent implements OnInit
             (res: any) => {
                 if (!res.error) {
                     let index = this.currentTeaSession.orders[0].orderItems.findIndex(x => x.orderItemId === orderItemId);
-                    delete this.currentTeaSession.orders[0].orderItems[index];
+                    this.currentTeaSession.orders[0].orderItems.splice(index, 1)
                 }
             },
             (err: any) => {
@@ -165,12 +204,45 @@ export class OrderContentComponent implements OnInit
         if (this.currentTeaSession.isPublic) {
             this.isMenuItemAccessGranted = true;
             this.findMenuItemByTeaSessionId(this.currentTeaSession.teaSessionId, "");
-        } else{
+        } else if(!this.currentTeaSession.isPublic && this.currentCipherText){
+            this.findMenuItemByShareLink(this.currentTeaSessionId, this.currentCipherText)
+        } else {
             this.isMenuItemAccessGranted = false;
         }
     }
 
     private onMenuPasswordSubmit() {
         this.findMenuItemByTeaSessionId(this.currentTeaSession.teaSessionId, this.formModelMenuAuthPassword);
+    }
+
+    private checkTodayAndCutOffDate(today: Date | string, cutOffDate: Date | string) {
+        let convertedCutOffDate: number;
+        let convertedToday: number;
+        console.log(today, typeof(today));
+        console.log(cutOffDate, typeof(cutOffDate));
+
+        if(today && typeof(today) == "string") { //Type narrowing to string / date
+            convertedToday = new Date(today).getTime() / 1000;
+        } else if (today && typeof(today) == "object") {
+            convertedToday = new Date(today).getTime() / 1000;
+        } else if (today && typeof(today) == "number") {
+            convertedToday = new Date(today).getTime() / 1000;
+        }
+
+        if(cutOffDate && typeof(cutOffDate) == "string"){ //Type narrowing to string / date
+            convertedCutOffDate = new Date(cutOffDate).getTime() / 1000;
+        } else if (cutOffDate && typeof (cutOffDate) == "object"){
+            convertedCutOffDate = new Date(cutOffDate).getTime() / 1000;
+        } else if (cutOffDate && typeof (cutOffDate) == "number"){
+            convertedCutOffDate = new Date(cutOffDate).getTime() / 1000;
+        }
+
+        if(convertedToday > convertedCutOffDate){ //Today past cut off date
+            console.log("cutOffDate", convertedCutOffDate, typeof(convertedCutOffDate));
+            console.log("today", convertedToday, typeof(convertedToday));
+            this.isOrderReadOnly = true;
+        } else {
+            this.isOrderReadOnly = false;
+        }
     }
 }

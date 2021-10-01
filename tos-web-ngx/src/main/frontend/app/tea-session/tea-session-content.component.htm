@@ -22,6 +22,7 @@
             <th>CUT-OFF DATE</th>
             <th>TREAT DATE</th>
             <th *ngIf="currentUser.isAdmin">VISIBILITY</th>
+            <th> SHARE LINK</th>
         </tr>
     </thead>
     <tbody>
@@ -34,14 +35,17 @@
                 <td>{{item.cutOffDate  | date:'dd MMM yyyy'}}</td>
                 <td>{{item.treatDate | date:'dd MMM yyyy'}}</td>
 
-                <td *ngIf="item.isPublic">Public</td>
-                <td *ngIf="!item.isPublic">Private</td>
+                <td *ngIf="item.isPublic && currentUser.isAdmin">Public</td>
+                <td *ngIf="!item.isPublic && currentUser.isAdmin">Private</td>
 <!--                <td>-->
 <!--                    <ng-container *ngIf="currentUser.isAdmin || currentUser.userId == item.userTeaSession.userId">-->
 <!--                        <a *ngIf="!item.isPublic" href="javascript:void(0)" (click)="updateVisibility(item.teaSessionId, true, null)">Update to Public</a>-->
 <!--&lt;!&ndash;                        <a *ngIf="item.isPublic" href="javascript:void(0)" (click)="updateVisibility(item.teaSessionId, false, )">Private</a>&ndash;&gt;-->
 <!--                    </ng-container>-->
 <!--                </td>-->
+                <td>
+                    <a *ngIf="(currentUser.isAdmin || (currentUser.userId == item.userTeaSession.userId)) && !item.isPublic" href="javascript:void(0)" (click)="generateShareLink(item.teaSessionId)">Get Link</a>
+                </td>
                 <td>
                     <a [routerLink]="['/order', item.teaSessionId]">Order</a>
                 </td>
@@ -61,4 +65,9 @@
 <br><br>
 
 <button *ngIf="currentUser.isAdmin" [routerLink]="['/user']">Manage Users</button>
+</ng-container>
+
+<ng-container *ngIf="isShareLinkGenerate">
+    <h2>Share Link Generated</h2>
+    <a target="_blank" [routerLink]="['/order', shareLinkTeaSessionId]" [queryParams]="{ciphertext: shareLinkCipherText}">Go to Share Link</a>
 </ng-container>

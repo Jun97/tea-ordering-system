@@ -166,6 +166,7 @@ export class TeaSessionModifyComponent implements OnInit, AfterViewInit
 
                     if(!res.error){
                         this.currentTeaSession = res.teaSession;
+                        this.currentTeaSession.password = "";
                         this.currentTeaSession.cutOffDate = this.datePipe.transform(res.teaSession.cutOffDate, "yyyy-MM-dd");
                         this.currentTeaSession.treatDate = this.datePipe.transform(res.teaSession.treatDate, "yyyy-MM-dd");
                     }

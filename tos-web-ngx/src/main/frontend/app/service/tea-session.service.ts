@@ -121,6 +121,15 @@ export class TeaSessionService
         );
   }
 
+  getShareLink(teaSessionId: number): Observable<Map<string, any>> {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/x-www-form-urlencoded');
+
+    const params = new URLSearchParams();
+    params.append('teaSessionId', <string><any>teaSessionId);
+    return this.http.post(`${TeaSessionService.URL}/get-share-link`,params.toString(), { headers: headers }).map(res => res.json());
+  }
+
     getFileFromUrl2(url: string):Observable<File> {
       let filename = url.split('/').pop();
 
