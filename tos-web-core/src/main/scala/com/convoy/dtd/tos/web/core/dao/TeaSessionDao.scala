@@ -5,5 +5,5 @@ import com.convoy.dtd.tos.web.api.entity.{TeaSessionBean}
 
 trait TeaSessionDao extends GenericDao[TeaSessionBean, Long]
 {
-  def getUpcomingTeaSession(): List[TeaSessionBean]
+  def findUpcoming(): List[TeaSessionBean]
 }

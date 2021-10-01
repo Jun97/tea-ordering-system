@@ -4,9 +4,9 @@ import com.convoy.dtd.tos.web.api.entity.UserBean
 
 trait UserService
 {
-  def checkUserExists(email:String):Map[String,Any]
-  def loginUserByEmail(email:String, password:String):Map[String,Any]
-  def getUserAll():Map[String,Any]
-  def updateUser(userId:Long, isEnabled:Boolean, isAdmin:Boolean): Map[String, Any]
-  def createUser(email:String, password:String, isEnabled:Boolean, isAdmin:Boolean): Map[String, Any]
+  def checkExists(email:String):Map[String,Any]
+  def loginByEmail(email:String, password:String):Map[String,Any]
+  def findAll():List[UserBean]
+  def updatePrivilege(userId:Long, isEnabled:Boolean, isAdmin:Boolean): Map[String, Any]
+  def add(email:String, password:String, isEnabled:Boolean, isAdmin:Boolean): Map[String, Any]
 }

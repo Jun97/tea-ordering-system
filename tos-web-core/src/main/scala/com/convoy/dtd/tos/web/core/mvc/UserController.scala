@@ -1,5 +1,6 @@
 package com.convoy.dtd.tos.web.core.mvc
 
+import com.convoy.dtd.tos.web.api.entity.UserBean
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMethod
@@ -13,24 +14,24 @@ private[mvc] class UserController
   @Inject
   private var userService:UserService = _
 
-  @RequestMapping(value = Array("check-user-exists"))
-  def checkUserExists(email:String):Map[String,Any] = userService.checkUserExists(email)
+  @RequestMapping(value = Array("check-exists"))
+  def checkUserExists(email:String):Map[String,Any] = userService.checkExists(email)
 
-  @RequestMapping(value = Array("login"))
-  def loginUserByEmail(email:String, password:String):Map[String,Any] = userService.loginUserByEmail(email, password)
+  @RequestMapping(value = Array("login-by-email"))
+  def loginUserByEmail(email:String, password:String):Map[String,Any] = userService.loginByEmail(email, password)
 
-  @RequestMapping(value = Array("get-user-all"))
-  def getUserAll(): Map[String,Any] = userService.getUserAll()
+  @RequestMapping(value = Array("find-all"))
+  def getUserAll(): List[UserBean] = userService.findAll()
 
   @RequestMapping(value = Array("update-privilege"))
-  def updateUser(userId:Long, isEnabled:Boolean, isAdmin:Boolean):Map[String,Any] =
+  def updatePrivilege(userId:Long, isEnabled:Boolean, isAdmin:Boolean):Map[String,Any] =
   {
-    userService.updateUser(userId, isEnabled, isAdmin)
+    userService.updatePrivilege(userId, isEnabled, isAdmin)
   }
 
-  @RequestMapping(value = Array("register"))
-  def createUser(email:String, password:String, isEnabled:Boolean, isAdmin:Boolean):Map[String,Any] =
+  @RequestMapping(value = Array("add"))
+  def add(email:String, password:String, isEnabled:Boolean, isAdmin:Boolean):Map[String,Any] =
   {
-    userService.createUser(email, password, isEnabled, isAdmin)
+    userService.add(email, password, isEnabled, isAdmin)
   }
 }

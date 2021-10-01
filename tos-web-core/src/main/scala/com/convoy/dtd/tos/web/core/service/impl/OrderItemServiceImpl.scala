@@ -1,11 +1,13 @@
 package com.convoy.dtd.tos.web.core.service.impl
 
-import com.convoy.dtd.tos.web.api.entity.{OrderBean, OrderItemBean}
+import com.convoy.dtd.tos.web.api.entity.OrderItemBean
 import com.convoy.dtd.tos.web.api.service.OrderItemService
 import com.convoy.dtd.tos.web.core.dao.{MenuItemDao, OrderDao, OrderItemDao}
 import javax.inject.Inject
+import org.springframework.boot.web.filter.OrderedCharacterEncodingFilter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.util.UriComponentsBuilder
 
 @Service
 private[impl] class OrderItemServiceImpl extends OrderItemService
@@ -21,22 +23,30 @@ private[impl] class OrderItemServiceImpl extends OrderItemService
 
 
   @Transactional
-  override def createOrderItem(orderId: Long, menuItemId: Long, quantity: Long): Map[String, Any] =
+  override def add(orderId: Long, menuItemId: Long, quantity: Long): Map[String, Any] =
   {
     val toOrder = orderDao.getById(orderId)
     val toMenuItem = menuItemDao.getById(menuItemId)
     if(toOrder.isDefined && toMenuItem.isDefined)
     {
-      val t = new OrderItemBean()
-      t.orderOrderItem = toOrder.get
-      t.menuItemOrderItem = toMenuItem.get
+      val t: OrderItemBean= orderItemDao.checkExists(orderId, menuItemId).getOrElse[OrderItemBean]( {
+        val t = new OrderItemBean()
+        t.orderOrderItem = toOrder.get
+        t.menuItemOrderItem = toMenuItem.get
+        t.quantity = quantity
+        orderItemDao.saveOrUpdate(t)
+        t
+      })
+
       t.quantity = quantity
-      orderItemDao.saveOrUpdate(t)
+
+      val modifiedT: OrderItemBean = t.deepClone
+      modifiedT.menuItemOrderItem.imagePath = generateMenuItemImageUrl(modifiedT.menuItemOrderItem.imagePath)
 
       Map(
         "error" -> false,
-        "message" -> "Order created",
-        "orderItem" -> t
+        "message" -> "Order Item created",
+        "orderItem" -> modifiedT
       )
     } else {
       Map(
@@ -48,29 +58,33 @@ private[impl] class OrderItemServiceImpl extends OrderItemService
 
 
   @Transactional
-  override def getOrderItemByOrderId(orderId: Long): Map[String, Any] = {
+  override def findByOrderId(orderId: Long): List[OrderItemBean] = {
 
     val toOrder = orderDao.getById(orderId)
 
     if(toOrder.isDefined) {
 
-      Map(
-        "error" -> false,
-        "orderItem" -> orderItemDao.getOrderItemByOrderId(orderId)
-      )
+//      Map(
+//        "error" -> false,
+//        "orderItem" -> orderItemDao.findByOrderId(orderId)
+//      )
+      val t = orderItemDao.findByOrderId(orderId)
+      val modifiedT: List[OrderItemBean] = t.map( (orderItemBean: OrderItemBean) => {
+        val modifiedBean: OrderItemBean =  orderItemBean.deepClone
+        modifiedBean.menuItemOrderItem.imagePath = generateMenuItemImageUrl(modifiedBean.menuItemOrderItem.imagePath)
+        modifiedBean
+      })
+      modifiedT
     }
     else
     {
-      Map(
-        "error" -> true,
-        "message" -> "Invalid Order ID"
-      )
+      List()
     }
   }
 
 
   @Transactional
-  override def updateOrderItemById(orderItemId: Long, quantity: Long): Map[String, Any] = {
+  override def updateById(orderItemId: Long, quantity: Long): Map[String, Any] = {
 
     val to = orderItemDao.getById(orderItemId)
 
@@ -80,10 +94,13 @@ private[impl] class OrderItemServiceImpl extends OrderItemService
       val t = to.get
       t.quantity = quantity
 
+      val modifiedT: OrderItemBean = t.deepClone
+      modifiedT.menuItemOrderItem.imagePath = generateMenuItemImageUrl(modifiedT.menuItemOrderItem.imagePath)
+
       Map(
         "error" -> false,
         "message" -> "Update successfully",
-        "orderItem" -> t
+        "orderItem" -> modifiedT
       )
     } else
     {
@@ -96,7 +113,7 @@ private[impl] class OrderItemServiceImpl extends OrderItemService
 
 
   @Transactional
-  override def deleteOrderItemById(orderItemId: Long): Map[String, Any] = {
+  override def deleteById(orderItemId: Long): Map[String, Any] = {
 
     val to = orderItemDao.getById(orderItemId)
 
@@ -120,6 +137,17 @@ private[impl] class OrderItemServiceImpl extends OrderItemService
 
 
   def isStringEmpty(string: String): Boolean = string == null || string.trim.isEmpty
+
+  def generateMenuItemImageUrl(imageName: String): String = {
+    if(imageName != null) {
+      UriComponentsBuilder.newInstance()
+        .scheme("http").host("localhost").port(50001)
+        .path("tos-rest/api/tea-session/menu-item/image/{imageName}")
+        .buildAndExpand(imageName).toUriString
+    } else {
+      ""
+    }
+  }
 
 
 }

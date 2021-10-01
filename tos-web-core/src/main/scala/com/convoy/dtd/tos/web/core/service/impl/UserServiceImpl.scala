@@ -20,14 +20,14 @@ private[impl] class UserServiceImpl extends UserService
   private var userDao:UserDao = _
 
   @Transactional
-  override def checkUserExists(email: String): Map[String, Any]=
+  override def checkExists(email: String): Map[String, Any]=
   {
     val to = userDao.getByEmail(email)
     if(!to.isDefined)
     {
       Map(
         "error" -> false,
-        "message" -> "Email can be registered"
+        "message" -> "Email has not been used"
       )
     }
     else
@@ -40,7 +40,7 @@ private[impl] class UserServiceImpl extends UserService
   }
 
   @Transactional
-  override def loginUserByEmail(email: String, password: String): Map[String, Any] =
+  override def loginByEmail(email: String, password: String): Map[String, Any] =
   {
     val to = userDao.getByEmail(email)
     if(to.isDefined)
@@ -55,7 +55,7 @@ private[impl] class UserServiceImpl extends UserService
           Map(
             "error"-> false,
             "message" -> "Login successful.",
-            "user" -> List(t)
+            "user" -> t
           )
         }
         else
@@ -84,36 +84,15 @@ private[impl] class UserServiceImpl extends UserService
   }
 
   @Transactional
-  override def getUserAll(): Map[String,Any] =
+  override def findAll(): List[UserBean] =
   {
-    Map("user" -> userDao.findAllAsScala())
+    //Map("user" -> userDao.findAllAsScala())
+    userDao.findAllAsScala()
   }
 
-  @Transactional
-  override def updateUser(userId: Long, enable: Boolean, isAdmin: Boolean): Map[String, Any] =
-  {
-    val to = userDao.getById(userId)
-    if(to.isDefined)
-    {
-      val t = to.get
-      t.isEnabled = enable
-      t.isAdmin = isAdmin
-
-      Map(
-        "error" -> false,
-        "message" -> "Privilege changed",
-        "user" -> List(t)
-      )
-    } else {
-      Map(
-        "error" -> true,
-        "message" -> "Request malformed"
-      )
-    }
-  }
 
   @Transactional
-  override def createUser(email: String, password: String, is_Enabled: Boolean, isAdmin: Boolean): Map[String, Any] =
+  override def add(email: String, password: String, isEnabled: Boolean, isAdmin: Boolean): Map[String, Any] =
   {
     val hashedPassword = passwordEncoder.encode(password)
     val to = userDao.getByEmail(email)
@@ -123,7 +102,7 @@ private[impl] class UserServiceImpl extends UserService
     {
       t.email = email
       t.password = hashedPassword
-      t.isEnabled = is_Enabled
+      t.isEnabled = isEnabled
       t.lastLoginDate = null
       t.isAdmin = isAdmin
       userDao.saveOrUpdate(t)
@@ -142,5 +121,31 @@ private[impl] class UserServiceImpl extends UserService
     }
 
   }
+
+
+  @Transactional
+  override def updatePrivilege(userId: Long, enable: Boolean, isAdmin: Boolean): Map[String, Any] =
+  {
+    val to = userDao.getById(userId)
+    if(to.isDefined)
+    {
+      val t = to.get
+      t.isEnabled = enable
+      t.isAdmin = isAdmin
+
+      Map(
+        "error" -> false,
+        "message" -> "Privilege changed",
+        "user" -> t
+      )
+    } else {
+      Map(
+        "error" -> true,
+        "message" -> "Request malformed"
+      )
+    }
+  }
+
+
 }
 

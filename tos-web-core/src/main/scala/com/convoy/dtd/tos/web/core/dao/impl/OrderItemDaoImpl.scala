@@ -11,7 +11,14 @@ import collection.JavaConverters._
 @Repository
 private[impl] class OrderItemDaoImpl extends AbstractGenericDao[OrderItemBean, Long] with OrderItemDao{
 
-  override def getOrderItemByOrderId(orderId: Long): List[OrderItemBean] =
+  override def checkExists(orderId: Long, menuItemId: Long): Option[OrderItemBean] =
+  {
+    val q = new JPAQueryFactory((entityManager))
+    Option(q.selectFrom(QOrderItemBean).where(QOrderItemBean.orderOrderItem.orderId === orderId && QOrderItemBean.menuItemOrderItem.menuItemId === menuItemId)
+      .fetchOne())
+  }
+
+  override def findByOrderId(orderId: Long): List[OrderItemBean] =
   {
     val q = new JPAQueryFactory((entityManager))
     q.selectFrom(QOrderItemBean).where(QOrderItemBean.orderOrderItem.orderId === orderId).fetch().asScala.toList

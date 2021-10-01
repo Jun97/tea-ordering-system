@@ -1,0 +1,45 @@
+<style>
+    table {
+        width: 100%;
+    }
+
+    span td, th {
+        text-align: left;
+    }
+</style>
+
+<h2>Users</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>USER ID</th>
+            <th>EMAIL</th>
+            <th>ACCOUNT STATUS</th>
+            <th>LAST LOGIN DATE</th>
+            <th>ROLE</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let u of users;">
+            <td>{{u.userId}}</td>
+            <td>{{u.email}}</td>
+            <td *ngIf="u.isEnabled">Active</td>
+            <td *ngIf="!u.isEnabled">Inactive</td>
+            <td>{{u.lastLoginDate | date:'short'}}</td>
+            <td *ngIf="u.isAdmin">Admin</td>
+            <td *ngIf="!u.isAdmin">User</td>
+            <td>
+                <a *ngIf="u.isEnabled" href="javascript:void(0)"  (click)="updateUserPrivilege(u.userId, false, u.isAdmin)">Lock</a> |
+                <a *ngIf="!u.isEnabled" href="javascript:void(0)"  (click)="updateUserPrivilege(u.userId, true, u.isAdmin)">Unlock</a> |
+                <a *ngIf="u.isAdmin" href="javascript:void(0)"  (click)="updateUserPrivilege(u.userId, u.isEnabled, false)">Downgrade to User</a>
+                <a *ngIf="!u.isAdmin" href="javascript:void(0)"  (click)="updateUserPrivilege(u.userId, u.isEnabled, true)">Upgrade to Admin</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br>
+<button [routerLink]="['./register']" name="formAddUser" >Create User</button>
+<br>
+<br>
+<button [routerLink]="['/tea-session']" name="formBack" >Back</button>

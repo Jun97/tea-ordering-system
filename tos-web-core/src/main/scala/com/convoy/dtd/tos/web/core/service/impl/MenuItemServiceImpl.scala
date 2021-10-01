@@ -2,9 +2,8 @@ package com.convoy.dtd.tos.web.core.service.impl
 
 
 import com.convoy.dtd.tos.web.api.entity.{MenuItemBean, TeaSessionBean}
-import com.convoy.dtd.tos.web.api.service.{MenuItemService}
+import com.convoy.dtd.tos.web.api.service.{AesEncryptionService, MenuItemService}
 import com.convoy.dtd.tos.web.core.dao.{MenuItemDao, TeaSessionDao}
-
 import java.io.{ByteArrayOutputStream, IOException}
 import java.net.URLConnection
 import java.nio.file.{Files, Paths, StandardCopyOption}
@@ -12,13 +11,18 @@ import java.text.SimpleDateFormat
 import java.util.Base64
 import java.io.ByteArrayInputStream
 import java.io.InputStream
+
 import javax.inject.Inject
-
-
+import javax.crypto.Cipher
+import javax.crypto.spec.{IvParameterSpec}
+import javax.crypto.SecretKey
 import org.apache.commons.io.FilenameUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionSynchronizationAdapter
+import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -33,10 +37,14 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
   @Inject
   private var teaSessionDao: TeaSessionDao = _
 
+  @Autowired
+  private var aesEncryptionService: AesEncryptionService = _
+
 
 
   /* hashing */
   private val passwordEncoder: BCryptPasswordEncoder = new BCryptPasswordEncoder()
+
 
   private val IMAGE_FILE_DIRECTORY = "C:\\Users\\jiajunang\\Documents\\tos\\DATA\\db\\menu_item\\"
 
@@ -44,23 +52,23 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def createMenuItem(teaSessionId: Long, menuItemName: String, menuItemImagePath: Option[MultipartFile]): Map[String, Any] =
+  override def add(teaSessionId: Long, name: String, imagePath: Option[MultipartFile]): Map[String, Any] =
   {
     val toTeaSession = teaSessionDao.getById(teaSessionId)
     if(toTeaSession.isDefined)
     {
       val t = new MenuItemBean()
-      t.menuItemName = menuItemName
+      t.name = name
       t.teaSessionMenuItem = toTeaSession.get
       menuItemDao.saveOrUpdate(t)
 
-      if(menuItemImagePath.isDefined){
-        addMenuItemImageByMultipart(t.menuItemId, menuItemImagePath.get, false)
+      if(imagePath.isDefined){
+        addImageByMultipart(t.menuItemId, imagePath.get, false)
       }
 
       val modifiedMenuItem: MenuItemBean = t.deepClone
-      if(!isStringEmpty(modifiedMenuItem.menuItemImagePath)){
-        modifiedMenuItem.menuItemImagePath = generateMenuItemImageUrl(modifiedMenuItem.menuItemImagePath)
+      if(!isStringEmpty(modifiedMenuItem.imagePath)){
+        modifiedMenuItem.imagePath = generateImageUrl(modifiedMenuItem.imagePath)
       }
 
 
@@ -79,19 +87,19 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def createMenuItemByBatch(teaSessionId: Long, menuList: List[MenuItemBean]): Map[String, Any] = //Not working
+  override def addByBatch(teaSessionId: Long, menuList: List[MenuItemBean]): Map[String, Any] = //Not working
   {
     val toTeaSession = teaSessionDao.getById(teaSessionId)
     if(toTeaSession.isDefined)
     {
       menuList.foreach((menuItem: MenuItemBean) => {
         val t = new MenuItemBean()
-        t.menuItemName = menuItem.menuItemName
+        t.name = menuItem.name
         t.teaSessionMenuItem = toTeaSession.get
         menuItemDao.saveOrUpdate(menuItem)
 
-        if(!isStringEmpty(menuItem.menuItemImagePath)){
-          addMenuItemImageByBase64(t.menuItemId, menuItem.menuItemImagePath, false)
+        if(!isStringEmpty(menuItem.imagePath)){
+          addImageByBase64(t.menuItemId, menuItem.imagePath, false)
         }
       })
 
@@ -109,7 +117,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def addMenuItemImageByMultipart(menuItemId: Long, menuItemImage: MultipartFile, isApiUpload: Boolean): Either[Boolean, Map[String, Any]] = {
+  override def addImageByMultipart(menuItemId: Long, menuItemImage: MultipartFile, isApiUpload: Boolean): Either[Boolean, Map[String, Any]] = {
 
     val extensionName: String = FilenameUtils.getExtension(menuItemImage.getOriginalFilename)
     val imageName: String = "menu_item_" + menuItemId + "." + extensionName
@@ -121,7 +129,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
       Files.copy(menuItemImage.getInputStream, savePath, StandardCopyOption.REPLACE_EXISTING)
 
       val t = to.get
-      t.menuItemImagePath = imageName
+      t.imagePath = imageName
 
 
       if(isApiUpload){
@@ -148,7 +156,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def addMenuItemImageByBase64(menuItemId: Long, menuItemImage: String, isApiUpload: Boolean): Either[Boolean, Map[String, Any]] = {
+  override def addImageByBase64(menuItemId: Long, menuItemImage: String, isApiUpload: Boolean): Either[Boolean, Map[String, Any]] = {
 
     val to = menuItemDao.getById(menuItemId)
 
@@ -169,7 +177,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
         val t = to.get
-        t.menuItemImagePath = imageName
+        t.imagePath = imageName
 
         if(isApiUpload){
           Right(Map(
@@ -200,7 +208,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def getMenuItemByTeaSessionId(teaSessionId: Long, password: Option[String]): Map[String, Any] = {
+  override def findByTeaSessionId(teaSessionId: Long, password: Option[String]): Map[String, Any] = {
 
     val toTeaSession = teaSessionDao.getById(teaSessionId)
     if(toTeaSession.isDefined){
@@ -208,10 +216,10 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
       if(checkVisibilityAndPassword(tTeaSession, password)) {
         val modifiedMenuItem: List[MenuItemBean] =
-        menuItemDao.getMenuItemByTeaSessionId(teaSessionId).map( (menuItemBean: MenuItemBean) => {
-          if(!isStringEmpty(menuItemBean.menuItemImagePath)){
+        menuItemDao.findByTeaSessionId(teaSessionId).map( (menuItemBean: MenuItemBean) => {
+          if(!isStringEmpty(menuItemBean.imagePath)){
             val tempMenuItemBean: MenuItemBean = menuItemBean.deepClone
-            tempMenuItemBean.menuItemImagePath = generateMenuItemImageUrl(tempMenuItemBean.menuItemImagePath)
+            tempMenuItemBean.imagePath = generateImageUrl(tempMenuItemBean.imagePath)
             tempMenuItemBean
           } else {
             menuItemBean
@@ -223,15 +231,14 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
           "menuItem" -> modifiedMenuItem
         )
       }
-      else
-      {
+      else {
         Map(
           "error" -> true,
           "message" -> "Please provide correct password for tea session menu"
         )
       }
     }
-    else{
+    else {
       Map(
         "error" -> true,
         "message" -> "Invalid tea session reference"
@@ -251,7 +258,7 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
   }
 
 
-  override def getMenuItemImage(imageName: String): Array[Byte] = {
+  override def getImageByImageName(imageName: String): Array[Byte] = {
 
     try { // Retrieve image from the classpath.
       val inputStream = Paths.get(IMAGE_FILE_DIRECTORY + imageName)
@@ -269,21 +276,31 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def updateMenuItem(menuItemId:Long, name: String, menuItemImagePath: Option[MultipartFile]): Map[String, Any] = {
+  override def update(menuItemId:Long, name: String, imagePath: Option[MultipartFile]): Map[String, Any] = {
 
     val to = menuItemDao.getById(menuItemId)
 
     if(to.isDefined)
     {
       val t = to.get
-      t.menuItemName = name
-      if(menuItemImagePath.isDefined){
-        addMenuItemImageByMultipart(menuItemId, menuItemImagePath.get, false)
+      t.name = name
+      if(imagePath.isDefined){ //Check if Image
+        addImageByMultipart(menuItemId, imagePath.get, false)
+      } else {
+        if(!isStringEmpty(t.imagePath)){
+          deleteImage(t.imagePath);
+          t.imagePath = null;
+        }
+      }
+      val modifiedMenuItem: MenuItemBean = t.deepClone
+      if(!isStringEmpty(modifiedMenuItem.imagePath)){
+        modifiedMenuItem.imagePath = generateImageUrl(modifiedMenuItem.imagePath)
       }
 
       Map(
         "error" -> false,
-        "message" -> "Update successfully"
+        "message" -> "Update successfully",
+        "menuItem" -> modifiedMenuItem
       )
     }
     else
@@ -297,15 +314,24 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
 
 
   @Transactional
-  override def deleteMenuItemById(menuItemId: Long): Map[String, Any] = {
+  override def deleteById(menuItemId: Long): Map[String, Any] = {
 
     val to = menuItemDao.getById(menuItemId)
+
+    TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+      override def afterCommit(): Unit = { //do stuff right after commit
+        val t = to.get
+        if(!isStringEmpty(t.imagePath)){
+          deleteImage(t.imagePath)
+        }
+      }
+    })
 
     if(to.isDefined)
     {
       val t = to.get
-      deleteMenuItemImage(t.menuItemImagePath)
       menuItemDao.deleteById(menuItemId)
+
 
       Map(
         "error" -> false,
@@ -321,12 +347,17 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
   }
 
 
-  override def deleteMenuItemImage(menuItemImagePath: String): Boolean= {
+  override def deleteImage(imagePath: String): Boolean= {
 
     try{
-    val deletePath = Paths.get(IMAGE_FILE_DIRECTORY + menuItemImagePath)
-    Files.delete(deletePath)
-    true
+      val deletePath = Paths.get(IMAGE_FILE_DIRECTORY + imagePath)
+      if(Files.exists(deletePath)){
+      Files.delete(deletePath)
+      true
+      }
+      else {
+        false
+      }
     }
     catch {
       case e: IOException =>
@@ -336,10 +367,56 @@ private[impl] class MenuItemServiceImpl extends MenuItemService
   }
 
 
+  @Transactional
+  override def findByShareLink(teaSessionId: Long, cipherText: String): Map[String, Any] = {
+
+    val tTeaSession: TeaSessionBean = teaSessionDao.getById(teaSessionId).get
+
+    if(tTeaSession != None && !tTeaSession.isPublic) {
+
+      val key: SecretKey = aesEncryptionService.getKeyFromPassword()
+      val ivParameterSpec: IvParameterSpec = new IvParameterSpec( tTeaSession.password.slice(0,16).getBytes("UTF-8"))
+      val decryptedPassword: String = aesEncryptionService.decrypt(cipherText, key, ivParameterSpec)
+
+      if(tTeaSession.password.equals(decryptedPassword)){
+
+        val modifiedMenuItem: List[MenuItemBean] =
+          menuItemDao.findByTeaSessionId(teaSessionId).map( (menuItemBean: MenuItemBean) => {
+            if(!isStringEmpty(menuItemBean.imagePath)){
+              val tempMenuItemBean: MenuItemBean = menuItemBean.deepClone
+              tempMenuItemBean.imagePath = generateImageUrl(tempMenuItemBean.imagePath)
+              tempMenuItemBean
+            } else {
+              menuItemBean
+            }
+          })
+
+        Map(
+          "error" -> false,
+          "menuItem" -> modifiedMenuItem
+        )
+
+
+      } else {
+        Map(
+          "error" -> true,
+          "message" -> "Incorrect cipher text"
+        )
+      }
+    } else {
+      Map(
+        "error" -> true,
+        "message" -> "Invalid tea session ID or privacy combination"
+      )
+    }
+
+  }
+
+
   def isStringEmpty(string: String): Boolean = string == null || string.trim.isEmpty
 
 
-  def generateMenuItemImageUrl(imageName: String): String = {
+  def generateImageUrl(imageName: String): String = {
     if(imageName != null) {
       UriComponentsBuilder.newInstance()
         .scheme("http").host("localhost").port(50001)

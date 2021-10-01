@@ -10,7 +10,7 @@ import collection.JavaConverters._
 @Repository
 private[impl] class MenuItemDaoImpl extends AbstractGenericDao[MenuItemBean, Long] with MenuItemDao{
 
-  override def getMenuItemByTeaSessionId(teaSessionId:Long):List[MenuItemBean] =
+  override def findByTeaSessionId(teaSessionId:Long):List[MenuItemBean] =
   {
     val q = new JPAQueryFactory(entityManager)
     q.selectFrom(QMenuItemBean).where(QMenuItemBean.teaSessionMenuItem.teaSessionId === (teaSessionId)).fetch().asScala.toList

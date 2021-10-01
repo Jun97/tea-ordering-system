@@ -17,11 +17,11 @@ class MenuItemBean extends Serializable with Equals
   @Column(name="menu_item_id")
   var menuItemId: Long = _
 
-  @Column(name="menu_item_name")
-  var menuItemName: String = _
+  @Column(name="name")
+  var name: String = _
 
-  @Column(name="menu_item_image_path")
-  var menuItemImagePath: String = _
+  @Column(name="image_path")
+  var imagePath: String = _
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "tea_session_id", nullable = false)
@@ -57,7 +57,7 @@ class MenuItemBean extends Serializable with Equals
 
   @Override
   override def toString(): String = {
-    return "name" + this.menuItemName + "base64" + this.menuItemImagePath
+    return "name" + this.name + "base64" + this.imagePath
   }
 
 }
