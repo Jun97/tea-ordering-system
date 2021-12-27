@@ -1,171 +1,37 @@
-### SPRING FRAMEWORK ###
+# Specifies intentionally untracked files to ignore when using Git
+# http://git-scm.com/docs/gitignore
+www/
 
-tos-web-api/**/*.java.hsp
-tos-web-api/**/*.sonarj
-tos-web-api/**/*.sw*
-tos-web-api/**/.DS_Store
-tos-web-api/**/.settings
-tos-web-api/**/.springBeans
-tos-web-api/**/bin
-tos-web-api/**/build.sh
-tos-web-api/**/integration-repo
-tos-web-api/**/ivy-cache
-tos-web-api/**/jxl.log
-tos-web-api/**/jmx.log
-tos-web-api/**/derby.log
-tos-web-api/**/spring-test/test-output/
-tos-web-api/**/.gradle
-tos-web-api/**/argfile*
-tos-web-api/**/pom.xml
-tos-web-api/**/activemq-data/
-
-tos-web-api/classes/
-tos-web-api/build
-tos-web-api/**/buildSrc/build
-tos-web-api/spring-*/build
-tos-web-api/spring-core/kotlin-coroutines/build
-tos-web-api/framework-bom/build
-tos-web-api/integration-tests/build
-tos-web-api/src/asciidoc/build
-tos-web-api/**/target/
-
-tos-web-core/**/*.java.hsp
-tos-web-core/**/*.sonarj
-tos-web-core/**/*.sw*
-tos-web-core/**/.DS_Store
-tos-web-core/**/.settings
-tos-web-core/**/.springBeans
-tos-web-core/**/bin
-tos-web-core/**/build.sh
-tos-web-core/**/integration-repo
-tos-web-core/**/ivy-cache
-tos-web-core/**/jxl.log
-tos-web-core/**/jmx.log
-tos-web-core/**/derby.log
-tos-web-core/**/spring-test/test-output/
-tos-web-core/**/.gradle
-tos-web-core/**/argfile*
-tos-web-core/**/pom.xml
-tos-web-core/**/activemq-data/
-
-tos-web-core/classes/
-tos-web-core/build
-tos-web-core/**/buildSrc/build
-tos-web-core/spring-*/build
-tos-web-core/spring-core/kotlin-coroutines/build
-tos-web-core/framework-bom/build
-tos-web-core/integration-tests/build
-tos-web-core/src/asciidoc/build
-tos-web-core/**/target/
-
-tos-web-rest/**/*.java.hsp
-tos-web-rest/**/*.sonarj
-tos-web-rest/**/*.sw*
-tos-web-rest/**/.DS_Store
-tos-web-rest/**/.settings
-tos-web-rest/**/.springBeans
-tos-web-rest/**/bin
-tos-web-rest/**/build.sh
-tos-web-rest/**/integration-repo
-tos-web-rest/**/ivy-cache
-tos-web-rest/**/jxl.log
-tos-web-rest/**/jmx.log
-tos-web-rest/**/derby.log
-tos-web-rest/**/spring-test/test-output/
-tos-web-rest/**/.gradle
-tos-web-rest/**/argfile*
-tos-web-rest/**/pom.xml
-tos-web-rest/**/activemq-data/
-
-tos-web-rest/classes/
-tos-web-rest/build
-tos-web-rest/**/buildSrc/build
-tos-web-rest/spring-*/build
-tos-web-rest/spring-core/kotlin-coroutines/build
-tos-web-rest/framework-bom/build
-tos-web-rest/integration-tests/build
-tos-web-rest/src/asciidoc/build
-tos-web-rest/**/target/
-
-# Eclipse artifacts, including WTP generated manifests
-.classpath
-.project
-spring-*/src/main/java/META-INF/MANIFEST.MF
-
-# IDEA artifacts and output dirs
-*.iml
-*.ipr
-*.iws
-.idea
-tos-web-api/**/out
-tos-web-api/**/test-output
-tos-web-api/**/atlassian-ide-plugin.xml
-
-tos-web-core/**/out
-tos-web-core/**/test-output
-tos-web-core/**/atlassian-ide-plugin.xml
-
-tos-web-rest/**/out
-tos-web-rest/**/test-output
-tos-web-rest/**/atlassian-ide-plugin.xml
-.gradletasknamecache
-
-# VS Code
+*~
+*.sw[mnpcod]
+*.log
+*.tmp
+*.tmp.*
+log.txt
+*.sublime-project
+*.sublime-workspace
 .vscode/
+npm-debug.log*
+.firebase/
+.idea/
+.sourcemaps/
+.sass-cache/
+.tmp/
+.versions/
+coverage/
+dist/
+node_modules/
+tmp/
+temp/
+hooks/
+platforms/
+plugins/
+plugins/android.json
+plugins/ios.json
+$RECYCLE.BIN/
 
-### ANGULAR ###
+.DS_Store
+Thumbs.db
+UserInterfaceState.xcuserstate
 
-tos-web-ngx/**/.DS_STORE
-
-tos-web-ngx/dist/
-tos-web-ngx/bazel-out
-tos-web-ngx/integration/bazel/bazel-*
-tos-web-ngx/**/*.log
-tos-web-ngx/**/node_modules
-
-# Include when developing application packages.
-tos-web-ngx/**/pubspec.lock
-tos-web-ngx/**/.c9
-tos-web-ngx/**/.idea/
-tos-web-ngx/**/.devcontainer/*
-tos-web-ngx/**/!.devcontainer/README.md
-tos-web-ngx/**/!.devcontainer/recommended-devcontainer.json
-tos-web-ngx/**/!.devcontainer/recommended-Dockerfile
-tos-web-ngx/**/.settings/
-tos-web-ngx/**/.vscode/launch.json
-tos-web-ngx/**/.vscode/settings.json
-tos-web-ngx/**/.vscode/tasks.json
-tos-web-ngx/**/*.swo
-tos-web-ngx/**/*.swp
-tos-web-ngx/**/modules/.settings
-tos-web-ngx/**/modules/.vscode
-tos-web-ngx/**/.vimrc
-tos-web-ngx/**/.nvimrc
-
-# Don't check in secret files
-tos-web-ngx/**/*secret.js
-
-# Ignore npm/yarn debug log
-tos-web-ngx/**/npm-debug.log
-tos-web-ngx/**/yarn-error.log
-
-# build-analytics
-.build-analytics
-
-# rollup-test output
-/modules/rollup-test/dist/
-
-# User specific bazel settings
-.bazelrc.user
-
-# User specific ng-dev settings
-.ng-dev.user*
-
-.notes.md
-baseline.json
-
-# Ignore .history for the xyz.local-history VSCode extension
-.history
-
-# Husky
-.husky/_
+application.properties
